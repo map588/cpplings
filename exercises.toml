@@ -1,0 +1,1398 @@
+# cpplings exercise manifest. Order here = order in watch/verify mode.
+# mode = "run"     → must compile AND exit 0 (asserts pass, sanitizers quiet)
+# mode = "compile" → must compile (for future linkage/ODR-style exercises)
+
+# ----------------------------------------------------------- 00_intro
+
+[[exercises]]
+name = "intro1"
+path = "exercises/00_intro/intro1.cpp"
+mode = "run"
+hints = [
+  "Read the comment block at the top of the file — it explains the whole workflow.",
+  "Change `answer` to 42, save, and the watcher re-runs automatically. Then delete the I AM NOT DONE line.",
+]
+
+[[exercises]]
+name = "intro2"
+path = "exercises/00_intro/intro2.cpp"
+mode = "run"
+hints = [
+  "Fix the FIRST error first. The compiler has never heard of `std::cout` — which header declares it?",
+  "#include <iostream> at the top. Then look at the end of the cout line: statements end with a semicolon.",
+]
+
+[[exercises]]
+name = "intro3"
+path = "exercises/00_intro/intro3.cpp"
+mode = "run"
+hints = [
+  "square(3) is returning 6, not 9. Look at the operator in the function body.",
+  "The static_assert fails at COMPILE time and the assert would fail at RUN time — one fix (x * x) satisfies both, because constexpr functions work at both times.",
+]
+
+# ----------------------------------------------------------- 01_types
+
+[[exercises]]
+name = "types1"
+path = "exercises/01_types/types1.cpp"
+mode = "run"
+hints = [
+  "Brace init refuses lossy conversions. To keep braces AND truncate, make the conversion explicit so the compiler knows you mean it.",
+  "int loud{static_cast<int>(ratio)}; — and for `positive`, the assert wants 0, so just initialize it with a value that fits: {0}.",
+]
+
+[[exercises]]
+name = "types2"
+path = "exercises/01_types/types2.cpp"
+mode = "run"
+hints = [
+  "Rule 1: plain `auto` drops top-level const → a is plain int. Rule 2: `auto&` must keep const → b is const int&.",
+  "Arrays decay under plain auto → c is int*. An rvalue (5) bound to auto&& deduces int&& → d is int&&.",
+]
+
+[[exercises]]
+name = "types3"
+path = "exercises/01_types/types3.cpp"
+mode = "run"
+hints = [
+  "uint8_t + uint8_t happens as int math: 200 + 100 = 300, no wrap. The wrap only happens in the static_cast back to 8 bits.",
+  "sum == 300; wrapped == 300 % 256 == 44.",
+]
+
+[[exercises]]
+name = "types4"
+path = "exercises/01_types/types4.cpp"
+mode = "run"
+hints = [
+  "v.size() is unsigned. When v is empty, size() - 1 is not -1 — it's the largest size_t. Can you compare without ever subtracting?",
+  "Change the condition to `i + 1 < v.size()` — addition on i can't underflow. (C++20 alternatives: std::ssize(v), or std::cmp_less.)",
+]
+
+[[exercises]]
+name = "types5"
+path = "exercises/01_types/types5.cpp"
+mode = "run"
+hints = [
+  "int8_t holds -128..127, so -200 doesn't fit — go one size up. For 0..255, that's exactly the range of an unsigned byte.",
+  "temperature_t = std::int16_t, pixel_t = std::uint8_t, usec_t = std::int64_t.",
+]
+
+[[exercises]]
+name = "types6"
+path = "exercises/01_types/types6.cpp"
+mode = "run"
+hints = [
+  "sizeof('a') is 1 in C++. 'A' is 65, and char arithmetic promotes to int. Division truncates toward zero: -7/2 = -3, and the remainder keeps the dividend's sign: -7%2 = -1.",
+  "short + short → int (promotion). Any non-zero value converted to bool is true.",
+]
+
+# ----------------------------------------------- 02_const_constexpr
+
+[[exercises]]
+name = "const1"
+path = "exercises/02_const_constexpr/const1.cpp"
+mode = "run"
+hints = [
+  "Two changes: the parameter should be `const std::string&` (no copy, read-only), and `calls` gets mutated so it must not be const.",
+  "const belongs on things that don't change (greeting, the parameter view) — not on a running tally.",
+]
+
+[[exercises]]
+name = "const2"
+path = "exercises/02_const_constexpr/const2.cpp"
+mode = "run"
+hints = [
+  "Read right-to-left. viewer re-aims but only reads → the INT needs protecting, not the pointer: const int*. fixed writes but never re-aims → int* const.",
+  "frozen does neither → const int* const. The usage lines tell you exactly which operations each declaration must allow and forbid.",
+]
+
+[[exercises]]
+name = "const3"
+path = "exercises/02_const_constexpr/const3.cpp"
+mode = "run"
+hints = [
+  "Through a const reference you may only call member functions marked const. Which Counter methods don't mutate?",
+  "Add const to value() and is_even(): `int value() const { ... }`. Leave increment() non-const — it mutates.",
+]
+
+[[exercises]]
+name = "constexpr1"
+path = "exercises/02_const_constexpr/constexpr1.cpp"
+mode = "run"
+hints = [
+  "static_assert and array bounds need compile-time values, and a function is only callable at compile time if it's declared constexpr.",
+  "Add constexpr to max_packet_size. Loops and locals in a constexpr body are fine since C++14. The runtime call at the bottom keeps working — constexpr means MAY run at compile time, not MUST.",
+]
+
+[[exercises]]
+name = "constexpr2"
+path = "exercises/02_const_constexpr/constexpr2.cpp"
+mode = "run"
+hints = [
+  "You need compile-time INITIALIZATION but runtime MUTATION. const forbids mutation; constexpr also forbids mutation. What's the third option (C++20)?",
+  "constinit unsigned rng_state = hash_seed(2026); — compile-time init enforced, variable stays mutable.",
+]
+
+# ------------------------------------------- 03_references_pointers
+
+[[exercises]]
+name = "references1"
+path = "exercises/03_references_pointers/references1.cpp"
+mode = "run"
+hints = [
+  "Bind ra at its declaration: `int& ra = a;` (and delete the broken assignment-as-binding line). Then remember: `rb = a` copies a's VALUE into b.",
+  "b becomes 1, rb reads b so it's 1 too, and ra aliases a which was set to 100.",
+]
+
+[[exercises]]
+name = "references2"
+path = "exercises/03_references_pointers/references2.cpp"
+mode = "run"
+hints = [
+  "Temporaries can only bind to CONST lvalue references. Both broken lines need the same fix.",
+  "const std::string& greeting = ... (lifetime extension keeps the temporary alive), and count_vowels(const std::string& text) so the literal can bind.",
+]
+
+[[exercises]]
+name = "references3"
+path = "exercises/03_references_pointers/references3.cpp"
+mode = "run"
+hints = [
+  "swap needs a temporary: tmp = a; a = b; b = tmp;",
+  "\"In place\" means shout mutates the caller's string → take std::string& (non-const), append '!', return text.size().",
+]
+
+[[exercises]]
+name = "pointers1"
+path = "exercises/03_references_pointers/pointers1.cpp"
+mode = "run"
+hints = [
+  "find() returning nullptr is correct and documented. lookup_or_zero dereferences the result without checking it.",
+  "return e ? e->value : 0; — a nullable pointer must be checked before every dereference.",
+]
+
+[[exercises]]
+name = "pointers2"
+path = "exercises/03_references_pointers/pointers2.cpp"
+mode = "run"
+hints = [
+  "Read the ASan report: it shows the READ (in the loop), the FREE (delete[]), and the ALLOCATION (new) — three stack traces telling the whole story.",
+  "Move the delete[] after the loop. Then reflect: a std::vector<int> local, or std::unique_ptr<int[]>, would make this mistake impossible to write.",
+]
+
+# ----------------------------------------------------------- 04_functions
+
+[[exercises]]
+name = "functions1"
+path = "exercises/04_functions/functions1.cpp"
+mode = "run"
+hints = [
+  "Ranking: exact > promotion > conversion. 7.5 is a double (exact). char/bool promote to int; float promotes to double — promotions, so they beat any conversion to the other overload.",
+  "pick(7.5)=='d', pick('a')=='i', pick(true)=='i', pick(7.5f)=='d'. For 7L: add `constexpr char pick(long) { return 'l'; }` — an exact match, ambiguity gone.",
+]
+
+[[exercises]]
+name = "functions2"
+path = "exercises/04_functions/functions2.cpp"
+mode = "run"
+hints = [
+  "Defaults must be trailing → required parameters first: make_tag(int id, std::string prefix = \"tag\"). The call sites already pass id first.",
+  "next_id() runs only when the caller omits the argument: auto_tag() twice = 2 runs; auto_tag(99) = 0 runs. ids_handed_out == 2.",
+]
+
+[[exercises]]
+name = "functions3"
+path = "exercises/04_functions/functions3.cpp"
+mode = "run"
+hints = [
+  "The counter must survive between calls without being a global. `static` inside a function = initialized once, lives forever.",
+  "static int counter = 0; — the `= 0` runs only on the FIRST call (lazily, and thread-safely since C++11).",
+]
+
+[[exercises]]
+name = "functions4"
+path = "exercises/04_functions/functions4.cpp"
+mode = "run"
+hints = [
+  "Lvalues with a name and no const → 'l'. const lvalue → 'c'. Everything temporary or moved → 'r': literals, x + 1, std::move(x).",
+  "pick(x)=='l', pick(cx)=='c', pick(5)=='r', pick(x+1)=='r', pick(std::move(x))=='r'. std::move changed nothing about x — it only changed the overload.",
+]
+
+[[exercises]]
+name = "functions5"
+path = "exercises/04_functions/functions5.cpp"
+mode = "run"
+hints = [
+  "bump: the static total accumulates 2, 5, 7. which: short→int and float→double are promotions, so 'i' and 'd'.",
+  "The ambiguous call needs an exact match: which(static_cast<int>(u)) (or static_cast<double>(u) — your choice, that's the point).",
+]
+
+# --------------------------------------------------- 05_namespaces_using
+
+[[exercises]]
+name = "namespaces1"
+path = "exercises/05_namespaces_using/namespaces1.cpp"
+mode = "run"
+hints = [
+  "dsp lives inside audio: the full path is audio::dsp::kSampleRate.",
+  "For the rest, declare `namespace mix = audio::dsp;` inside main, before the static_asserts that use mix::.",
+]
+
+[[exercises]]
+name = "namespaces2"
+path = "exercises/05_namespaces_using/namespaces2.cpp"
+mode = "run"
+hints = [
+  "Delete both using-directives. Then import exactly what main needs: serialize from json, indent_width from yaml.",
+  "using json::serialize; using yaml::indent_width; — one name each, no ambiguity, and a future name added to either namespace can't break this file.",
+]
+
+[[exercises]]
+name = "namespaces3"
+path = "exercises/05_namespaces_using/namespaces3.cpp"
+mode = "run"
+hints = [
+  "Alias syntax: using Name = Type;  →  using Row = std::vector<unsigned char>; and using Comparator = bool (*)(int, int);",
+  "The alias template: template <typename T> using Matrix = std::vector<std::vector<T>>; — this is the one typedef can't express.",
+]
+
+[[exercises]]
+name = "namespaces4"
+path = "exercises/05_namespaces_using/namespaces4.cpp"
+mode = "run"
+hints = [
+  "std::swap(a, b) is a QUALIFIED call — lookup stops at std, ADL is skipped, geo::swap never runs.",
+  "Inside shuffle: `using std::swap; swap(a, b);` — the unqualified call lets ADL search geo (Mesh's namespace) and find the custom swap. C++20's std::ranges::swap(a, b) also works.",
+]
+
+[[exercises]]
+name = "namespaces5"
+path = "exercises/05_namespaces_using/namespaces5.cpp"
+mode = "run"
+hints = [
+  "The cases need Signal::Red etc. — or bring the enumerators into scope for just the switch body.",
+  "Add `using enum Signal;` (C++20) as the first line inside the switch braces.",
+]
+
+[[exercises]]
+name = "namespaces6"
+path = "exercises/05_namespaces_using/namespaces6.cpp"
+mode = "run"
+hints = [
+  "mathlib::checksum doesn't exist — checksum only lives in v1 and v2. One of them should be visible THROUGH mathlib.",
+  "Mark the current version: `inline namespace v2 { ... }`. v1 stays reachable as mathlib::v1::checksum — that's the versioning pattern your standard library uses (std::__1::).",
+]
+
+# -------------------------------------------------------- 06_linkage_odr
+
+[[exercises]]
+name = "linkage1"
+path = "exercises/06_linkage_odr/linkage1.cpp"
+mode = "run"
+extra_files = ["exercises/06_linkage_odr/linkage1_tracker.cpp"]
+hints = [
+  "The error is from the LINKER: both TUs DEFINE hit_count. In C++, `int hit_count;` at namespace scope is a full definition, not a tentative one.",
+  "extern int hit_count; — declares without defining. (Functions don't need this: a prototype is always just a declaration.)",
+]
+
+[[exercises]]
+name = "linkage2"
+path = "exercises/06_linkage_odr/linkage2.cpp"
+mode = "run"
+hints = [
+  "Point gets defined twice in this TU: once via the direct #include, once via linkage2_shapes.h. The header needs an include guard.",
+  "Add `#pragma once` at the top of linkage2_point.h — or the #ifndef/#define/#endif pattern linkage2_shapes.h uses (unique macro name!).",
+]
+
+[[exercises]]
+name = "linkage3"
+path = "exercises/06_linkage_odr/linkage3.cpp"
+mode = "run"
+extra_files = ["exercises/06_linkage_odr/linkage3_render.cpp"]
+hints = [
+  "Two namespace-scope functions named normalize, different bodies → duplicate symbol. Each is meant to be private to its own file: give them internal linkage.",
+  "Wrap each normalize in `namespace { ... }` (in BOTH files). `static` works too for functions, but the anonymous namespace also handles types/templates — prefer it.",
+]
+
+[[exercises]]
+name = "linkage4"
+path = "exercises/06_linkage_odr/linkage4.cpp"
+mode = "run"
+extra_files = ["exercises/06_linkage_odr/linkage4_stats.cpp"]
+hints = [
+  "clamp01 is DEFINED in a header included by two TUs → two external definitions → duplicate symbol. The keyword that permits multi-TU definitions is inline.",
+  "`inline int clamp01(int x)` — or `constexpr int clamp01(int x)`, since constexpr implies inline (C++11) and this is a pure computation.",
+]
+
+[[exercises]]
+name = "linkage5"
+path = "exercises/06_linkage_odr/linkage5.cpp"
+mode = "run"
+extra_files = ["exercises/06_linkage_odr/linkage5_other.cpp"]
+hints = [
+  "No link error this time — namespace-scope const has INTERNAL linkage in C++, so each TU owns a private kPi. Same value, different addresses; the identity assert fails.",
+  "inline constexpr double kPi = ...; — the C++17 inline variable: definable in the header, folded by the linker into one program-wide object.",
+]
+
+# ----------------------------------------------------------- 07_classes1
+
+[[exercises]]
+name = "ctor1"
+path = "exercises/07_classes1/ctor1.cpp"
+mode = "run"
+hints = [
+  "const members can be INITIALIZED but never assigned — the values must arrive via the member init list, before the body runs.",
+  "Sensor(int id, const std::string& name) : id_(id), name_(name), reading_(0) {} — list order should match declaration order (id_, name_, reading_).",
+]
+
+[[exercises]]
+name = "ctor2"
+path = "exercises/07_classes1/ctor2.cpp"
+mode = "run"
+hints = [
+  "Put the defaults at the members: `int seconds = 30; bool repeating = false;`. Then Timer() has nothing left to do — `= default` it.",
+  "Timer(int s) : Timer(s, false) {} — delegation means the bug can't recur, there's only one real constructor. (A delegating ctor can't also have a member init list.)",
+]
+
+[[exercises]]
+name = "explicit1"
+path = "exercises/07_classes1/explicit1.cpp"
+mode = "run"
+hints = [
+  "The call computes 5 seconds + 30 minutes = 1805, not 330. Both int→type conversions happened silently because the constructors are implicit.",
+  "Add explicit to both constructors; the bad call now fails to compile. Rewrite it as to_total_seconds(Seconds{30}, Minutes{5}).",
+]
+
+[[exercises]]
+name = "dtor1"
+path = "exercises/07_classes1/dtor1.cpp"
+mode = "run"
+hints = [
+  "Locals: reverse construction order, so a,b construct as \"ab\" and destroy as \"~b~a\".",
+  "First log: \"ab~b~a\". Second: members construct in DECLARATION order (right then left) and destroy in reverse: \"rl~l~r\".",
+]
+
+[[exercises]]
+name = "default1"
+path = "exercises/07_classes1/default1.cpp"
+mode = "run"
+hints = [
+  "Writing Session(const std::string&) suppressed the implicit default ctor. `Session() = default;` restores it — the NSDMIs supply guest/1000.",
+  "For the timeout: add `void set_timeout_ms(double) = delete;` — the 2.5 call becomes a compile error pointing at the real bug. Fix the call to set_timeout_ms(2500).",
+]
+
+[[exercises]]
+name = "aggregate1"
+path = "exercises/07_classes1/aggregate1.cpp"
+mode = "run"
+hints = [
+  "9000 lands on `host` (a string_view) because positional init follows declaration order. Name the members instead: Config server{.port = 9000, .verbose = true};",
+  "For debug, say only what differs: Config debug{.verbose = true}; — host, port, retries keep their NSDMI defaults. Designators must follow declaration order.",
+]
+
+# ----------------------------------------------------------- 08_classes2
+
+[[exercises]]
+name = "copy1"
+path = "exercises/08_classes2/copy1.cpp"
+mode = "run"
+hints = [
+  "Copy ctor: allocate a fresh buffer and copy element-wise — IntBuffer(const IntBuffer& o) : n_(o.n_), data_(new int[o.n_]) { ...loop... }.",
+  "Copy assignment, in order: if (this == &other) return *this; then delete[] data_; then allocate and copy. Skip the self-check and `c = c` frees the buffer it's about to read.",
+]
+
+[[exercises]]
+name = "copy2"
+path = "exercises/08_classes2/copy2.cpp"
+mode = "run"
+hints = [
+  "Don't write any special members. Replace `std::size_t count_; int* grades_;` with `std::vector<int> grades_;` and delete the destructor.",
+  "Ctor becomes : grades_(n). count() returns grades_.size(). vector's copy IS the deep copy — that's the rule of zero.",
+]
+
+[[exercises]]
+name = "special1"
+path = "exercises/08_classes2/special1.cpp"
+mode = "run"
+hints = [
+  "Plain: generated move ctor moves the Tracker → 1 move, 0 copies. Logged: the user destructor suppressed move generation, so std::move falls back to the COPY ctor → 0 moves, 1 copy.",
+  "Fix Logged by defaulting all the rest: Logged() = default; copy ctor/assign = default; move ctor/assign = default. Then the Logged asserts become moves==1, copies==0.",
+]
+
+[[exercises]]
+name = "ops1"
+path = "exercises/08_classes2/ops1.cpp"
+mode = "run"
+hints = [
+  "a/b + c/d = (a*d + c*b)/(b*d): return {a.num * b.den + b.num * a.den, a.den * b.den};",
+  "Equality is cross-multiplication: a.num * b.den == b.num * a.den — that's how 1/2 == 2/4 without reducing.",
+]
+
+[[exercises]]
+name = "ops2"
+path = "exercises/08_classes2/ops2.cpp"
+mode = "run"
+hints = [
+  "One line inside the struct: auto operator<=>(const Version&) const = default;",
+  "Defaulted <=> compares members in declaration order and implicitly gives you a defaulted == too — all six comparison operators from one line.",
+]
+
+[[exercises]]
+name = "friend1"
+path = "exercises/08_classes2/friend1.cpp"
+mode = "run"
+hints = [
+  "Move both function DEFINITIONS inside the class body, each prefixed with `friend`. They stay free functions (they take the object as a parameter) but gain access to celsius_.",
+  "friend bool is_freezing(const Temperature& t) { return t.celsius_ <= 0.0; } — and the same treatment for operator<<. Callers find them via ADL because the argument is a Temperature.",
+]
+
+[[exercises]]
+name = "static1"
+path = "exercises/08_classes2/static1.cpp"
+mode = "run"
+hints = [
+  "Undefined symbol from the LINKER: in-class `static int live_count;` declares but never defines — no storage exists.",
+  "Modern fix: `inline static int live_count = 0;` (C++17 inline variable, module 06). Pre-C++17 you'd write `int Widget::live_count = 0;` in exactly one .cpp.",
+]
+
+# ------------------------------------------------------ 09_move_semantics
+
+[[exercises]]
+name = "move1"
+path = "exercises/09_move_semantics/move1.cpp"
+mode = "run"
+hints = [
+  "store()'s assignment copies `text` even though text is about to die. Mark it expendable.",
+  "contents = std::move(text); — the heap buffer flows entry → text → contents without a single allocation, so .data() compares equal.",
+]
+
+[[exercises]]
+name = "move2"
+path = "exercises/09_move_semantics/move2.cpp"
+mode = "run"
+hints = [
+  "Move ctor: take other's pointer and size, then set other.data_ = nullptr (its destructor will harmlessly delete[] nullptr). Mark it noexcept.",
+  "Move assignment: self-check, delete[] your OWN data_ first, steal, null the source, return *this — also noexcept. The static_assert won't pass without the keyword.",
+]
+
+[[exercises]]
+name = "move3"
+path = "exercises/09_move_semantics/move3.cpp"
+mode = "run"
+hints = [
+  "vector grows with std::move_if_noexcept: your move ctor isn't marked noexcept, so vector can't risk it and COPIES both old elements.",
+  "Item(Item&& o) noexcept : payload(std::move(o.payload)) { ++moves; } — one keyword flips copies==2/moves==0 to moves==2/copies==0.",
+]
+
+[[exercises]]
+name = "move4"
+path = "exercises/09_move_semantics/move4.cpp"
+mode = "run"
+hints = [
+  "Both std::moves BLOCK elision. Returning a prvalue (return Widget{1};) is guaranteed-elided since C++17: constructed directly in the caller, zero moves.",
+  "return w; for the named local — NRVO elides it (and even if it didn't, a bare name move-returns automatically; std::move is never needed on a return value).",
+]
+
+[[exercises]]
+name = "move5"
+path = "exercises/09_move_semantics/move5.cpp"
+mode = "run"
+hints = [
+  "const& binds the temporary and then COPIES it — the temporary's expendability is wasted. Take the parameter by VALUE instead.",
+  "void set_tag(Tag t) { tag_ = std::move(t); } — temporaries elide into t (0 copies, 1 move); lvalues pay 1 copy + 1 move. The sink pattern.",
+]
+
+[[exercises]]
+name = "move6"
+path = "exercises/09_move_semantics/move6.cpp"
+mode = "run"
+hints = [
+  "T&& with deduced T binds lvalues AND rvalues. std::move(value) unconditionally plunders both — including the caller's `label` they expected to keep.",
+  "vault.push_back(std::forward<T>(value)); — forwards the caller's value category: lvalue → copy, rvalue → move. Rule: forward with deduced T&&, move with concrete T&&.",
+]
+
+[[exercises]]
+name = "move7"
+path = "exercises/09_move_semantics/move7.cpp"
+mode = "run"
+hints = [
+  "1: 0/0 (guaranteed elision). 2: 1 copy. 3: 1 move. 4: 0/0 (temporary elides into the parameter). 5: 1 move.",
+  "6: std::move(frozen) is a const Tracker&& — the move ctor takes non-const Tracker&&, so the COPY ctor wins: 1 copy, 0 moves. const defeats move.",
+]
+
+# ------------------------------------------------------ 10_raii_smart_ptrs
+
+[[exercises]]
+name = "raii1"
+path = "exercises/10_raii_smart_ptrs/raii1.cpp"
+mode = "run"
+hints = [
+  "Give HandleGuard a destructor that calls release_handle(h_) — destructors run at scope exit on EVERY path (module 07).",
+  "In process(): replace the manual pair with `HandleGuard h;`, use h.get() for read_sample, and delete the release_handle call. The early return is now safe automatically.",
+]
+
+[[exercises]]
+name = "unique1"
+path = "exercises/10_raii_smart_ptrs/unique1.cpp"
+mode = "run"
+hints = [
+  "auto r = std::make_unique<Report>(title); — then -> works exactly as before, and there is nothing to delete.",
+  "Remove the `delete r;` line too. The unique_ptr destroys the Report at every return, including the early one.",
+]
+
+[[exercises]]
+name = "unique2"
+path = "exercises/10_raii_smart_ptrs/unique2.cpp"
+mode = "run"
+hints = [
+  "word_count only reads: change its parameter to const std::string& and pass *doc. Borrowers take references, not smart pointers.",
+  "archive takes ownership, so the call site must say so: archive(std::move(doc)); — afterwards doc is guaranteed null.",
+]
+
+[[exercises]]
+name = "shared1"
+path = "exercises/10_raii_smart_ptrs/shared1.cpp"
+mode = "run"
+hints = [
+  "Counts: 1 after make_shared; 2 after the copy; still 2 after the move (b becomes null, c takes over); back to 1 when the scope closes.",
+  "The hand-off: transfer(std::move(a)); — moving a shared_ptr transfers the reference without any atomic increment, and a ends up null, leaving the registry as sole owner (count 1).",
+]
+
+[[exercises]]
+name = "weak1"
+path = "exercises/10_raii_smart_ptrs/weak1.cpp"
+mode = "run"
+hints = [
+  "root holds leaf (count 1) and leaf holds root (count 1) — neither count can reach zero. The up-edge must not own: make `parent` a std::weak_ptr<Node>.",
+  "weak_ptr has no -> ; parent_name needs `if (auto p = n.parent.lock())` — lock() returns an owning shared_ptr for the duration, or null if the parent already died.",
+]
+
+[[exercises]]
+name = "deleter1"
+path = "exercises/10_raii_smart_ptrs/deleter1.cpp"
+mode = "run"
+hints = [
+  "ConnCloser::operator() should call legacy_close(c). That makes ConnPtr a one-line RAII wrapper for the whole legacy API.",
+  "fetch: `ConnPtr c(legacy_open());` then legacy_query(c.get(), x), and delete the manual legacy_close — both exits are covered by the deleter.",
+]
+
+# -------------------------------------------------------- 11_polymorphism
+
+[[exercises]]
+name = "virtual1"
+path = "exercises/11_polymorphism/virtual1.cpp"
+mode = "run"
+hints = [
+  "total_area calls through Shape& — without `virtual`, the static type decides and Shape::area() runs. Mark the base area() virtual.",
+  "Add `override` to both derived area()s (signatures must match exactly, const included), and give Shape a `virtual ~Shape() = default;` while you're there — every polymorphic base needs one (virtdtor1).",
+]
+
+[[exercises]]
+name = "override1"
+path = "exercises/11_polymorphism/override1.cpp"
+mode = "run"
+hints = [
+  "Add `override` to both RedactingLogger functions and recompile — the errors name the exact mismatches: prefix() must take const std::string&, format() must be const.",
+  "After fixing both signatures (keep the override keywords!), calls through Logger& dispatch to the redacting versions and the assert passes.",
+]
+
+[[exercises]]
+name = "virtdtor1"
+path = "exercises/11_polymorphism/virtdtor1.cpp"
+mode = "run"
+hints = [
+  "The unique_ptr<Sensor> deletes through a Sensor* — with a non-virtual ~Sensor, ~TempSensor never runs and live_buffers stays 1. (It's UB, not just a leak.)",
+  "virtual ~Sensor() = default; — destruction now dispatches like any other virtual: ~TempSensor first, then ~Sensor.",
+]
+
+[[exercises]]
+name = "abstract1"
+path = "exercises/11_polymorphism/abstract1.cpp"
+mode = "run"
+hints = [
+  "Replace the base's `{ return \"\"; }` with `= 0;` — serialize is now pure virtual and YamlExporter stops compiling until it implements it.",
+  "Implement it: std::string serialize(int value) const override { return \"value: \" + std::to_string(value); }",
+]
+
+[[exercises]]
+name = "slice1"
+path = "exercises/11_polymorphism/slice1.cpp"
+mode = "run"
+hints = [
+  "describe(Shape s) copies just the Shape part of any argument — take const Shape& instead.",
+  "std::vector<Shape> slices on push_back. Use std::vector<std::unique_ptr<Shape>> with std::make_unique<Circle>() / <Square>() — the asserts' -> syntax already expects pointers.",
+]
+
+[[exercises]]
+name = "poly1"
+path = "exercises/11_polymorphism/poly1.cpp"
+mode = "run"
+hints = [
+  "PlainPoint is two doubles: 16. VirtPoint adds a vptr: 24.",
+  "v is a sliced VirtPoint VALUE → base norm2 → 5.0. r is a reference to the ScaledPoint → vtable dispatch → 4*(1+4) = 20.0.",
+]
+
+# ----------------------------------------------------------- 12_templates1
+
+[[exercises]]
+name = "templates1"
+path = "exercises/12_templates1/templates1.cpp"
+mode = "run"
+hints = [
+  "template <typename T> T largest(T a, T b) { return b < a ? a : b; } — deduction handles int, double, and string calls unchanged.",
+  "largest(3, 2.5) deduces T=int AND T=double — a hard error. Decide yourself: largest<double>(3, 2.5), which lets the 3 convert.",
+]
+
+[[exercises]]
+name = "templates2"
+path = "exercises/12_templates1/templates2.cpp"
+mode = "run"
+hints = [
+  "Prefix the class with template <typename T>, rename to Stack, and replace every `int` that means \"the element type\" with T (the vector member too).",
+  "top() returning const T& avoids copying a whole std::string per peek. Inside the class body you can write Stack — it already means Stack<T>.",
+]
+
+[[exercises]]
+name = "templates3"
+path = "exercises/12_templates1/templates3.cpp"
+mode = "run"
+hints = [
+  "std::vector<T>::const_iterator depends on T, so the compiler assumes it's NOT a type. Say `typename std::vector<T>::const_iterator it = ...`.",
+  "Then enjoy the modern fix: `auto it = v.begin();` — no dependent type name, no keyword, same iterator.",
+]
+
+[[exercises]]
+name = "templates4"
+path = "exercises/12_templates1/templates4.cpp"
+mode = "run"
+hints = [
+  "Write a full specialization: template <> struct Formatter<bool> { ... }; — it replaces the generic recipe entirely for bool.",
+  "static std::string format(bool value) { return value ? \"yes\" : \"no\"; } — note the specialization must re-declare format; nothing is inherited from the generic template.",
+]
+
+[[exercises]]
+name = "templates5"
+path = "exercises/12_templates1/templates5.cpp"
+mode = "run"
+hints = [
+  "Read the error bottom-up: the 'requested here' chain ends at YOUR join_lines(log) call; the top says no operator<< for LogEntry. The template is fine — your type is missing an operation.",
+  "Add a hidden friend inside LogEntry: friend std::ostream& operator<<(std::ostream& os, const LogEntry& e) { return os << e.level << \": \" << e.message; }",
+]
+
+[[exercises]]
+name = "templates6"
+path = "exercises/12_templates1/templates6.cpp"
+mode = "run"
+hints = [
+  "Arrays decay to pointers at function calls, so sizeof(xs) inside is sizeof(int*). A reference-to-array parameter doesn't decay: T (&)[N].",
+  "template <typename T, std::size_t N> constexpr std::size_t count(T (&)[N]) { return N; } — then uncomment the static_assert block. (Real code: std::size, C++17.)",
+]
+
+# -------------------------------------------------------------- 13_lambdas
+
+[[exercises]]
+name = "lambdas1"
+path = "exercises/13_lambdas/lambdas1.cpp"
+mode = "run"
+hints = [
+  "Mirror ScaleBy: the member is the capture, operator()'s parameter list is the lambda's. [factor](int v) { return v * factor; }",
+  "auto scale = [factor](int v) { return v * factor; }; — auto is required: the closure's type has no spellable name.",
+]
+
+[[exercises]]
+name = "lambdas2"
+path = "exercises/13_lambdas/lambdas2.cpp"
+mode = "run"
+hints = [
+  "Value captures copy AT CREATION: frozen() == 100. Reference captures read at call time: live() == 250.",
+  "record_taking needs to mutate the real stock → capture by reference: [&stock](int n) { return stock -= n; }",
+]
+
+[[exercises]]
+name = "lambdas3"
+path = "exercises/13_lambdas/lambdas3.cpp"
+mode = "run"
+hints = [
+  "operator() is const by default — ++id on a value capture won't compile. Add `mutable` between the parameter list and the body.",
+  "[id = 100]() mutable { return ++id; } — and the copy takes the CURRENT state with it: copied at 102, so fresh_copy() == 103 (independently of the original's 103).",
+]
+
+[[exercises]]
+name = "lambdas4"
+path = "exercises/13_lambdas/lambdas4.cpp"
+mode = "run"
+hints = [
+  "ASan says heap-use-after-free: push_back reallocated the vector, the old buffer was freed, and the closure's reference still points into it.",
+  "Snapshot by VALUE: [first = prices[0]]() { return first; } — an init-capture copy taken before the growth, immune to reallocation.",
+]
+
+[[exercises]]
+name = "lambdas5"
+path = "exercises/13_lambdas/lambdas5.cpp"
+mode = "run"
+hints = [
+  "Longest first: [](const auto& a, const auto& b) { return a.size() > b.size(); } — the comparator answers \"does a come before b?\".",
+  "count_if predicate: [](const auto& w) { return w.size() > 4; } — \"watermelon\" and \"banana\" pass.",
+]
+
+[[exercises]]
+name = "lambdas6"
+path = "exercises/13_lambdas/lambdas6.cpp"
+mode = "run"
+hints = [
+  "Sizes: captureless closure is an empty class → 1. One int captured → sizeof(int) == 4. You pay for exactly what you capture.",
+  "A capturing lambda can't become a function pointer. Make the slot type-erased: std::function<int(int)> g_handler; void store_handler(std::function<int(int)> h) { g_handler = std::move(h); }",
+]
+
+# ------------------------------------------------------------ 14_templates2
+
+[[exercises]]
+name = "concepts1"
+path = "exercises/14_templates2/concepts1.cpp"
+mode = "run"
+hints = [
+  "template <typename T> concept Numeric = std::integral<T> || std::floating_point<T>; then constrain: template <Numeric T> T average(...)",
+  "Recompile WITHOUT deleting the string call first — read the new error: short, at the call site, names the concept. Then delete that call; it was never meant to work.",
+]
+
+[[exercises]]
+name = "concepts2"
+path = "exercises/14_templates2/concepts2.cpp"
+mode = "run"
+hints = [
+  "Shape: concept Renderable = requires(T t) { { t.render() } -> ...; { t.layer() } -> ...; };",
+  "render: std::convertible_to<std::string> (Backdrop's const char* must pass). layer: std::same_as<int> (so Glitch's double fails). Exactly those two; extra requirements break Backdrop.",
+]
+
+[[exercises]]
+name = "concepts3"
+path = "exercises/14_templates2/concepts3.cpp"
+mode = "run"
+hints = [
+  "Add two overloads: template <std::integral T> std::string describe(T) { return \"a whole number\"; } and the floating_point twin.",
+  "No enable_if, no tag dispatch: a constrained template automatically beats the unconstrained one when its concept is satisfied.",
+]
+
+[[exercises]]
+name = "variadic1"
+path = "exercises/14_templates2/variadic1.cpp"
+mode = "run"
+hints = [
+  "sum: return (0 + ... + args); — the binary fold's 0 seed makes the empty call legal. count_args: return sizeof...(Ts);",
+  "all_positive: return ((args > 0) && ...); — fold the comparisons, not the values. An empty && fold is true by definition.",
+]
+
+[[exercises]]
+name = "variadic2"
+path = "exercises/14_templates2/variadic2.cpp"
+mode = "run"
+hints = [
+  "Comma fold over a statement: ((/* per-element work */), ...). Track the first element with a bool you flip inside the fold.",
+  "std::string out; bool first = true; ((out += (first ? \"\" : sep), out += piece(args), first = false), ...); return out;",
+]
+
+[[exercises]]
+name = "ctad1"
+path = "exercises/14_templates2/ctad1.cpp"
+mode = "run"
+hints = [
+  "p is std::pair<int, double>; v is std::vector<int> — CTAD reads the constructor arguments.",
+  "The guide goes at namespace scope, after Box: `Box(const char*) -> Box<std::string>;` — construction from a C string now deduces a string Box.",
+]
+
+[[exercises]]
+name = "ifconstexpr1"
+path = "exercises/14_templates2/ifconstexpr1.cpp"
+mode = "run"
+hints = [
+  "A regular if compiles BOTH branches for every T — `*value` with T=int is an error even though that branch never runs. The branch must be DISCARDED at compile time.",
+  "Change both branch points to `if constexpr (...)` / `else if constexpr (...)`. The nullptr check inside the pointer branch stays a plain runtime if.",
+]
+
+# --------------------------------------------------------- 15_strings_views
+
+[[exercises]]
+name = "strings1"
+path = "exercises/15_strings_views/strings1.cpp"
+mode = "run"
+hints = [
+  "\"cat\" fits in the SSO buffer → data() points inside the object: true. 100 chars don't → heap: false.",
+  "Even an empty string has capacity > 0 — the SSO buffer is part of the object: true.",
+]
+
+[[exercises]]
+name = "strings2"
+path = "exercises/15_strings_views/strings2.cpp"
+mode = "run"
+hints = [
+  "Change both the parameter and return type to std::string_view; rfind/substr/npos all exist on string_view with the same spelling (use std::string_view::npos).",
+  "string_view::substr returns another view into the SAME characters — no allocation. That's what the failing pointer-range assert demands: ext.data() must land inside doc's own buffer.",
+]
+
+[[exercises]]
+name = "strings3"
+path = "exercises/15_strings_views/strings3.cpp"
+mode = "run"
+hints = [
+  "ASan: heap-use-after-free. make_header()'s temporary string died at the semicolon; `name` views its freed buffer. first_word is innocent — the COMPOSITION is the bug.",
+  "Name the owner first: std::string header = make_header(); then std::string_view name = first_word(header); — views into a living lvalue are fine.",
+]
+
+[[exercises]]
+name = "strings4"
+path = "exercises/15_strings_views/strings4.cpp"
+mode = "run"
+hints = [
+  "int value{}; auto [ptr, ec] = std::from_chars(text.data(), text.data() + text.size(), value); — check ec != std::errc{} → -1.",
+  "Then two more rejections: ptr != end means trailing junk; from_chars on int parses '-' fine, so range-check value < 0 || value > 65535 → -1.",
+]
+
+# ------------------------------------------------------------ 16_containers
+
+[[exercises]]
+name = "vector1"
+path = "exercises/16_containers/vector1.cpp"
+mode = "run"
+hints = [
+  "ASan heap-use-after-free: 1000 push_backs reallocated several times; `baseline` points into the first, long-freed buffer.",
+  "samples.reserve(1001); before any push_back — one allocation, no growth, pointers stable. Then uncomment the capacity assert.",
+]
+
+[[exercises]]
+name = "vector2"
+path = "exercises/16_containers/vector2.cpp"
+mode = "run"
+hints = [
+  "erase(it) shifts the next element INTO it's slot; the loop's ++it then jumps over it. Consecutive failures (55,58 and 40,45) expose it: 58 and 45 survive.",
+  "Loop without ++ in the header: if (*it < 60) it = grades.erase(it); else ++it; — or replace the whole function with std::erase_if(grades, [](int g){ return g < 60; }) (C++20).",
+]
+
+[[exercises]]
+name = "map1"
+path = "exercises/16_containers/map1.cpp"
+mode = "run"
+hints = [
+  "scores[name] on a missing name INSERTS {name, 0} — your \"ghost\" query grew the map to 3 and the size assert fails.",
+  "Take const std::map<...>& (operator[] won't compile on const — good). Then auto it = scores.find(name); return it != scores.end() && it->second >= 60;",
+]
+
+[[exercises]]
+name = "map2"
+path = "exercises/16_containers/map2.cpp"
+mode = "run"
+hints = [
+  "operator[] overwrites. First-writer-wins is exactly try_emplace: settings.try_emplace(key, value); — no-op when the key exists.",
+  "insert reports: fresh1 == true (port was new), fresh2 == false (refused), and it2->second == \"8080\" — the FIRST value survived.",
+]
+
+[[exercises]]
+name = "span1"
+path = "exercises/16_containers/span1.cpp"
+mode = "run"
+hints = [
+  "Delete all three overloads; write int sum(std::span<const int> xs) with the same range-for body. vector, std::array, and the C array all convert implicitly.",
+  "Update nothing at the call sites except the name — that's the point. subspan(offset, count) gives the windowed view for the last assert.",
+]
+
+[[exercises]]
+name = "containers1"
+path = "exercises/16_containers/containers1.cpp"
+mode = "run"
+hints = [
+  "vector growth reallocates → the element MOVED → false. map is node-based → never moves → true.",
+  "unordered_map rehash rebuilds the bucket array but the NODES stay put: pointers/references survive (true) — it's only the ITERATORS that die.",
+]
+
+# ------------------------------------------------------------ 17_algorithms
+
+[[exercises]]
+name = "algos1"
+path = "exercises/17_algorithms/algos1.cpp"
+mode = "run"
+hints = [
+  "total_weight: std::accumulate(weights.begin(), weights.end(), 0.0) — the 0.0 matters; an int 0 makes the whole accumulation int (the shipped bug, in algorithm form).",
+  "heaviest: auto it = std::max_element(begin, end); guard it == end() for empty. carries: std::find(begin, end, exact) != end.",
+]
+
+[[exercises]]
+name = "algos2"
+path = "exercises/17_algorithms/algos2.cpp"
+mode = "run"
+hints = [
+  "std::remove only shifts keepers forward and returns the new logical end — it can't shrink a container it can't see. The size never changed, so `dropped` is 0.",
+  "C++20: return std::erase(readings, 0); — done, count included. Classic: auto tail = std::remove(...); then readings.erase(tail, readings.end()).",
+]
+
+[[exercises]]
+name = "algos3"
+path = "exercises/17_algorithms/algos3.cpp"
+mode = "run"
+hints = [
+  "binary_search demands SORTED input and nobody sorted. Add std::sort(scores.begin(), scores.end()); before the searches.",
+  "rank_position: auto it = std::lower_bound(begin, end, score); return it - begin; — lower_bound IS the insertion-point finder.",
+]
+
+[[exercises]]
+name = "algos4"
+path = "exercises/17_algorithms/algos4.cpp"
+mode = "run"
+hints = [
+  "transform writes through its destination iterator — out.begin() on an empty vector is writing into nothing. Use std::back_inserter(out) (and reserve first).",
+  "hottest: std::accumulate(temps.begin(), temps.end(), floor, [](double a, double b) { return std::max(a, b); });",
+]
+
+# ---------------------------------------------------------------- 18_ranges
+
+[[exercises]]
+name = "ranges1"
+path = "exercises/18_ranges/ranges1.cpp"
+mode = "run"
+hints = [
+  "Projection, not comparator: std::ranges::sort(people, {}, &Person::age); — the {} is the default std::less, applied to the projected ages.",
+  "Same pattern twice more: std::ranges::max_element(people, {}, &Person::age) and std::ranges::count(people, 36, &Person::age).",
+]
+
+[[exercises]]
+name = "ranges2"
+path = "exercises/18_ranges/ranges2.cpp"
+mode = "run"
+hints = [
+  "Building a pipeline runs nothing: 0. Consuming one element transforms one element: 1.",
+  "The full pass transforms the 3 paid orders — views recompute, they don't cache results — so the final count is 1 + 3 = 4.",
+]
+
+[[exercises]]
+name = "ranges3"
+path = "exercises/18_ranges/ranges3.cpp"
+mode = "run"
+hints = [
+  "Order matters: square FIRST, then filter on the square's last digit, then bound it: | transform(n*n) | filter(sq % 10 == 6) | take(k).",
+  "auto pipeline = std::views::iota(1) | std::views::transform([](int n){ return n*n; }) | std::views::filter([](int sq){ return sq % 10 == 6; }) | std::views::take(k);",
+]
+
+[[exercises]]
+name = "ranges4"
+path = "exercises/18_ranges/ranges4.cpp"
+mode = "run"
+hints = [
+  "Read the error: `best` is std::ranges::dangling — the library refused to hand you an iterator into a temporary that died at the semicolon.",
+  "std::vector<int> scores = load_scores(); auto best = std::ranges::max_element(scores); — an lvalue owner makes the iterator safe (and the dangling type vanishes).",
+]
+
+# ------------------------------------------------------ 19_vocabulary_types
+
+[[exercises]]
+name = "optional1"
+path = "exercises/19_vocabulary_types/optional1.cpp"
+mode = "run"
+hints = [
+  "Return type: std::optional<std::size_t>. Found → return i; (converts). Not found → return std::nullopt;",
+  "The call sites already compile against the optional API — has_value(), *, value_or, and the if(auto x = ...) bool test. Only the function changes.",
+]
+
+[[exercises]]
+name = "optional2"
+path = "exercises/19_vocabulary_types/optional2.cpp"
+mode = "run"
+hints = [
+  "*r on an empty optional is UB — not a throw, not a check, just garbage. The documented-default case is value_or: return lookup(\"retries\").value_or(3);",
+  ".value() on empty THROWS bad_optional_access — so the last quiz answer is threw == true. (* is the unchecked accessor, value() the checked one.)",
+]
+
+[[exercises]]
+name = "variant1"
+path = "exercises/19_vocabulary_types/variant1.cpp"
+mode = "run"
+hints = [
+  "std::get<int> on a variant currently holding a string throws bad_variant_access. Check before you reach: get_if returns a pointer or nullptr.",
+  "if (const int* n = std::get_if<int>(&input)) return \"number \" + std::to_string(*n); — else it must be the string: return \"word \" + std::get<std::string>(input);",
+]
+
+[[exercises]]
+name = "variant2"
+path = "exercises/19_vocabulary_types/variant2.cpp"
+mode = "run"
+hints = [
+  "std::visit requires the visitor to handle EVERY alternative — the missing Rect and Triangle lambdas are exactly what the (long) error is about.",
+  "Add [](const Rect& r) { return r.w * r.h; } and [](const Triangle& t) { return t.base * t.height / 2; } to the overloaded{...} list. All three must return double.",
+]
+
+[[exercises]]
+name = "tuple1"
+path = "exercises/19_vocabulary_types/tuple1.cpp"
+mode = "run"
+hints = [
+  "Return std::tuple<int, int, double> and extend the loop: track hi alongside lo, accumulate a double sum, return {lo, hi, sum / v.size()}.",
+  "Mind the mean: sum must be double (or cast before dividing) — int division would say 16 only by luck; (12+7+41+12+8)=80, 80/5=16 exactly, but make it principled.",
+]
+
+[[exercises]]
+name = "vocab1"
+path = "exercises/19_vocabulary_types/vocab1.cpp"
+mode = "run"
+hints = [
+  "1: false (empty until assigned). 2: true. 3: false — any_cast wants the EXACT type; int≠long, no promotions apply (unlike modules 01/04!).",
+  "4: true — the value form of any_cast throws bad_any_cast on mismatch (the pointer form returns nullptr instead).",
+]
+
+# ----------------------------------------------------------------- 20_errors
+
+[[exercises]]
+name = "errors1"
+path = "exercises/20_errors/errors1.cpp"
+mode = "run"
+hints = [
+  "catch (std::exception e) COPIES the ConfigError into a plain std::exception — sliced (module 11), and what() reverts to the base's useless default.",
+  "catch (const std::exception& e) — by const reference: the original object, virtual what() intact. Throw by value, catch by const ref, always.",
+]
+
+[[exercises]]
+name = "errors2"
+path = "exercises/20_errors/errors2.cpp"
+mode = "run"
+hints = [
+  "When send_packet throws, unwinding skips close_conn — only DESTRUCTORS of locals run. The connection must live in an object whose destructor closes it.",
+  "Exactly like deleter1: struct ConnCloser { void operator()(Connection* c) const { close_conn(c); } }; then std::unique_ptr<Connection, ConnCloser> conn(open_conn()); and pass conn.get().",
+]
+
+[[exercises]]
+name = "errors3"
+path = "exercises/20_errors/errors3.cpp"
+mode = "run"
+hints = [
+  "The process dies via std::terminate: stoi's exception hit the noexcept barrier and was never allowed to reach main's catch.",
+  "Delete the noexcept — this function's job includes a throwing callee and bad input is expected. Then uncomment the static_assert; !noexcept(call) is now true.",
+]
+
+[[exercises]]
+name = "errors4"
+path = "exercises/20_errors/errors4.cpp"
+mode = "run"
+hints = [
+  "The shipped code mutates items_ and total_weight_ BEFORE validating — the throw leaves the feather half-loaded (basic guarantee at best).",
+  "Strong-guarantee recipe: copy items_ and the weight into locals, do all push_backs and the validation on those, and only then commit: items_ = std::move(new_items); total_weight_ = new_weight;",
+]
+
+[[exercises]]
+name = "errors5"
+path = "exercises/20_errors/errors5.cpp"
+mode = "run"
+hints = [
+  "Running out of tokens is the EXPECTED end of every parse — that's optional territory, not exception territory. Return std::optional<std::string>, return std::nullopt when empty.",
+  "count_tokens collapses to: while (t.next_token()) ++n; — the optional's bool conversion is the loop condition. Delete the try/catch entirely.",
+]
+
+# ------------------------------------------------------- 21_value_categories
+
+[[exercises]]
+name = "valcat1"
+path = "exercises/21_value_categories/valcat1.cpp"
+mode = "run"
+hints = [
+  "decltype((expr)): lvalue → int&, prvalue → int, xvalue → int&&. Names, *p, and arr[1] are all lvalues → int&. x + 1 computes a fresh value → int.",
+  "++x increments and hands back THE OBJECT → int& (lvalue). x++ hands back a copy of the old value → int (prvalue). std::move(x) → int&& (xvalue).",
+]
+
+[[exercises]]
+name = "valcat2"
+path = "exercises/21_value_categories/valcat2.cpp"
+mode = "run"
+hints = [
+  "\"Expression is not assignable\": the call is a prvalue because the function returns int by value. Assignment needs an lvalue.",
+  "Change the return type to int&: `int& brightest_pixel(...)`. The returned reference aliases image[best] inside the CALLER's vector — that's what makes the assignments stick.",
+]
+
+[[exercises]]
+name = "valcat3"
+path = "exercises/21_value_categories/valcat3.cpp"
+mode = "run"
+hints = [
+  "ASan heap-use-after-free: the Reading temporary died at the semicolon — extension does NOT survive passage through pick_name's return.",
+  "Bind the member directly: const std::string& name = make_reading().sensor_name; — direct subobject binding extends the WHOLE temporary to name's scope.",
+]
+
+[[exercises]]
+name = "valcat4"
+path = "exercises/21_value_categories/valcat4.cpp"
+mode = "run"
+hints = [
+  "The vector parameter is BY VALUE — a copy that dies at the function's closing brace, taking the referenced string's buffer with it (ASan shows the free inside ~vector).",
+  "const std::vector<std::string>& names — reference in, reference out. The returned reference then aliases crew[1] itself, which the address assert confirms.",
+]
+
+[[exercises]]
+name = "valcat5"
+path = "exercises/21_value_categories/valcat5.cpp"
+mode = "run"
+hints = [
+  "Ref-qualify the accessor into a pair: `Tracker result() const& { return result_; }` and `Tracker result() && { return std::move(result_); }`.",
+  "Lvalue parser → const& overload → copy (case 1). Temporary parser → && overload → donate via std::move(result_) — moving a member of an expiring *this is the legitimate return-move (the move4 exception).",
+]
+
+# -------------------------------------------------------- 22_ub_sanitizers
+
+[[exercises]]
+name = "ub1"
+path = "exercises/22_ub_sanitizers/ub1.cpp"
+mode = "run"
+hints = [
+  "UBSan: \"signed integer overflow: 1500000000 + 2000000000\". The SUM overflows even though the midpoint fits comfortably.",
+  "return lo + (hi - lo) / 2; — hi - lo can't overflow when lo <= hi. (C++20 added std::midpoint to <numeric> because of this exact bug.)",
+]
+
+[[exercises]]
+name = "ub2"
+path = "exercises/22_ub_sanitizers/ub2.cpp"
+mode = "run"
+hints = [
+  "ASan heap-buffer-overflow: the loop's <= reads v[v.size()], one past the end. Make it <.",
+  "For the untrusted index: return v.at(user_index); — bounds-checked, throws std::out_of_range, which the test expects to catch.",
+]
+
+[[exercises]]
+name = "ub3"
+path = "exercises/22_ub_sanitizers/ub3.cpp"
+mode = "run"
+hints = [
+  "ASan stack-use-after-scope, naming `score`: each iteration's score dies at the iteration's end, and `best` kept its address.",
+  "Track the VALUE: int best; bool found; update best = score when it wins. (An index into `entries` works too — entries outlives the loop.)",
+]
+
+[[exercises]]
+name = "ub4"
+path = "exercises/22_ub_sanitizers/ub4.cpp"
+mode = "run"
+hints = [
+  "UBSan: \"load of misaligned address ... for type 'const uint32_t', which requires 4 byte alignment\" — packet + 1 can't hold an aligned u32. The cast also violates strict aliasing.",
+  "std::uint32_t value; std::memcpy(&value, packet + 1, sizeof(value)); return value; — legal for any alignment, and optimizers turn it into a single load.",
+]
+
+[[exercises]]
+name = "ub5"
+path = "exercises/22_ub_sanitizers/ub5.cpp"
+mode = "run"
+hints = [
+  "UBSan: \"division by zero\" — the threshold-100 call matches nothing, so count is 0. (Float division would give inf; INTEGER division is UB.)",
+  "return count == 0 ? 0 : sum / count; — the empty case needs an explicit answer. (Returning optional<int> is the richer design — module 19.)",
+]
+
+[[exercises]]
+name = "ub6"
+path = "exercises/22_ub_sanitizers/ub6.cpp"
+mode = "run"
+hints = [
+  "Two UBSan reports to earn: 1<<31 can't be represented in int (the literal 1 is an int!), and a shift by 32+ exceeds int's width entirely.",
+  "Build the mask in the right type from the start: return std::uint64_t{1} << bit; — unsigned and 64 bits wide makes every bit in [0,64) legal.",
+]
+
+# --------------------------------------------------------- 23_memory_layout
+
+[[exercises]]
+name = "layout1"
+path = "exercises/23_memory_layout/layout1.cpp"
+mode = "run"
+hints = [
+  "alignof(double) == 8, so `value` lands at offset 8 (7 bytes of padding after tag); total size 24.",
+  "Packed: declare double value; int count; char tag; char flag; — 8+4+1+1, +2 tail padding = 16.",
+]
+
+[[exercises]]
+name = "layout2"
+path = "exercises/23_memory_layout/layout2.cpp"
+mode = "run"
+hints = [
+  "The lane sits at offset 4 — a heap Packet can never make that 16-aligned. Demand it: `alignas(16) float lane[4];` (padding moves it to offset 16, and `new` honors the raised alignment).",
+  "CacheLineSlot: alignof == 64 AND sizeof == 64 — sizeof always rounds up to the alignment so arrays keep the promise.",
+]
+
+[[exercises]]
+name = "layout3"
+path = "exercises/23_memory_layout/layout3.cpp"
+mode = "run"
+hints = [
+  "Construct into the storage: return new (storage_) Session(user); — placement new runs the constructor at that address, no allocation.",
+  "Destroy explicitly: s->~Session(); — placement-new'd objects are YOUR responsibility; nothing else will ever run that destructor.",
+]
+
+[[exercises]]
+name = "layout4"
+path = "exercises/23_memory_layout/layout4.cpp"
+mode = "run"
+hints = [
+  "[[no_unique_address]] ByStart cmp; — the empty member may now overlap, taking zero bytes; Timeline shrinks to ptr + size_t = 16.",
+  "Quiz: sizeof(Empty) == 1 (objects need addresses), sizeof(Holder) == 2 (e at offset 0, c at offset 1 — no attribute, no overlap).",
+]
+
+[[exercises]]
+name = "layout5"
+path = "exercises/23_memory_layout/layout5.cpp"
+mode = "run"
+hints = [
+  "tiny: 0 (SSO). big: 1. shared_ptr(new int): 2 — the int, then the control block. make_shared: 1, fused.",
+  "make_report: out.reserve(k); before the loop — the 1→2→4→8 growth chain collapses to a single allocation and the final assert holds.",
+]
+
+# ----------------------------------------------------------- 24_compile_time
+
+[[exercises]]
+name = "ct1"
+path = "exercises/24_compile_time/ct1.cpp"
+mode = "run"
+hints = [
+  "Gate the template: static_assert(std::is_trivially_copyable_v<T>, \"...\"); as write_binary's first line — the error now names the real problem at the call.",
+  "Then make SaveGame earn the trait: replace std::string player with char player[16]; — the aggregate init and strcmp already expect it.",
+]
+
+[[exercises]]
+name = "ct2"
+path = "exercises/24_compile_time/ct2.cpp"
+mode = "run"
+hints = [
+  "Three loops after filling with 255: for (char c = '0'; c <= '9'; ++c) t[c] = c - '0'; and the same shape for 'a'-'f' and 'A'-'F' with + 10.",
+  "Everything must be constexpr-legal — it already is. If a static_assert fails, your table has a hole at exactly that character.",
+]
+
+[[exercises]]
+name = "ct3"
+path = "exercises/24_compile_time/ct3.cpp"
+mode = "run"
+hints = [
+  "std::vector<int> v(values); std::sort(v.begin(), v.end()); return v[v.size() / 2]; — all three steps are constexpr-legal in C++20.",
+  "The vector lives and dies inside the call — only the int escapes. That's the rule that makes compile-time containers work.",
+]
+
+[[exercises]]
+name = "ct4"
+path = "exercises/24_compile_time/ct4.cpp"
+mode = "run"
+hints = [
+  "template <RingConfig Cfg> class RingBuffer { ... }; — delete the constructor and the cfg_ member; refer to Cfg.capacity / Cfg.overwrite_when_full directly.",
+  "The payoff line: int data_[Cfg.capacity]; — exactly sized at compile time. (main's RingBuffer<RingConfig{...}> syntax already expects the NTTP.)",
+]
+
+[[exercises]]
+name = "ct5"
+path = "exercises/24_compile_time/ct5.cpp"
+mode = "run"
+hints = [
+  "if constexpr's condition is itself constant-evaluated — so is_constant_evaluated() answers yes ALWAYS, and the runtime branch is dead in every build (clang's -Wconstant-evaluated says exactly this).",
+  "Delete the `constexpr`: a PLAIN `if (std::is_constant_evaluated())` is evaluated when the function actually runs — 'c' path at compile time, 'r' at runtime. (C++23: `if consteval`.)",
+]
+
+# ------------------------------------------------------------ 25_concurrency
+
+[[exercises]]
+name = "conc1"
+path = "exercises/25_concurrency/conc1.cpp"
+mode = "run"
+hints = [
+  "std::terminate fired because the std::thread vector was destroyed while its threads were joinable — every thread needs join() or detach() before destruction.",
+  "Best fix: std::vector<std::jthread> in its own { scope } before the totaling loop — jthread (C++20) joins in its destructor, so leaving the scope IS the wait.",
+]
+
+[[exercises]]
+name = "conc2"
+path = "exercises/25_concurrency/conc2.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "TSan: \"data race ... write of size 4 ... by thread T2\" — ++hits is load/add/store, and two threads interleave it, vaporizing increments.",
+  "std::atomic<int> hits{0}; — ++ on an atomic is one indivisible read-modify-write. (For anything bigger than one variable, see conc3.)",
+]
+
+[[exercises]]
+name = "conc3"
+path = "exercises/25_concurrency/conc3.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "Two threads push_back into one vector: size bookkeeping, element writes, and reallocation all race. A vector is not an atomic object — this is mutex work.",
+  "std::mutex log_mutex; then around just the push_back: { std::lock_guard lk(log_mutex); event_log.push_back(std::move(entry)); } — keep the string-building outside the lock.",
+]
+
+[[exercises]]
+name = "conc4"
+path = "exercises/25_concurrency/conc4.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "t1 holds alice's mutex wanting bob's; t2 holds bob's wanting alice's — the timeout you just saw is a deadlock. Opposite acquisition orders are the cause.",
+  "Replace both lock_guards with one std::scoped_lock lk(from.m, to.m); — it acquires multiple mutexes deadlock-free (that's why C++17 added it).",
+]
+
+[[exercises]]
+name = "conc5"
+path = "exercises/25_concurrency/conc5.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "A lost wakeup: notify_one() fired ~100ms before the consumer reached wait() — a notify with no waiter evaporates, and the bare wait() sleeps forever.",
+  "cv.wait(lk, [] { return ready; }); — the predicate overload checks BEFORE sleeping (ready is already true → no sleep) and rechecks after every wake (spurious wakeups handled too). Never wait without a predicate.",
+]
+
+[[exercises]]
+name = "conc6"
+path = "exercises/25_concurrency/conc6.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "The bool flag is a data race (TSan's report) — and even a non-racing flag wouldn't promise the PAYLOAD is visible: writes can be reordered across it.",
+  "std::atomic<bool> ready{false}; writer: ready.store(true, std::memory_order_release); reader: while (!ready.load(std::memory_order_acquire)) {} — release/acquire makes the payload write happen-before the reader's use.",
+]
+
+[[exercises]]
+name = "conc7"
+path = "exercises/25_concurrency/conc7.cpp"
+mode = "run"
+hints = [
+  "auto front = std::async(std::launch::async, range_sum, std::cref(v), std::size_t{0}, mid); then return front.get() + back; — explicit policy, or it may run lazily on get().",
+  "After get(), the future is spent: valid() == false. (One result, moved out, one time.)",
+]
+
+# --------------------------------------------------------- 26_modern_extras
+
+[[exercises]]
+name = "extras1"
+path = "exercises/26_modern_extras/extras1.cpp"
+mode = "run"
+hints = [
+  "Return std::chrono::milliseconds: auto delay = 100ms * (1 << attempt); — the unit rides in the type, and the assert's 100ms compares directly.",
+  "Cap with std::min<std::chrono::milliseconds>(delay, 3s) — 3s converts to ms losslessly (implicit); only LOSSY directions need duration_cast.",
+]
+
+[[exercises]]
+name = "extras2"
+path = "exercises/26_modern_extras/extras2.cpp"
+mode = "run"
+hints = [
+  "rotated_name: log.parent_path() / (log.stem().string() + \".1\" + log.extension().string()) — stem is 'app', extension is '.log' (dot included).",
+  "Quiz: \".log\" / \"app.2026\" / \"/data/logs\"; dotfiles have NO extension (all stem); joined is \"/usr/local/bin\"; an absolute right operand REPLACES: \"/etc\".",
+]
+
+[[exercises]]
+name = "extras3"
+path = "exercises/26_modern_extras/extras3.cpp"
+mode = "run"
+hints = [
+  "std::format(\"{} -> {}: {:>8.2f} MB ({}%)\", from, to, mb, percent) — right-aligned, width 8, 2 decimals.",
+  "Warm-ups: \"    42\" (width 6), \"0x002a\" (#=prefix, 0-pad to 6), \"|core|\" (positional {0} reused).",
+]
+
+[[exercises]]
+name = "extras4"
+path = "exercises/26_modern_extras/extras4.cpp"
+mode = "run"
+hints = [
+  "After yielding n, loop until 1: while (n != 1) { n = (n % 2 == 0) ? n / 2 : 3 * n + 1; co_yield n; } — each co_yield suspends with all locals preserved.",
+  "Mind the trivial case: collatz(1) must yield exactly one value (the leading co_yield n covers it) and then fall off the end — return_void, done.",
+]
+
+[[exercises]]
+name = "extras5"
+path = "exercises/26_modern_extras/extras5.cpp"
+mode = "run"
+hints = [
+  "silent == 3 (truncation, module 01). promotion: true. elision: 0 copies (module 09). const move: 1 copy (module 09's trap).",
+  "unique_ptr pointer-sized: true (module 10). reserved-capacity pushes don't reallocate: true (module 16). Congratulations — go build something.",
+]
