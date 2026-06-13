@@ -22,8 +22,6 @@
 // returns the middle element. Compile-time callers below, runtime
 // caller at the bottom.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <initializer_list>
@@ -44,3 +42,5 @@ int main() {
     assert(median_of({sensor_a, sensor_b, sensor_c}) == 11);
     return 0;
 }
+
+// I AM NOT DONE

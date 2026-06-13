@@ -22,8 +22,6 @@
 // Task: replace the pointer version with the template. The static_assert
 // proves the count is now a compile-time constant.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -43,3 +41,5 @@ int main() {
     // assert(sizeof(copy) == sizeof(readings));
     return 0;
 }
+
+// I AM NOT DONE

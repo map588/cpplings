@@ -20,8 +20,6 @@
 //
 // Task: Version isn't comparable at all yet. Make it so — with one line.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <compare>   // the orderings live here (C++20)
 
@@ -44,3 +42,5 @@ int main() {
     assert(v1_10_0 >= v1_2_3);
     return 0;
 }
+
+// I AM NOT DONE

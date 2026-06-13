@@ -25,8 +25,6 @@
 // Task: fix main() — keep the header alive in a named std::string
 // before taking views into it.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <string_view>
@@ -50,3 +48,5 @@ int main() {
     assert(name.size() == 40);
     return 0;
 }
+
+// I AM NOT DONE

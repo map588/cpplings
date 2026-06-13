@@ -20,8 +20,6 @@
 // pattern: each thread writes ITS OWN slot, no sharing, no lock needed
 // — the parallel-sum shape you'll use everywhere.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <thread>
@@ -63,3 +61,5 @@ int main() {
     assert(word_total(docs) == 9);
     return 0;
 }
+
+// I AM NOT DONE

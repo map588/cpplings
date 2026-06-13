@@ -20,8 +20,6 @@
 //
 // Task: convert GradeBook to the rule of zero. main() must not change.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -59,3 +57,5 @@ int main() {
 
     return 0;
 }
+
+// I AM NOT DONE

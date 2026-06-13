@@ -20,8 +20,6 @@
 // Task: next_ticket() is supposed to hand out 1, 2, 3, ... but its counter
 // is reborn as 0 on every call. One keyword.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 int next_ticket() {
@@ -35,3 +33,5 @@ int main() {
     assert(next_ticket() == 3);
     return 0;
 }
+
+// I AM NOT DONE

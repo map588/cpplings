@@ -11,8 +11,6 @@
 //   C++23: std::print, std::expected, std::generator, deducing this —
 //   the next vintage. You now know how to read its release notes.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -76,3 +74,5 @@ int main() {
     (void)t; (void)thief;
     return 0;                                // — fin. Now go read a
 }                                            // real codebase. 🎓
+
+// I AM NOT DONE

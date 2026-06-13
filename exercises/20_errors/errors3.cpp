@@ -25,8 +25,6 @@
 // Task: fix the promise (don't fix stoi — garbage input is a legitimate
 // runtime condition here). Make the static_assert at the bottom agree.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -50,3 +48,5 @@ int main() {
     //               "parse_quantity may throw — it must not claim otherwise");
     return 0;
 }
+
+// I AM NOT DONE

@@ -25,8 +25,6 @@
 //
 // Task: turn this file's definition into a declaration.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 int hit_count;        // oops: a second definition
@@ -39,3 +37,5 @@ int main() {
     assert(hit_count == 3);   // must observe the OTHER file's increments
     return 0;
 }
+
+// I AM NOT DONE

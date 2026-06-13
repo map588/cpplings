@@ -25,8 +25,6 @@
 //
 // Task: one word to change.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <utility>
@@ -52,3 +50,5 @@ int main() {
     assert(vault[0] == original && vault[1] == original);
     return 0;
 }
+
+// I AM NOT DONE

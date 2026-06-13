@@ -14,8 +14,6 @@
 // Task: fill in the TODO values (the creation-time rule answers both),
 // then write record_taking — it must MUTATE `stock` through a capture.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 constexpr int TODO = -1;
@@ -44,3 +42,5 @@ int main() {
     assert(stock == 3);                  // the original must have changed
     return 0;
 }
+
+// I AM NOT DONE

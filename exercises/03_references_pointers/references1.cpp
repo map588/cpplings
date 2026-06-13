@@ -14,8 +14,6 @@
 // Task: fix the broken declaration, then fill in the TODO values.
 // Predict before you run.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 constexpr int TODO = -1;
@@ -38,3 +36,5 @@ int main() {
     assert(ra == TODO);   // ra aliases a, which is now...
     return 0;
 }
+
+// I AM NOT DONE

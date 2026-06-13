@@ -21,8 +21,6 @@
 // Task: Profile::set_tag is the const&-and-copy version. The counters in
 // main demand sink behavior. Convert it.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 
@@ -66,3 +64,5 @@ int main() {
     assert(Tag::moves == 1);
     return 0;
 }
+
+// I AM NOT DONE

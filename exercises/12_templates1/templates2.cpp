@@ -19,8 +19,6 @@
 // Task: IntStack works, but main also wants a stack of strings.
 // Templatize it (and rename it Stack).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <vector>
@@ -54,3 +52,5 @@ int main() {
     assert(words.empty());
     return 0;
 }
+
+// I AM NOT DONE

@@ -22,8 +22,6 @@
 // libstdc++ 15 — the strings below are chosen to behave the same on
 // both.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -53,3 +51,5 @@ int main() {
     assert(tiny2 == "cat" && huge2.size() == 100);
     return 0;
 }
+
+// I AM NOT DONE

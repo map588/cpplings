@@ -19,8 +19,6 @@
 // Task: make next_id compile and behave, then predict the copied
 // closure's output.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 constexpr int TODO = -1;
@@ -38,3 +36,5 @@ int main() {
     assert(fresh_copy() == TODO);     // what did the copy take with it?
     return 0;
 }
+
+// I AM NOT DONE

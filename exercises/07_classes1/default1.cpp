@@ -23,8 +23,6 @@
 // Task: restore Session's default constructor, then delete the double
 // overload and fix the buggy call.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -52,3 +50,5 @@ int main() {
     assert(g_timeout_ms == 2500);        // caller clearly meant seconds
     return 0;
 }
+
+// I AM NOT DONE

@@ -21,8 +21,6 @@
 // Task: templatize largest, then fix the mixed-type call at the bottom
 // with an explicit template argument.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -42,3 +40,5 @@ int main() {
                                                // pick T explicitly
     return 0;
 }
+
+// I AM NOT DONE

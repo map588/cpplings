@@ -19,8 +19,6 @@
 // Task: fix describe() to take a reference, and rebuild `shapes` as a
 // vector of unique_ptr<Shape>. (The asserts stay — make them true.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -55,3 +53,5 @@ int main() {
     assert(shapes[1]->name() == "square");   //  version holds unique_ptrs)
     return 0;
 }
+
+// I AM NOT DONE

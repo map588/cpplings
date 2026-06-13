@@ -18,8 +18,6 @@
 //
 // Task: fill in the two TODO strings.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -56,3 +54,5 @@ int main() {
     }
     return 0;
 }
+
+// I AM NOT DONE

@@ -25,8 +25,6 @@
 //
 // Task: fix the declaration the modern way.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 class Widget {
@@ -52,3 +50,5 @@ int main() {
     assert(Widget::live_count == 0);
     return 0;
 }
+
+// I AM NOT DONE

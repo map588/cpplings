@@ -26,8 +26,6 @@
 // way (do it, you'll read it in every pre-2020 codebase), then redo it
 // with std::erase.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -48,3 +46,5 @@ int main() {
     assert(readings == (std::vector<int>{5, 7, 3}));
     return 0;
 }
+
+// I AM NOT DONE

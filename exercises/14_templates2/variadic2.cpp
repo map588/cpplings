@@ -26,8 +26,6 @@
 //
 // Task: implement join's body with a comma fold. No recursion.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -51,3 +49,5 @@ int main() {
     assert(join(", ") == "");                 // empty pack: empty string
     return 0;
 }
+
+// I AM NOT DONE

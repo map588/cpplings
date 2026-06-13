@@ -20,8 +20,6 @@
 //
 // Task: make the counter atomic.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <thread>
 
@@ -42,3 +40,5 @@ int main() {
     assert(hits == 200'000);     // some increments never happened
     return 0;
 }
+
+// I AM NOT DONE

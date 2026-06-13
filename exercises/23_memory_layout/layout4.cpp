@@ -25,8 +25,6 @@
 //
 // Task: fix Timeline's size with the attribute, then settle the quiz.
 
-// I AM NOT DONE
-
 #include <cstddef>
 
 constexpr std::size_t TODO = 9999;
@@ -52,3 +50,5 @@ static_assert(sizeof(Empty) == TODO);     // nothing still needs an address
 static_assert(sizeof(Holder) == TODO);    // two objects, two addresses
 
 int main() { return 0; }
+
+// I AM NOT DONE

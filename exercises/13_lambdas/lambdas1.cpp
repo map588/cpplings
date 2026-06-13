@@ -26,8 +26,6 @@
 // Task: scaled_sum uses the functor. Write `scale` as a lambda doing the
 // same job, and make times_ten use it.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct ScaleBy {
@@ -51,3 +49,5 @@ int main() {
     assert(times_ten(7) == 70);
     return 0;
 }
+
+// I AM NOT DONE

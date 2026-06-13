@@ -23,8 +23,6 @@
 // Task: shuffle() bypasses geo's custom swap — the assert proves it.
 // Apply the two-step.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -59,3 +57,5 @@ int main() {
     assert(geo::custom_swaps == 1);  // ...but through the wrong machinery
     return 0;
 }
+
+// I AM NOT DONE

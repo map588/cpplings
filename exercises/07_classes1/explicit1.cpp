@@ -24,8 +24,6 @@
 // Task: make both constructors explicit, then fix the buggy call site so
 // it says what it means.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct Seconds {
@@ -48,3 +46,5 @@ int main() {
     assert(total == 330);
     return 0;
 }
+
+// I AM NOT DONE

@@ -28,8 +28,6 @@
 //
 // Task: fix both factory functions; the counters define "fixed".
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 
@@ -71,3 +69,5 @@ int main() {
     assert(Widget::moves == 0);        // NRVO: zero on any real compiler
     return 0;
 }
+
+// I AM NOT DONE

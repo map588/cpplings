@@ -23,8 +23,6 @@
 // Task: give each file's normalize() internal linkage (fix BOTH files —
 // pick the anonymous-namespace spelling).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -43,3 +41,5 @@ int main() {
     assert(render_header("intro") == "== INTRO ==");
     return 0;
 }
+
+// I AM NOT DONE

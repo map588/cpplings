@@ -23,8 +23,6 @@
 // Task: two fixes. archive() takes ownership — say so at the call site.
 // word_count() merely reads — fix its signature to borrow.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -60,3 +58,5 @@ int main() {
     assert(*archived[0] == "the quick brown fox");
     return 0;
 }
+
+// I AM NOT DONE

@@ -21,8 +21,6 @@
 // one would mean double-release, so copying is already deleted for you
 // (module 08's =delete).
 
-// I AM NOT DONE
-
 #include <cassert>
 
 // --- a fake device API (pretend it's some C library) ------------------
@@ -70,3 +68,5 @@ int main() {
     assert(open_handles == 0);    // takes the early return, and leaks.
     return 0;
 }
+
+// I AM NOT DONE

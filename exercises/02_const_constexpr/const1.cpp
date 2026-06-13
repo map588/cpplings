@@ -16,7 +16,6 @@
 // declarations so it compiles AND no longer copies the big string. Don't
 // weaken `greeting` — the whole point is that it can't change.
 
-// I AM NOT DONE
 
 #include <cassert>
 #include <string>
@@ -47,3 +46,4 @@ int main() {
     assert(calls == 2);
     return 0;
 }
+// I AM NOT DONE

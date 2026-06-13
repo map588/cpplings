@@ -23,8 +23,6 @@
 // time, guaranteed — but main() needs to UPDATE it. Pick the right
 // specifier. (Try constexpr first and read the error.)
 
-// I AM NOT DONE
-
 #include <cassert>
 
 // consteval (C++20): this can never run at runtime.
@@ -59,3 +57,5 @@ int main() {
     // unsigned h = hash_seed(y);   // ERROR: y is not a constant expression
     return 0;
 }
+
+// I AM NOT DONE

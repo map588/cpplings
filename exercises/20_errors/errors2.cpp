@@ -22,8 +22,6 @@
 // RAII-owned — unique_ptr with a custom deleter (deleter1!) or just a
 // little guard — and delete the manual close.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <stdexcept>
@@ -59,3 +57,5 @@ int main() {
     assert(open_connections == 0);    // unwound path: leaked
     return 0;
 }
+
+// I AM NOT DONE

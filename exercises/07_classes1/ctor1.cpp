@@ -20,8 +20,6 @@
 //
 // Task: convert this constructor to a member init list.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -50,3 +48,5 @@ int main() {
     assert(s.reading() == 0);
     return 0;
 }
+
+// I AM NOT DONE

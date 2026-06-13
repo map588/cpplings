@@ -20,8 +20,6 @@
 // pipeline over an infinite iota: transform to squares, filter by last
 // digit, take k. The skeleton consumes the pipeline for you.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <ranges>
 #include <vector>
@@ -43,3 +41,5 @@ int main() {
            == (std::vector<int>{16, 36, 196, 256}));
     return 0;
 }
+
+// I AM NOT DONE

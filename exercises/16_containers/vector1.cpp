@@ -22,8 +22,6 @@
 // Task: fix record_baseline-and-friends with reserve(). The capacity
 // asserts encode the win.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -47,3 +45,5 @@ int main() {
     // assert(samples.capacity() == 1001);
     return 0;
 }
+
+// I AM NOT DONE

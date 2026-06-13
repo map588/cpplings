@@ -25,8 +25,6 @@
 // Task: alignas the lane, then settle the TODOs (the price of an
 // alignas(64) promise).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstdint>
 #include <cstddef>
@@ -61,3 +59,5 @@ int main() {
     static_assert(sizeof(CacheLineSlot) == TODO);   // not 8!
     return 0;
 }
+
+// I AM NOT DONE

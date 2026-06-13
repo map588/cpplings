@@ -19,8 +19,6 @@
 // Task: find() legitimately returns nullptr for missing keys. The caller
 // forgot. Fix the CALLER (lookup_or_zero) — find() is correct.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct Entry {
@@ -52,3 +50,5 @@ int main() {
     assert(lookup_or_zero("delta") == 0);   // missing key → boom
     return 0;
 }
+
+// I AM NOT DONE

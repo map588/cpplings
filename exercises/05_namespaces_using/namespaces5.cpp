@@ -25,8 +25,6 @@
 // scope. One line fixes it. (Qualifying all four cases also works — do
 // the C++20 way.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <type_traits>
 
@@ -50,3 +48,5 @@ int main() {
     assert(describe(Signal::Off)[0] == 'l');
     return 0;
 }
+
+// I AM NOT DONE

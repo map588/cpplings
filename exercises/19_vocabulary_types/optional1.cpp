@@ -21,8 +21,6 @@
 // Task: convert find_device to optional<std::size_t>. The call sites
 // below already speak optional — they define the API.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <optional>
 #include <string>
@@ -53,3 +51,5 @@ int main() {
     }
     return 0;
 }
+
+// I AM NOT DONE

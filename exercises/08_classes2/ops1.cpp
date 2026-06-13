@@ -20,8 +20,6 @@
 // what lets `half + 1` and `1 + half` work at all. explicit would break
 // that; here the conversion IS the design, the module-07 exception.)
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct Fraction {
@@ -52,3 +50,5 @@ int main() {
                                                   // function makes this work
     return 0;
 }
+
+// I AM NOT DONE

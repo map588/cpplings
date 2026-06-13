@@ -17,8 +17,6 @@
 // has the unmet precondition and satisfy it. Then implement
 // rank_position with lower_bound.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -40,3 +38,5 @@ int main() {
     assert(rank_position(scores, 2000) == 5);   // after everything
     return 0;
 }
+
+// I AM NOT DONE

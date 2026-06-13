@@ -20,8 +20,6 @@
 // Task: fix the loop bound. Then make the lookup with the USER-PROVIDED
 // index use .at() — let hostile input throw instead of trample.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -53,3 +51,5 @@ int main() {
     assert(caught);
     return 0;
 }
+
+// I AM NOT DONE

@@ -25,8 +25,6 @@
 // Task: finish ConnCloser and ConnPtr, then convert fetch() to use them.
 // The static_asserts pin down the size story.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 
@@ -70,3 +68,5 @@ int main() {
     assert(open_conns == 0);
     return 0;
 }
+
+// I AM NOT DONE

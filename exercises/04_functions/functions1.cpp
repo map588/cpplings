@@ -15,8 +15,6 @@
 // won. Task: fix the wrong guesses, then resolve the ambiguous call by
 // adding a `long` overload (returning 'l').
 
-// I AM NOT DONE
-
 constexpr char pick(int)    { return 'i'; }
 constexpr char pick(double) { return 'd'; }
 
@@ -33,3 +31,5 @@ int main() {
     static_assert(pick(7L) == 'l');      // ambiguous! add the overload
     return 0;
 }
+
+// I AM NOT DONE

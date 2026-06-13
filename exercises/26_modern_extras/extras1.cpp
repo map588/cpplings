@@ -19,8 +19,6 @@
 // it takes an attempt number and returns 100ms doubled per attempt
 // (100, 200, 400...), capped at 3 seconds. The asserts speak chrono.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <chrono>
 
@@ -47,3 +45,5 @@ int main() {
     assert(coarse.count() == 2);               // raw number, at the edge
     return 0;
 }
+
+// I AM NOT DONE

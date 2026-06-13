@@ -24,8 +24,6 @@
 // Task: fix sum_every_other twice — once with typename (do it, feel the
 // history), then once more however you like.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -51,3 +49,5 @@ int main() {
     assert(sum_every_other(reals) == 2.0);       // 0.5 + 1.5
     return 0;
 }
+
+// I AM NOT DONE

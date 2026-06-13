@@ -25,8 +25,6 @@
 // Task: parse_u32 reads a u32 from byte OFFSET 1 of a packet through a
 // casted pointer. Fix it with memcpy (or bit_cast from a copied array).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstdint>
 #include <cstring>
@@ -44,3 +42,5 @@ int main() {
     assert(parse_payload(packet) == 0x12345678);
     return 0;
 }
+
+// I AM NOT DONE

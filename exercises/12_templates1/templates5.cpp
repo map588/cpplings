@@ -25,8 +25,6 @@
 // Task: give LogEntry a hidden-friend operator<< printing
 // `level: message`, e.g. "WARN: disk slow".
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <sstream>
 #include <string>
@@ -58,3 +56,5 @@ int main() {
     assert(join_lines(nums) == "1\n2\n");    // ints always met the bar
     return 0;
 }
+
+// I AM NOT DONE

@@ -23,8 +23,6 @@
 // Task: two lines don't compile. Fix them by choosing the right kind of
 // reference — don't copy into new variables.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -50,3 +48,5 @@ int main() {
     assert(count_vowels("aeiou") == 5);   // a literal makes a temporary
     return 0;
 }
+
+// I AM NOT DONE

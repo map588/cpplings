@@ -26,8 +26,6 @@
 // .get(). Note there's NO shared mutable state — each task owns its
 // range. That's why no mutex appears: structure, not locks.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <future>
 #include <numeric>
@@ -62,3 +60,5 @@ int main() {
     assert(f.valid() == true);   // TODO: true or false after a get()?
     return 0;
 }
+
+// I AM NOT DONE

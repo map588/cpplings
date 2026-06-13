@@ -25,8 +25,6 @@
 // Task: bools are printing as "1". Specialize Formatter for bool to say
 // "yes"/"no".
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -45,3 +43,5 @@ int main() {
     assert(Formatter<bool>::format(false) == "no");    // "0" today
     return 0;
 }
+
+// I AM NOT DONE

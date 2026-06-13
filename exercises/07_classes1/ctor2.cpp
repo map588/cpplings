@@ -22,8 +22,6 @@
 //       2) make Timer(int) delegate to Timer(int, bool),
 //       3) Timer() can then be `= default`.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct Timer {
@@ -57,3 +55,5 @@ int main() {
     assert(loop.seconds == 10 && loop.repeating);
     return 0;
 }
+
+// I AM NOT DONE

@@ -24,8 +24,6 @@
 //
 // Task: fix linkage5_config.h so both TUs see the same object.
 
-// I AM NOT DONE
-
 #include "linkage5_config.h"
 
 #include <cassert>
@@ -37,3 +35,5 @@ int main() {
     assert(&kPi == other_tu_pi_address());     // the IDENTITY is
     return 0;
 }
+
+// I AM NOT DONE

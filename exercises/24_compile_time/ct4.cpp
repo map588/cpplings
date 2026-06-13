@@ -29,8 +29,6 @@
 // of those properties. Make `Cfg` a class-type NTTP; the asserts and
 // the static_asserts encode the contract.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 #include <type_traits>
@@ -78,3 +76,5 @@ int main() {
     static_assert(!std::is_same_v<decltype(strict), decltype(rolling)>);
     return 0;
 }
+
+// I AM NOT DONE

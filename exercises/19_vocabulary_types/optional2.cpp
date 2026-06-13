@@ -24,8 +24,6 @@
 // Task: fix retry_limit() to use the documented default (3) when the
 // key is missing — without UB and without throwing.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <map>
 #include <optional>
@@ -59,3 +57,5 @@ int main() {
     assert(threw == false);   // TODO: true or false?
     return 0;
 }
+
+// I AM NOT DONE

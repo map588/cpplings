@@ -26,8 +26,6 @@
 // Task: fix main's dangling case by binding to the member directly —
 // the extending form.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -55,3 +53,5 @@ int main() {
     assert(name == "thermocouple-array-7-bridge-northeast");
     return 0;
 }
+
+// I AM NOT DONE

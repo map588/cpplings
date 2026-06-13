@@ -21,8 +21,6 @@
 // mask in std::uint64_t. The asserts pin down the edge cases that
 // matter: bit 31 (the int trap) and bit 63 (the top).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstdint>
 
@@ -39,3 +37,5 @@ int main() {
     assert(flag_mask(63) == 0x8000000000000000ull);    // the top bit
     return 0;
 }
+
+// I AM NOT DONE

@@ -16,8 +16,6 @@
 // Task: numbers, then one fix — make_report() allocates more than it
 // must; apply module 16's cure and the final assert's demand.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstdlib>
 #include <new>
@@ -67,3 +65,5 @@ int main() {
     assert(news == 1);     // shipped, it's 4 (the 1→2→4→8 growth chain).
     return 0;              // make_report knows k — make it ONE allocation.
 }
+
+// I AM NOT DONE

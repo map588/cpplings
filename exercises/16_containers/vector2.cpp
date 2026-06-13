@@ -26,8 +26,6 @@
 // Task: drop_failing_grades skips survivors standing behind the fallen.
 // Apply the idiom.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -47,3 +45,5 @@ int main() {
     assert(grades == (std::vector<int>{90, 72, 88}));
     return 0;
 }
+
+// I AM NOT DONE

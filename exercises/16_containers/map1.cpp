@@ -26,8 +26,6 @@
 // Task: has_passed() pollutes the map. Make it actually read-only —
 // signature included.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <map>
 #include <string>
@@ -57,3 +55,5 @@ int main() {
     assert(order == "az");
     return 0;
 }
+
+// I AM NOT DONE

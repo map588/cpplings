@@ -27,8 +27,6 @@
 // Task: make `ready` atomic with release/acquire (payload itself can
 // stay a plain int — that's the point of the pattern).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <thread>
 
@@ -55,3 +53,5 @@ int main() {
     assert(received == 42);
     return 0;
 }
+
+// I AM NOT DONE

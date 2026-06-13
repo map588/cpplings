@@ -23,8 +23,6 @@
 //
 // Task: fix transfer() with a single scoped_lock taking both mutexes.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <chrono>
 #include <mutex>
@@ -58,3 +56,5 @@ int main() {
     assert(bob.balance == 120);
     return 0;
 }
+
+// I AM NOT DONE

@@ -18,8 +18,6 @@
 // (std::unique_ptr, module 09) or when you don't heap-allocate at all
 // (a plain std::vector local would do here).
 
-// I AM NOT DONE
-
 #include <cassert>
 
 int* load_samples(int n) {
@@ -44,3 +42,5 @@ int main() {
     assert(average(4) == 25);        // (10+20+30+40)/4
     return 0;
 }
+
+// I AM NOT DONE

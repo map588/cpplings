@@ -16,8 +16,6 @@
 //
 // Task: implement the move constructor and move assignment.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 #include <type_traits>
@@ -71,3 +69,5 @@ int main() {
                   "move members must be noexcept (move3 explains why)");
     return 0;
 }
+
+// I AM NOT DONE

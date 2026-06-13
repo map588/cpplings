@@ -22,8 +22,6 @@
 // Task: fix midpoint(). (Alternative honorable fixes: widen to int64_t,
 // or use std::midpoint — yes, C++20 added it BECAUSE of this bug.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <climits>
 
@@ -41,3 +39,5 @@ int main() {
     assert(midpoint(lo, hi) == 1'750'000'000);
     return 0;
 }
+
+// I AM NOT DONE

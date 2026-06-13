@@ -16,8 +16,6 @@
 // must not change), then fill in the TODO with how many times next_id
 // really ran.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -46,3 +44,5 @@ int main() {
     assert(ids_handed_out == TODO);          // how many times did it run?
     return 0;
 }
+
+// I AM NOT DONE

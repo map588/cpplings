@@ -19,8 +19,6 @@
 //
 // Task: fill in the two lambdas.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <string>
@@ -42,3 +40,5 @@ int main() {
     assert(big == 2);
     return 0;
 }
+
+// I AM NOT DONE

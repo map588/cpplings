@@ -26,8 +26,6 @@
 // Task: fix linkage2_point.h so this file compiles. (linkage2_shapes.h
 // already has a guard — peek at it for the pattern.)
 
-// I AM NOT DONE
-
 #include "linkage2_point.h"
 #include "linkage2_shapes.h"
 
@@ -41,3 +39,5 @@ int main() {
     assert(contains(r, p));
     return 0;
 }
+
+// I AM NOT DONE

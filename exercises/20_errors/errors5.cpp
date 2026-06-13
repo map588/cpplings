@@ -24,8 +24,6 @@
 // Task: convert next_token to return std::optional<std::string>, and
 // de-try/catch the loop in count_tokens.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <optional>
 #include <stdexcept>
@@ -80,3 +78,5 @@ int main() {
     assert(count_tokens("") == 0);
     return 0;
 }
+
+// I AM NOT DONE

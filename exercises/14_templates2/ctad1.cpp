@@ -22,8 +22,6 @@
 // Task: fill in the two TODO types (what did CTAD deduce?), then add
 // the deduction guide that makes the last static_assert true.
 
-// I AM NOT DONE
-
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -53,3 +51,5 @@ int main() {
     static_assert(std::is_same_v<decltype(greeting), Box<std::string>>);
     return 0;
 }
+
+// I AM NOT DONE

@@ -20,8 +20,6 @@
 // Task 2: make SaveGame trivially copyable — the player name becomes a
 // fixed char array (the classic file-format answer).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstring>
 #include <string>
@@ -60,3 +58,5 @@ int main() {
     static_assert(std::is_trivially_copyable_v<SaveGame>);
     return 0;
 }
+
+// I AM NOT DONE

@@ -22,8 +22,6 @@
 //
 // Task: v2 is supposed to be the default, but nobody declared it inline.
 
-// I AM NOT DONE
-
 namespace mathlib {
     namespace v1 {
         constexpr int checksum(int x) { return x % 9; }    // legacy
@@ -44,3 +42,5 @@ int main() {
     static_assert(mathlib::v2::checksum(123) == 2);
     return 0;
 }
+
+// I AM NOT DONE

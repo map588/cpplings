@@ -18,8 +18,6 @@
 // compile time, so neither the constexpr variable nor the array bound
 // compiles. One keyword fixes everything.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -46,3 +44,5 @@ int main() {
     assert(max_packet_size(runtime_header, 100) == 120);
     return 0;
 }
+
+// I AM NOT DONE

@@ -22,8 +22,6 @@
 // Task: break the cycle — make `parent` a weak_ptr and update
 // first_child_name() to lock it.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -61,3 +59,5 @@ int main() {
     assert(Node::alive == 0);
     return 0;
 }
+
+// I AM NOT DONE

@@ -21,8 +21,6 @@
 // Fix ONLY the three declarations (move/add/remove const) so everything
 // compiles. The usage lines are correct and must not change.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 int main() {
@@ -46,3 +44,5 @@ int main() {
 
     return 0;
 }
+
+// I AM NOT DONE

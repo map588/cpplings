@@ -16,8 +16,6 @@
 //
 // Task: make area() dispatch dynamically.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 struct Shape {
@@ -50,3 +48,5 @@ int main() {
     assert(total_area(r, t) == 27.0);          // through Shape&: 0 + 0...
     return 0;
 }
+
+// I AM NOT DONE

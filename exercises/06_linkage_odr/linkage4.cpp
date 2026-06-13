@@ -23,8 +23,6 @@
 // Task: fix linkage4_util.h. Two correct one-word answers exist — the
 // hint discusses both.
 
-// I AM NOT DONE
-
 #include "linkage4_util.h"
 
 #include <cassert>
@@ -39,3 +37,5 @@ int main() {
     assert(mean_clamped(xs, 4) == 0.5);
     return 0;
 }
+
+// I AM NOT DONE

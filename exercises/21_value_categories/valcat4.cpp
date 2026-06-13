@@ -24,8 +24,6 @@
 // parameter a const reference so the returned reference points into
 // the CALLER's vector.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <vector>
@@ -51,3 +49,5 @@ int main() {
     assert(&winner == &crew[1]);     // the reference aliases the CALLER's
     return 0;                        // element — no copy anywhere
 }
+
+// I AM NOT DONE

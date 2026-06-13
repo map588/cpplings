@@ -25,8 +25,6 @@
 //
 // Task: one word to delete. The mode counters tell the truth.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <type_traits>
 
@@ -53,3 +51,5 @@ int main() {
     assert(mode == 'r');
     return 0;
 }
+
+// I AM NOT DONE

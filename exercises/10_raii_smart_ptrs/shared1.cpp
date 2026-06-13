@@ -18,8 +18,6 @@
 // Task: predict every use_count. Then fix the hand-off at the bottom of
 // main — it was meant to GIVE the registry ownership, not share it.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <utility>
@@ -59,3 +57,5 @@ int main() {
     static_assert(sizeof(std::unique_ptr<int>) == 1 * sizeof(void*));
     return 0;
 }
+
+// I AM NOT DONE

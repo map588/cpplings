@@ -25,8 +25,6 @@
 // Task: implement describe_transfer to satisfy the asserts. One format
 // call each.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <format>
 #include <string>
@@ -50,3 +48,5 @@ int main() {
     assert(std::format("{0}{1}{0}", "|", "core") == "TODO");
     return 0;
 }
+
+// I AM NOT DONE

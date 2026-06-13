@@ -24,8 +24,6 @@
 // Task: fix fahrenheit() with back_inserter; implement hottest() as an
 // accumulate one-liner (no raw loop).
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <iterator>
@@ -57,3 +55,5 @@ int main() {
     assert(hottest({3.5, 9.25}, 50.0) == 50.0);   // floor wins
     return 0;
 }
+
+// I AM NOT DONE

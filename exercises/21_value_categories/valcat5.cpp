@@ -24,8 +24,6 @@
 // Task: add the `const&` / `&&` overload pair for result(). The
 // counters define success.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 
@@ -67,3 +65,5 @@ int main() {
     (void)r1; (void)r2;
     return 0;
 }
+
+// I AM NOT DONE

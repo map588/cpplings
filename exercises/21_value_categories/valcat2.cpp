@@ -20,8 +20,6 @@
 // legitimate version of valcat4's crime: the caller owns the vector,
 // which outlives the call.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -46,3 +44,5 @@ int main() {
     assert(image == (std::vector<int>{18, 120, 77, 120, 3}));
     return 0;
 }
+
+// I AM NOT DONE

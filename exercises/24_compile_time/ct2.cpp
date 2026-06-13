@@ -22,8 +22,6 @@
 // Task: implement make_hex_table. The static_asserts audit single
 // entries; the runtime asserts use the whole pipeline.
 
-// I AM NOT DONE
-
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -57,3 +55,5 @@ int main() {
     assert(parse_hex_byte('z', '1') == -1);
     return 0;
 }
+
+// I AM NOT DONE

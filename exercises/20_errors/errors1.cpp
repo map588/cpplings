@@ -23,8 +23,6 @@
 //
 // Task: fix the catch clause (and see the real message reappear).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <stdexcept>
 #include <string>
@@ -55,3 +53,5 @@ int main() {
     assert(try_load("garbage") == "bad config line: garbage");
     return 0;
 }
+
+// I AM NOT DONE

@@ -27,8 +27,6 @@
 // Task: give load_crate the strong guarantee. The post-throw asserts
 // define "nothing changed".
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <stdexcept>
 #include <string>
@@ -74,3 +72,5 @@ int main() {
     assert(inv.total_weight() == 65);     // weight rolled back too
     return 0;
 }
+
+// I AM NOT DONE

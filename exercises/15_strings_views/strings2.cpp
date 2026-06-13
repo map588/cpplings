@@ -18,8 +18,6 @@
 // type. (Returning a view is SAFE here: it points into the caller's
 // string, which outlives the call. strings3 shows when it isn't.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <string_view>
@@ -45,3 +43,5 @@ int main() {
     assert(ext.data() >= doc.data() && ext.data() < doc.data() + doc.size());
     return 0;
 }
+
+// I AM NOT DONE

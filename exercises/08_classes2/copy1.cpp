@@ -20,8 +20,6 @@
 // The honest fix is a std::vector member — that's copy2. Do it by hand
 // exactly once, here, so you know what the rule of three costs.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -60,3 +58,5 @@ int main() {
 
     return 0;                 // ...and here both a and b delete[] the
 }                             // same pointer: double-free
+
+// I AM NOT DONE

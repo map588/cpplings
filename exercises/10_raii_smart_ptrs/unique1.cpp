@@ -23,8 +23,6 @@
 // raii1 had, in heap-allocation form. Convert it to make_unique and
 // delete every `delete`.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -60,3 +58,5 @@ int main() {
     assert(Report::alive == 0);             // the early return leaked one
     return 0;
 }
+
+// I AM NOT DONE

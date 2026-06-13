@@ -22,8 +22,6 @@
 // Task: implement collatz() — co_yield the whole Collatz sequence of n
 // (n, then n even ? n/2 : 3n+1, ... down to 1 inclusive), then finish.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <coroutine>
 #include <utility>
@@ -86,3 +84,5 @@ int main() {
     assert(!trivial.next());
     return 0;
 }
+
+// I AM NOT DONE

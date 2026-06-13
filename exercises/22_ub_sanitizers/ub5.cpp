@@ -18,8 +18,6 @@
 // Task: handle the empty case explicitly (return 0 here — or an
 // optional, module 19, in a design of your own).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -43,3 +41,5 @@ int main() {
     assert(average_above(temps, 100) == 0);    // nothing qualifies → /0
     return 0;
 }
+
+// I AM NOT DONE

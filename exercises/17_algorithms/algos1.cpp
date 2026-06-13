@@ -22,8 +22,6 @@
 // Task: reimplement all three function bodies with the algorithms. No
 // `for`, no `while`.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <numeric>
@@ -59,3 +57,5 @@ int main() {
     assert(!carries(cargo, 9.99));
     return 0;
 }
+
+// I AM NOT DONE

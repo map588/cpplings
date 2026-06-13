@@ -24,8 +24,6 @@
 //
 // Task: one line in Sensor.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <vector>
@@ -56,3 +54,5 @@ int main() {
     assert(TempSensor::live_buffers == 0);   // …did ~TempSensor run?
     return 0;
 }
+
+// I AM NOT DONE

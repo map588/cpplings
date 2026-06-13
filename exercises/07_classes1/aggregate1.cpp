@@ -29,8 +29,6 @@
 // Task: rewrite both initializers with designators. `debug` should state
 // ONLY what differs from the defaults.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string_view>
 #include <type_traits>
@@ -60,3 +58,5 @@ int main() {
     assert(debug.port == 8080);
     return 0;
 }
+
+// I AM NOT DONE

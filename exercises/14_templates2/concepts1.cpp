@@ -25,8 +25,6 @@
 // std::string call — it was always nonsense; now the compiler says so
 // clearly.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <concepts>
 #include <string>
@@ -51,3 +49,5 @@ int main() {
     average(words);   // delete me once the compiler rejects me PROPERLY
     return 0;
 }
+
+// I AM NOT DONE

@@ -22,8 +22,6 @@
 // 64-bit platform — this course's). Then order Packed's members so the
 // final static_assert holds.
 
-// I AM NOT DONE
-
 #include <cstddef>
 
 constexpr std::size_t TODO = 9999;
@@ -50,3 +48,5 @@ struct Packed {
 static_assert(sizeof(Packed) == 16, "8 + 4 + 1 + 1 + 2 tail padding");
 
 int main() { return 0; }
+
+// I AM NOT DONE

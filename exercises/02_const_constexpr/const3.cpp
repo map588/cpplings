@@ -15,8 +15,6 @@
 // Task: print_report takes the Counter by const& (correctly!), but won't
 // compile. Fix the CLASS, not print_report.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <iostream>
 
@@ -48,3 +46,5 @@ int main() {
     assert(!c.is_even());
     return 0;
 }
+
+// I AM NOT DONE

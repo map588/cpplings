@@ -3,8 +3,6 @@
 // Defaults, static locals, and overload ranking, together. Predict
 // everything BEFORE running.
 
-// I AM NOT DONE
-
 #include <cassert>
 
 constexpr int TODO = -1;
@@ -36,3 +34,5 @@ int main() {
     assert(c == 'i' || c == 'd');  // either choice is fine — just choose
     return 0;
 }
+
+// I AM NOT DONE

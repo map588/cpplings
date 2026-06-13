@@ -24,8 +24,6 @@
 // Task: cheapest_first should remember the FIRST price as a value, not
 // chase the element's address.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -45,3 +43,5 @@ int main() {
     assert(prices.size() == 101);
     return 0;
 }
+
+// I AM NOT DONE

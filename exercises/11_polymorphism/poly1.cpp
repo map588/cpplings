@@ -17,8 +17,6 @@
 // Task: fill in the TODOs. sizeof answers assume a typical 64-bit
 // platform (pointers are 8 bytes) — which is what this course runs on.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -60,3 +58,5 @@ int main() {
     assert(r.norm2() == static_cast<double>(TODO));   // ref: virtual dispatch
     return 0;
 }
+
+// I AM NOT DONE

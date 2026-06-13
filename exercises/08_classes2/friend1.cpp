@@ -24,8 +24,6 @@
 // Task: is_freezing and operator<< both need access to celsius_.
 // Move them into the class as hidden friends.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <sstream>
 
@@ -57,3 +55,5 @@ int main() {
     assert(out.str() == "21.5°C");
     return 0;
 }
+
+// I AM NOT DONE

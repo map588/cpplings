@@ -18,8 +18,6 @@
 // CHURN through rejects to find that one paid order — laziness saves
 // the transform calls, not the filter's scanning.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <ranges>
 #include <vector>
@@ -63,3 +61,5 @@ int main() {
     assert(transform_calls == TODO);   // total after 1 + a full pass
     return 0;
 }
+
+// I AM NOT DONE

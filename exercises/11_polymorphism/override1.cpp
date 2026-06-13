@@ -22,8 +22,6 @@
 // forever. clang's -Winconsistent-missing-override and
 // -Wsuggest-override exist to enforce it across a codebase.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -57,3 +55,5 @@ int main() {
            == "[info|redacted] ***pw=hunter2***");
     return 0;
 }
+
+// I AM NOT DONE

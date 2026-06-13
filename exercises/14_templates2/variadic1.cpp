@@ -24,8 +24,6 @@
 // Task: implement all three TODO bodies with folds. No recursion, no
 // loops.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 
@@ -57,3 +55,5 @@ int main() {
     assert(all_positive());              // vacuous truth: && folds to true
     return 0;
 }
+
+// I AM NOT DONE

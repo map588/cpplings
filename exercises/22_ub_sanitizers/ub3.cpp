@@ -24,8 +24,6 @@
 // Task: track the best VALUE (or an index into `entries`), not the
 // address of a per-iteration local.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <vector>
 
@@ -43,3 +41,5 @@ int main() {
     assert(*best == 94);                   // 47 * 2, read from a ghost
     return 0;
 }
+
+// I AM NOT DONE

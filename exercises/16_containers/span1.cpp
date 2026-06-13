@@ -18,8 +18,6 @@
 // Task: collapse the three sum_* functions into one sum(std::span<const
 // int>), and update the calls.
 
-// I AM NOT DONE
-
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -57,3 +55,5 @@ int main() {
     assert(sum(std::span<const int>(a).subspan(1, 2)) == 50);
     return 0;
 }
+
+// I AM NOT DONE

@@ -21,8 +21,6 @@
 //
 // Task: fill in the three aliases. The static_asserts define them.
 
-// I AM NOT DONE
-
 #include <type_traits>
 #include <vector>
 
@@ -41,3 +39,5 @@ static_assert(std::is_same_v<Matrix<unsigned char>::value_type, Row>);
 static_assert(std::is_same_v<Comparator, bool (*)(int, int)>);
 
 int main() { return 0; }
+
+// I AM NOT DONE

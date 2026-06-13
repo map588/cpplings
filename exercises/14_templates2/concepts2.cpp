@@ -25,8 +25,6 @@
 // static_asserts specify exactly what it must mean: has .render()
 // convertible to std::string, and .layer() returning exactly int.
 
-// I AM NOT DONE
-
 #include <concepts>
 #include <string>
 
@@ -60,3 +58,5 @@ static_assert(!Renderable<Sound>);
 static_assert(!Renderable<Glitch>);
 
 int main() { return 0; }
+
+// I AM NOT DONE

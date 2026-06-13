@@ -24,8 +24,6 @@
 // Task: construct in activate() (placement new), destroy in
 // deactivate() (explicit destructor call).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 #include <new>
@@ -72,3 +70,5 @@ int main() {
     assert(Session::alive == 0);
     return 0;
 }
+
+// I AM NOT DONE

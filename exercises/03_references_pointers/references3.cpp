@@ -14,8 +14,6 @@
 //
 // Task: implement the two TODO functions. The asserts define the contract.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -43,3 +41,5 @@ int main() {
     assert(len == 3);
     return 0;
 }
+
+// I AM NOT DONE

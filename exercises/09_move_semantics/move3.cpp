@@ -22,8 +22,6 @@
 // Task: Item's move constructor is correct but unmarked. Watch the
 // counters, then add the keyword.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <vector>
@@ -57,3 +55,5 @@ int main() {
     assert(Item::copies == 0);
     return 0;
 }
+
+// I AM NOT DONE

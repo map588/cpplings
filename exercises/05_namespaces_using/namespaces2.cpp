@@ -19,8 +19,6 @@
 // indent_width. Replace the directives with precise using-declarations
 // (or qualification) so it compiles.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 
@@ -43,3 +41,5 @@ int main() {
     assert(json::indent_width == 2);    // qualification always works
     return 0;
 }
+
+// I AM NOT DONE

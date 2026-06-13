@@ -22,8 +22,6 @@
 //
 // Task: add the mutex and guard the push_back.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <mutex>
 #include <string>
@@ -48,3 +46,5 @@ int main() {
     assert(event_log.size() == 2'000);
     return 0;
 }
+
+// I AM NOT DONE

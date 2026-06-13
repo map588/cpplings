@@ -22,8 +22,6 @@
 //
 // Task: one argument to add.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <chrono>
 #include <condition_variable>
@@ -63,3 +61,5 @@ int main() {
     assert(answer == "42");
     return 0;
 }
+
+// I AM NOT DONE

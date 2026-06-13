@@ -21,8 +21,6 @@
 // Task: modernize all three TODO lines with ranges + projections. No
 // lambdas needed anywhere.
 
-// I AM NOT DONE
-
 #include <algorithm>
 #include <cassert>
 #include <ranges>
@@ -54,3 +52,5 @@ int main() {
     assert(n36 == 2);
     return 0;
 }
+
+// I AM NOT DONE

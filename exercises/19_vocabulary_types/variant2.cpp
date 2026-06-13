@@ -31,8 +31,6 @@
 // Task: area()'s visitor only handles Circle. The compiler is
 // withholding approval until Rect and Triangle are covered.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <variant>
 #include <vector>
@@ -62,3 +60,5 @@ int main() {
     assert(area(shapes[2]) == 15.0);
     return 0;
 }
+
+// I AM NOT DONE

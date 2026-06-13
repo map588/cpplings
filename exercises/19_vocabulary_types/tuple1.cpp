@@ -24,8 +24,6 @@
 // Task: stats() returns only the minimum. The bindings in main demand
 // {min, max, mean} — deliver them. (One pass, no algorithms needed.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <tuple>
 #include <vector>
@@ -56,3 +54,5 @@ int main() {
     assert(p.x == 4 && py == 9);
     return 0;
 }
+
+// I AM NOT DONE

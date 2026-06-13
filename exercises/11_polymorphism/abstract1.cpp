@@ -24,8 +24,6 @@
 // Task: make serialize pure, then implement the override the compiler
 // demands.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <memory>
 #include <string>
@@ -56,3 +54,5 @@ int main() {
     assert(exporters[1]->serialize(7) == "value: 7");   // "" today
     return 0;
 }
+
+// I AM NOT DONE

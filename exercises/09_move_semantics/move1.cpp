@@ -18,8 +18,6 @@
 // string by value — its caller already decided to hand over a copy; the
 // member grab inside should not pay for ANOTHER one.)
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <string>
 #include <utility>
@@ -49,3 +47,5 @@ int main() {
     assert(entry == "reused");
     return 0;
 }
+
+// I AM NOT DONE

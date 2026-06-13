@@ -21,8 +21,6 @@
 // the extension ("/var/log/app.log" → "/var/log/app.1.log"). Then
 // settle the quiz TODOs.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <filesystem>
 
@@ -52,3 +50,5 @@ int main() {
     assert(hijacked == "TODO");
     return 0;
 }
+
+// I AM NOT DONE

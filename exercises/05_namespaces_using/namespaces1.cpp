@@ -19,8 +19,6 @@
 // Fix it two ways: full qualification for the first, a namespace alias
 // for the rest.
 
-// I AM NOT DONE
-
 namespace audio::dsp {
     constexpr int kSampleRate = 48000;
     constexpr int half_rate() { return kSampleRate / 2; }
@@ -35,3 +33,5 @@ int main() {
     static_assert(mix::kSampleRate - mix::half_rate() == 24000);
     return 0;
 }
+
+// I AM NOT DONE

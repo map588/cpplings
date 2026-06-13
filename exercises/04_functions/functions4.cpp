@@ -19,8 +19,6 @@
 // solution's comments): if the int&& overload were deleted, what would
 // pick(5) return?
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 
@@ -41,3 +39,5 @@ int main() {
     assert(pick(std::move(x)) == TODO_C);   // just a cast!
     return 0;
 }
+
+// I AM NOT DONE

@@ -19,8 +19,6 @@
 //
 // Task: predict the three TODOs.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstdint>
 #include <map>
@@ -61,3 +59,5 @@ int main() {
     assert(unordered_element_stayed == TODO_BOOL);  // nodes vs buckets!
     return 0;
 }
+
+// I AM NOT DONE

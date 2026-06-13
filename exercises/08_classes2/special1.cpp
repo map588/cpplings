@@ -21,8 +21,6 @@
 // and note you must also default the copies and the default ctor, since
 // declaring moves would otherwise delete/suppress them.
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <utility>
 
@@ -64,3 +62,5 @@ int main() {
     (void)b; (void)d;
     return 0;
 }
+
+// I AM NOT DONE

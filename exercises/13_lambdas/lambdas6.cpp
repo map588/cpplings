@@ -24,8 +24,6 @@
 // store_handler a parameter type that can hold it (and fix the TODO
 // sizes while you're here).
 
-// I AM NOT DONE
-
 #include <cassert>
 #include <cstddef>
 #include <functional>
@@ -55,3 +53,5 @@ int main() {
     assert(g_handler(1) == 101);     // bare function pointer?
     return 0;
 }
+
+// I AM NOT DONE
