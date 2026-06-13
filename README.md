@@ -4,11 +4,17 @@ Learn deep C++ by fixing small, broken programs — in the spirit of
 [rustlings](https://github.com/rust-lang/rustlings) and
 [ziglings](https://codeberg.org/ziglings/exercises/).
 
-This is not a beginner syntax course. It's aimed at people who *write* C++
-already but want to actually know the lay of the land: why a few extra
-keywords (`static`, `const&`, `constexpr`, `noexcept`, `[[no_unique_address]]`...)
-drastically change what the compiler does, where undefined behavior actually
-hides, and what each standard from C++11 to C++23 added or took away.
+Each exercise is one short program with a bug or a gap in it. You read it,
+fix it, save, and the watcher tells you instantly whether it compiles and
+runs clean. There's nothing to set up beyond a compiler — you learn by
+making real code pass, not by reading prose about it.
+
+It's written for people who already *write* C++ but want to understand what
+the language is actually doing underneath: why keywords like `static`,
+`const&`, `constexpr`, and `noexcept` change what the compiler emits, where
+undefined behavior hides, how objects are laid out in memory, and what each
+standard from C++11 to C++23 added or removed. You come out able to read an
+unfamiliar codebase and know *why* it's written the way it is.
 
 ## Setup
 
