@@ -1,4 +1,4 @@
-# cpplings 🐉
+# cpplings
 
 Learn deep C++ by fixing small, broken programs — in the spirit of
 [rustlings](https://github.com/rust-lang/rustlings) and
