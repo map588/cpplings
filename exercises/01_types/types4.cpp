@@ -20,7 +20,6 @@
 // fix needs no new features at all — rearrange the comparison so nothing
 // can underflow.
 
-// I AM NOT DONE
 
 #include <cassert>
 #include <cstddef>
@@ -43,3 +42,4 @@ int main() {
     assert(sum_adjacent_pairs(v) == 8);      // (1+2) + (2+3)
     return 0;
 }
+// I AM NOT DONE

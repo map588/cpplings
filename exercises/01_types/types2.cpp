@@ -18,7 +18,6 @@
 // is. Some guesses are wrong. Fix the GUESSES (the right-hand types) — don't
 // change the declarations.
 
-// I AM NOT DONE
 
 #include <type_traits>
 
@@ -39,3 +38,4 @@ int main() {
     (void)a; (void)b; (void)c; (void)d;  // silence unused-variable warnings
     return 0;
 }
+// I AM NOT DONE

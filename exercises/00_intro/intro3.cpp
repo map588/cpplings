@@ -17,7 +17,6 @@
 // Task: square() has a bug. Fix it so both the compile-time and the runtime
 // checks pass.
 
-// I AM NOT DONE
 
 #include <cassert>
 
@@ -32,3 +31,4 @@ int main() {
     assert(square(five) == 25);
     return 0;
 }
+// I AM NOT DONE

@@ -22,8 +22,8 @@
 // undefined behavior — which is why this repo compiles with
 // -Werror=return-type.)
 
-// I AM NOT DONE
 
 int main() {
     std::cout << "Hello, cpplings!\n"
 }
+// I AM NOT DONE

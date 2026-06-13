@@ -20,7 +20,6 @@
 // Task: make this compile WITHOUT changing the brace-init style and without
 // changing what the asserts expect. Express the truncations explicitly.
 
-// I AM NOT DONE
 
 #include <cassert>
 
@@ -36,3 +35,4 @@ int main() {
     assert(positive == 0);     // fix the initializer so this holds
     return 0;
 }
+// I AM NOT DONE

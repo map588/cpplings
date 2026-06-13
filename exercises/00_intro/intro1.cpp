@@ -14,7 +14,6 @@
 // Task: make the assert pass, then delete the "I AM NOT DONE" line below
 // to move on to the next exercise.
 
-// I AM NOT DONE
 
 #include <cassert>
 
@@ -23,3 +22,4 @@ int main() {
     assert(answer == 42);
     return 0;
 }
+// I AM NOT DONE

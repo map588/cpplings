@@ -17,7 +17,6 @@
 // satisfies the stated requirement. The static_asserts encode the
 // requirements.
 
-// I AM NOT DONE
 
 #include <cstdint>
 #include <type_traits>
@@ -39,3 +38,4 @@ static_assert(sizeof(usec_t) == 8 && std::is_signed_v<usec_t>,
               "usec: 64-bit signed");
 
 int main() { return 0; }
+// I AM NOT DONE
