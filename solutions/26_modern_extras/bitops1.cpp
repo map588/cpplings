@@ -30,6 +30,7 @@ static_assert(std::rotl(std::uint8_t{0b1000'0001}, 1) == 0b0000'0011);
 std::size_t dispatch_all(std::uint32_t pending, std::array<int, 8>& fired) {
     std::size_t n = 0;
     while (pending != 0) {
+        assert(n < fired.size() && "more pending IRQs than fired[] holds");
         fired[n++] = std::countr_zero(pending);   // which IRQ fired
         pending &= pending - 1;                   // clear the lowest set bit
     }

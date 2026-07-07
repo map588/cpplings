@@ -609,6 +609,7 @@ hints = [
 name = "fd1"
 path = "exercises/10_raii_smart_ptrs/fd1.cpp"
 mode = "run"
+platforms = ["linux"]  # counts open fds via /proc/self/fd
 hints = [
   "Two jobs. The destructor is where the guarantee lives: close fd_ if it's still owned (>= 0). And a move must TRANSFER that duty — take the source's fd and leave -1 behind, or two destructors will close one fd (module 09's steal-and-null, applied to an int).",
   "~FdGuard() { if (fd_ >= 0) ::close(fd_); }  Move ctor: fd_(std::exchange(other.fd_, -1)) — std::exchange (C++14) steals and marks in one expression; move assign closes its own fd first, then steals the same way. In reload_config: FdGuard fd(::open(kConfigPath, O_RDONLY));, use fd.get() for the checks and the read, and delete the ::close line — every return path is now covered.",
@@ -1133,6 +1134,7 @@ hints = [
 name = "errno1"
 path = "exercises/20_errors/errno1.cpp"
 mode = "run"
+platforms = ["linux"]  # exercises errno through /proc paths
 hints = [
   "By the time the error_code is constructed, log_failure has already run — and its failed write() replaced errno (with EBADF, the logger's own problem). errno is only trustworthy on the very next line after the failed call; it must be copied out before ANYTHING else executes.",
   "if (fd < 0) { const int saved = errno; log_failure(\"...\"); return std::error_code(saved, std::generic_category()); } — the saved local survives the logging, ENOENT and ENOTDIR each reach the caller under their own name, and message() comes along for free.",
@@ -1303,7 +1305,7 @@ path = "exercises/23_memory_layout/endian1.cpp"
 mode = "run"
 hints = [
   "Shifts operate on the VALUE, not the stored bytes: `id >> 24` is the wire's first (most significant) byte no matter how the host stores id. Emit each byte with a shift; rebuild with shifts and bitwise OR.",
-  "serialize: out[0]=uint8_t(id>>24) … out[3]=uint8_t(id); out[4]=uint8_t(reading>>8); out[5]=uint8_t(reading). deserialize: device_id = (uint32_t{in[0]}<<24)|(uint32_t{in[1]}<<16)|(uint32_t{in[2]}<<8)|in[3]; reading = uint16_t((in[4]<<8)|in[5]). Shift in a uint32_t, not a promoted int.",
+  "serialize: out[0]=uint8_t(id>>24) … out[3]=uint8_t(id); out[4]=uint8_t(reading>>8); out[5]=uint8_t(reading). deserialize: device_id = (uint32_t{in[0]}<<24)|(uint32_t{in[1]}<<16)|(uint32_t{in[2]}<<8)|in[3]; reading = uint16_t((uint32_t{in[4]}<<8)|in[5]). Shift in a uint32_t for BOTH fields — bare in[4] promotes to int, and on a 16-bit-int target in[4]<<8 overflows it.",
 ]
 
 # ----------------------------------------------------------- 24_compile_time

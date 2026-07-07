@@ -65,7 +65,8 @@ static_assert(std::rotl(std::uint8_t{0b1000'0001}, 1) == TODO);
 // ---- the IRQ dispatch idiom -----------------------------------------------
 
 // Record the index of every set bit in `pending`, LOWEST first, into
-// fired[]; return the number recorded.
+// fired[]; return the number recorded. A misbehaving controller could
+// report more IRQs than fired[] holds — assert before you write.
 std::size_t dispatch_all(std::uint32_t pending, std::array<int, 8>& fired) {
     (void)pending;
     (void)fired;

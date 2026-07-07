@@ -26,7 +26,9 @@ SensorPacket deserialize(const std::uint8_t in[6]) {
                   (std::uint32_t{in[1]} << 16) |
                   (std::uint32_t{in[2]} << 8)  |
                    std::uint32_t{in[3]};
-    p.reading   = static_cast<std::uint16_t>((in[4] << 8) | in[5]);
+    // Shift in a wide unsigned type here too: bare in[4] promotes to
+    // int, and on a 16-bit-int target 0xAB << 8 would overflow it (UB).
+    p.reading   = static_cast<std::uint16_t>((std::uint32_t{in[4]} << 8) | in[5]);
     return p;
 }
 

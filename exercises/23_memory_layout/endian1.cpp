@@ -31,6 +31,10 @@
 //     pointer tricks between the integers and the buffer
 //   - no branching on std::endian: the same code must be correct on
 //     either host order
+//   - the static_assert in main() pins the GRADING host to little-endian
+//     — this course targets little-endian machines, and that's exactly
+//     what makes the shipped memcpy bug visible. Leave it in place;
+//     nothing in serialize()/deserialize() may rely on it.
 //
 // (Note: std::byteswap arrives in C++23 — handy when you must flip a
 // whole integer; shift-and-mask never needs the flip in the first
