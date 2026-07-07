@@ -13,6 +13,13 @@
 // (There's a fourth, T&&, in the move-semantics module.)
 //
 // Task: implement the two TODO functions. The asserts define the contract.
+//   - compiles; every assert passes; exits 0
+// Constraints:
+//   - swap_ints: keep the given signature; don't call std::swap — build
+//     it yourself once
+//   - shout: pick the parameter type from the table above. "In place"
+//     means the caller's own string gains the '!' — no copies
+//   - don't change main or the asserts
 
 #include <cassert>
 #include <string>

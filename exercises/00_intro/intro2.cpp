@@ -21,6 +21,12 @@
 // returns 0. (True since C++98. For every other non-void function it's
 // undefined behavior — which is why this repo compiles with
 // -Werror=return-type.)
+//
+// Task: make the file compile and run.
+//   - compiles with no errors, prints "Hello, cpplings!", exits 0
+// Constraints:
+//   - fix the cout line — don't delete it or switch to a different way
+//     of printing
 
 
 int main() {

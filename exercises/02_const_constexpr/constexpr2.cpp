@@ -20,8 +20,15 @@
 //   constinit         compile time   YES
 //
 // Task: rng_state must start at hash_seed(2026) — computed at compile
-// time, guaranteed — but main() needs to UPDATE it. Pick the right
-// specifier. (Try constexpr first and read the error.)
+// time, GUARANTEED by the compiler — while staying mutable at runtime.
+// Give it the one specifier that expresses both. (Try constexpr first
+// and read the error.)
+//   - compiles; next_random() mutates the global; the assert passes
+// Constraints:
+//   - keep hash_seed consteval and keep the initializer hash_seed(2026)
+//   - a plain non-const global would compile here, but it loses the
+//     compile-time-init guarantee this exercise is about — the specifier
+//     you pick must make a runtime initializer a compile ERROR
 
 #include <cassert>
 

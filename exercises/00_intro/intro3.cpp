@@ -14,8 +14,12 @@
 // static_assert call it. The same function still works on runtime values,
 // as the assert at the bottom shows. One definition, two execution times.
 //
-// Task: square() has a bug. Fix it so both the compile-time and the runtime
-// checks pass.
+// Task: square() has a bug in its body. Fix it.
+//   - the static_assert compiles (the compile-time check holds)
+//   - the runtime assert passes and the program exits 0
+// Constraints:
+//   - fix the function body only — don't touch either check, and keep
+//     the function constexpr (one definition must serve both times)
 
 
 #include <cassert>

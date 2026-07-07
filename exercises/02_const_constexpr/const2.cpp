@@ -17,9 +17,16 @@
 // (plain pointer at a const object) is forbidden: it would launder away
 // the promise.
 //
-// Task: the declarations below don't match how the pointers are used.
-// Fix ONLY the three declarations (move/add/remove const) so everything
-// compiles. The usage lines are correct and must not change.
+// The three declarations below don't match how the pointers are used.
+//
+// Task: fix ONLY the three declarations (move/add/remove const) so the
+// program compiles and passes.
+//   - compiles; all asserts pass; exits 0
+// Constraints:
+//   - the usage lines are correct and must not change
+//   - each declaration must also FORBID what its comment says never
+//     happens (writing through viewer, re-aiming fixed, either through
+//     frozen). Three plain `int*` would compile — and miss the point.
 
 #include <cassert>
 

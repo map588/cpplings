@@ -12,13 +12,17 @@
 // warning, because the int gets converted to unsigned for the comparison
 // (so i = -1 would compare as a huge number).
 //
-// Modern tools for this (both C++20):
-//   std::ssize(v)            — size as a SIGNED type
-//   std::cmp_less(a, b)      — mathematically correct mixed-sign comparison
+// (C++20 also added utilities for signed sizes and mathematically correct
+// mixed-sign comparisons — the hints name them. But the classic fix needs
+// no new features at all.)
 //
-// Task: fix sum_adjacent_pairs so it's correct for empty input. The classic
-// fix needs no new features at all — rearrange the comparison so nothing
-// can underflow.
+// Task: fix sum_adjacent_pairs so it's correct for ALL inputs, including
+// the empty vector.
+//   - both asserts pass; runs clean under ASan (no wild reads)
+// Constraints:
+//   - keep it an indexed loop with a std::size_t counter
+//   - no early-return special case for empty input — make the loop's own
+//     bound safe, so nothing can ever underflow
 
 
 #include <cassert>

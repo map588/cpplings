@@ -20,8 +20,14 @@
 // `lookup("hi")` works because the materialized temporary binds to the
 // const reference for the duration of the call.
 //
-// Task: two lines don't compile. Fix them by choosing the right kind of
-// reference — don't copy into new variables.
+// Task: two lines don't compile. Fix each by choosing the right kind of
+// reference for the job.
+//   - compiles; all asserts pass; exits 0 (no dangling — ASan stays quiet)
+// Constraints:
+//   - no copies: `greeting` stays a reference, and count_vowels keeps
+//     taking its argument by reference
+//   - count_vowels must still promise not to modify the caller's string
+//   - don't change main's assert lines
 
 #include <cassert>
 #include <string>

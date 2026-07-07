@@ -14,9 +14,15 @@
 // your understanding, since std::is_same_v (C++17 spelling) compares types
 // at compile time.
 //
-// Task: each static_assert states what the author *guessed* the deduced type
-// is. Some guesses are wrong. Fix the GUESSES (the right-hand types) — don't
-// change the declarations.
+// Each static_assert below states what the author *guessed* the deduced
+// type is. Some guesses are wrong.
+//
+// Task: make the file compile with every static_assert intact.
+//   - all four static_asserts pass at compile time
+// Constraints:
+//   - fix only the GUESSES (the right-hand type in each is_same_v)
+//   - the declarations of a, b, c, d must not change
+//   - don't delete or weaken any static_assert
 
 
 #include <type_traits>

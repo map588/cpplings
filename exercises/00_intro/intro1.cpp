@@ -11,8 +11,11 @@
 // NDEBUG is defined — which is what `-DNDEBUG`, and most "Release" build
 // configurations, do. Never put side effects inside an assert.)
 //
-// Task: make the assert pass, then delete the "I AM NOT DONE" line below
-// to move on to the next exercise.
+// Task: make the program exit cleanly, then delete the "I AM NOT DONE"
+// line at the bottom to move on to the next exercise.
+//   - the assert passes and the program exits 0
+// Constraints:
+//   - don't change the assert line — change what `answer` holds
 
 
 #include <cassert>

@@ -13,7 +13,13 @@
 // of the object's logical state — caches, mutexes, access counters.
 //
 // Task: print_report takes the Counter by const& (correctly!), but won't
-// compile. Fix the CLASS, not print_report.
+// compile. Decide, member by member, which promises Counter can make.
+//   - compiles; the report prints; both asserts pass
+// Constraints:
+//   - fix the CLASS only — print_report must not change
+//   - don't promise anything false: a member function that mutates the
+//     object must stay callable, and must keep compiling, exactly as
+//     main uses it
 
 #include <cassert>
 #include <iostream>
