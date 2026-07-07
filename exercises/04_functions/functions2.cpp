@@ -12,9 +12,14 @@
 //      caller omits the argument. (This is also why a default can't refer
 //      to other parameters, and why member defaults capture no `this`.)
 //
-// Task: fix make_tag's parameter order (the call sites are correct and
-// must not change), then fill in the TODO with how many times next_id
-// really ran.
+// Task: make the program compile and pass every assert.
+//   - make_tag breaks rule 1 — repair its interface so the existing call
+//     sites (which are correct API usage) compile as written
+//   - give TODO the number of times next_id really ran
+// Constraints:
+//   - do not change any line in main()
+//   - keep the default prefix "tag" and keep auto_tag's default a call
+//     to next_id()
 
 #include <cassert>
 #include <string>
@@ -24,7 +29,7 @@ constexpr int TODO = -1;
 int ids_handed_out = 0;
 int next_id() { return ++ids_handed_out; }
 
-// Required things first! This declaration is backwards:
+// This declaration breaks rule 1 — the compiler will point at it:
 std::string make_tag(std::string prefix = "tag", int id) {
     return prefix + std::to_string(id);
 }

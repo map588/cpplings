@@ -17,8 +17,15 @@
 //     threads race into the function, one initializes, the other waits.
 //     ("magic statics" — the compiler emits a guard for you.)
 //
-// Task: next_ticket() is supposed to hand out 1, 2, 3, ... but its counter
-// is reborn as 0 on every call. One keyword.
+// next_ticket() below is supposed to hand out 1, 2, 3, ... but its counter
+// is reborn as 0 on every call.
+//
+// Task: make next_ticket() count across calls — all three asserts pass.
+// Constraints:
+//   - the fix is one keyword
+//   - no global variable, no parameter — the state stays inside the
+//     function
+//   - don't change the asserts
 
 #include <cassert>
 

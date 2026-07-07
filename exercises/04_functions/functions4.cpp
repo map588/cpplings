@@ -15,9 +15,15 @@
 // rvalue reference — `static_cast<int&&>(x)` in costume. All it changes is
 // WHICH OVERLOAD gets picked.
 //
-// Task: fill in the answers. Then a thought experiment (answer is in the
-// solution's comments): if the int&& overload were deleted, what would
-// pick(5) return?
+// Task: replace each TODO_C comparison with the letter the call really
+// produces — all five asserts pass.
+// Constraints:
+//   - answer from the rules above first, then verify by running
+//   - don't change the pick overloads or any call expression
+//   - leave TODO_C itself defined as '?'
+//
+// Then a thought experiment (answer is in the solution's comments): if
+// the int&& overload were deleted, what would pick(5) return?
 
 #include <cassert>
 #include <utility>

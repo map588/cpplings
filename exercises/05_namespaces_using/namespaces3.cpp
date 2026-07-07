@@ -19,19 +19,24 @@
 // of nested ::type members — that's why old code is littered with
 // `typename Foo<T>::type`.)
 //
-// Task: fill in the three aliases. The static_asserts define them.
+// Task: define the three aliases — the static_asserts are the spec.
+//   - the file compiles and every static_assert passes
+// Constraints:
+//   - use alias-declarations, not typedef
+//   - #2 must work for any element type with a single declaration
+//   - don't change the static_asserts
 
 #include <type_traits>
 #include <vector>
 
-// 1. A 64-bit row of pixels:
-using Row = void;  // TODO: std::vector of unsigned char
+// 1. A row of pixels:
+using Row = void;  // TODO — the first static_assert says exactly what
 
 // 2. An alias TEMPLATE: Matrix<T> is a vector of vectors of T.
-// TODO: declare it (typedef won't work here!)
+// TODO: declare it (typedef can't do this one!)
 
-// 3. A function-pointer type taking (int, int) and returning bool:
-using Comparator = void;  // TODO
+// 3. A function-pointer type:
+using Comparator = void;  // TODO — see the last static_assert
 
 static_assert(std::is_same_v<Row, std::vector<unsigned char>>);
 static_assert(std::is_same_v<Matrix<int>, std::vector<std::vector<int>>>);

@@ -20,7 +20,16 @@
 // built against different library versions fail to LINK instead of
 // corrupting memory at runtime. ABI safety via namespaces.
 //
-// Task: v2 is supposed to be the default, but nobody declared it inline.
+// Below, v2 is supposed to be the current version, reachable through the
+// parent — but nobody told the compiler that.
+//
+// Task: make all three static_asserts pass.
+//   - mathlib::checksum(123) must mean v2's checksum
+//   - mathlib::v1:: and mathlib::v2:: keep working, spelled as-is
+// Constraints:
+//   - the fix is one keyword in the right place
+//   - don't change the static_asserts or the checksum bodies
+//   - no using-directives, no aliases, no forwarding function
 
 namespace mathlib {
     namespace v1 {

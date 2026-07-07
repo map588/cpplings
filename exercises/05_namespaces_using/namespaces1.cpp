@@ -15,9 +15,14 @@
 // `namespace audio::dsp { }` — C++17. Before that you had to write
 // `namespace audio { namespace dsp { } }`.
 //
-// Task: main() refers to the nested namespace by paths that don't exist.
-// Fix it two ways: full qualification for the first, a namespace alias
-// for the rest.
+// main() below refers to the nested namespace by paths that don't exist.
+//
+// Task: make every static_assert compile and pass.
+//   - fix the first one with full qualification (no alias, no using)
+//   - make the remaining two work through an alias named `mix`
+// Constraints:
+//   - don't change any static_assert line
+//   - no using-directives anywhere
 
 namespace audio::dsp {
     constexpr int kSampleRate = 48000;
@@ -28,7 +33,8 @@ int main() {
     // `dsp` is not a top-level namespace — it lives inside `audio`.
     static_assert(dsp::kSampleRate == 48000);
 
-    // Introduce `namespace mix = ...;` here, then use it below:
+    // Something is missing here — the static_asserts below pin down
+    // exactly what `mix` has to mean:
     static_assert(mix::half_rate() == 24000);
     static_assert(mix::kSampleRate - mix::half_rate() == 24000);
     return 0;

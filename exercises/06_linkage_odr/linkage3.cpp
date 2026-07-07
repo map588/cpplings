@@ -11,17 +11,18 @@
 // breaks when the link order changes. The nastiest bug class in C++.
 //
 // A TU-private helper should have INTERNAL linkage — invisible to the
-// linker, so every file can have its own. Two spellings:
+// linker, so every file can keep its own. C++ has two spellings for that:
+// a keyword inherited from C that only works for functions and variables,
+// and a namespace trick that also covers types and templates. Prefer the
+// second.
 //
-//   static std::string normalize(...) { }   // the C way; functions only
-//
-//   namespace {                              // ANONYMOUS namespace —
-//       std::string normalize(...) { }      // the C++ way. Works for
-//       struct Helper { ... };               // types and templates too,
-//   }                                        // which static can't do.
-//
-// Task: give each file's normalize() internal linkage (fix BOTH files —
-// pick the anonymous-namespace spelling).
+// Task: make the two files link, run, and exit 0.
+//   - both asserts pass — each file still runs ITS OWN normalize
+// Constraints:
+//   - fix BOTH files, and use the spelling that would also work for a type
+//   - don't rename either normalize, don't change a body, don't merge them
+//   - render_header must stay visible across TUs — only the helpers go
+//     private
 
 #include <cassert>
 #include <string>

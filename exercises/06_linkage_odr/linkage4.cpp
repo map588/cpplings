@@ -20,8 +20,13 @@
 // (The "identical in all TUs" part is on YOU — that's the ODR. Same
 // header included everywhere = automatically identical = safe.)
 //
-// Task: fix linkage4_util.h. Two correct one-word answers exist — the
-// hint discusses both.
+// Task: make both TUs link, run, and exit 0.
+//   - the fix is one word, and it belongs in linkage4_util.h
+//   - two correct one-word answers exist — the hint discusses both
+// Constraints:
+//   - clamp01 stays DEFINED (with its body) in the header, included by
+//     both .cpp files — don't move the body into a .cpp
+//   - don't touch linkage4_stats.cpp or the asserts
 
 #include "linkage4_util.h"
 
