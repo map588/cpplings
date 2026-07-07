@@ -12,17 +12,24 @@
 //                         terminates — loudly, with a stack trace. When
 //                         in doubt, this is the honest accessor.
 //
-// (And value_or(x) never fails at all — the right call when a fallback
-// exists. C++23 adds monadic chains: opt.and_then(f).transform(g) —
-// reading note.)
+// (And value_or(x) never fails at all. C++23 adds monadic chains:
+// opt.and_then(f).transform(g) — reading note.)
 //
 // The config below is missing "retries". The shipped code dereferences
 // the empty optional anyway — UB that happens to "work", until lookup()
-// is reordered or the optimizer gets clever. Make the absence handling
-// explicit instead.
+// is reordered or the optimizer gets clever.
 //
-// Task: fix retry_limit() to use the documented default (3) when the
-// key is missing — without UB and without throwing.
+// Task: make the absence handling explicit.
+//   - retry_limit() returns the documented default (3) when the key is
+//     missing, and the configured value when it's present
+//   - no UB, no throwing on the missing-key path
+//   - the quiz assert at the bottom: replace the TODO answer with the
+//     truth
+// Constraints:
+//   - do not add "retries" to config; do not change lookup() or the
+//     other asserts in main
+//   - no try/catch in retry_limit — pick the accessor whose failure
+//     mode you can rule out (the table above is the whole decision)
 
 #include <cassert>
 #include <map>

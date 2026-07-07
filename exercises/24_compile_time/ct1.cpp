@@ -6,19 +6,26 @@
 // std::string member, it cheerfully serializes a dangling heap pointer
 // to disk. Today it compiles. The corruption is at restore time.
 //
-// Type traits make the requirement enforceable AT COMPILE TIME:
+// Type traits make requirements like this enforceable AT COMPILE
+// TIME: one declaration inside the template turns "corrupts saves at
+// 3 AM" into a compile error carrying YOUR message, at the guilty
+// instantiation. (<type_traits> is full of such predicates:
+// is_standard_layout for C interop, is_trivially_destructible for
+// skip-the-dtors optimizations — modules 08/09 already used
+// is_nothrow_move_constructible. The one this file needs is spelled
+// out at the bottom of main.)
 //
-//     static_assert(std::is_trivially_copyable_v<T>,
-//                   "T has remote parts — write a real serializer");
-//
-// (<type_traits> is full of these gates: is_standard_layout for C
-// interop, is_trivially_destructible for skip-the-dtors optimizations
-// — and modules 08/09 already used is_nothrow_move_constructible.)
-//
-// Task 1: add the gate to write_binary, and watch SaveGame get refused
-// with YOUR message instead of corrupting saves.
-// Task 2: make SaveGame trivially copyable — the player name becomes a
-// fixed char array (the classic file-format answer).
+// Task 1: gate write_binary so any non-trivially-copyable T is
+// refused at compile time, with a message that says why.
+// Task 2: redesign SaveGame to pass the gate — the strcmp assert
+// dictates what shape the player name must take (the classic
+// file-format answer).
+//   - the file compiles, every assert passes, runs clean under the
+//     sanitizers
+// Constraints:
+//   - the gate lives inside write_binary, not at call sites
+//   - keep read_binary, main, and every assert unchanged
+//   - SaveGame keeps all three fields: player, level, health
 
 #include <cassert>
 #include <cstring>
@@ -53,7 +60,8 @@ int main() {
 
     SaveGame restored = read_binary<SaveGame>();
     assert(restored.level == 7 && restored.health == 99.5);
-    assert(std::strcmp(restored.player, "ada") == 0);   // expects char[]!
+    assert(std::strcmp(restored.player, "ada") == 0);   // this call constrains
+                                                        // player's new type
 
     static_assert(std::is_trivially_copyable_v<SaveGame>);
     return 0;

@@ -4,22 +4,24 @@
 //
 //     std::ranges::sort(v);                    // begin/end: gone
 //
-// And they take a PROJECTION — "look at this part of each element":
+// And they take a PROJECTION — "look at this part of each element".
+// Where the classic algorithms made you write comparator-lambda
+// boilerplate (lambdas5: `[](a, b) { return a.age < b.age; }`, with the
+// ever-present risk of writing the comparison backwards), the ranges
+// versions let you hand over just the PIECE of the element to operate
+// on — a pointer-to-member is enough. The same projection idea runs
+// through the whole algorithm family: sorting, min/max, find, count.
 //
-//     std::ranges::sort(people, {}, &Person::age);
-//     //                        ^    ^ project each Person to .age
-//     //                        ^ default comparator (std::less)
+// Two things to work out from the signatures (cppreference is fair
+// game): where the projection argument slots in, and how to say "just
+// use the default comparator" when projecting is all you want.
 //
-// That replaces the comparator-lambda boilerplate you wrote in
-// lambdas5: no `[](a, b) { return a.age < b.age; }`, no risk of writing
-// the comparison backwards, and the same projection idea works across
-// min/max/find/count:
-//
-//     std::ranges::max_element(people, {}, &Person::age)
-//     std::ranges::count(people, 30, &Person::age)
-//
-// Task: modernize all three TODO lines with ranges + projections. No
-// lambdas needed anywhere.
+// Task: modernize the three numbered lines with range algorithms.
+//   - the program compiles and every assert passes
+//   - all three use projections; no lambdas anywhere in the file
+// Constraints:
+//   - do not give Person an operator< (or any comparison operator)
+//   - do not change any assert line
 
 #include <algorithm>
 #include <cassert>

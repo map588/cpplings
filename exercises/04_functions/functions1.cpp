@@ -12,8 +12,16 @@
 // conversions.
 //
 // Each overload returns a letter so the static_asserts can show which one
-// won. Task: fix the wrong guesses, then resolve the ambiguous call by
-// adding a `long` overload (returning 'l').
+// won.
+//
+// Task: make the program compile with every static_assert passing.
+//   - the four TODO lines record wrong predictions — correct each expected
+//     letter using the ranking above
+//   - the last call must stop being ambiguous; its assert already tells
+//     you what the winning candidate returns
+// Constraints:
+//   - don't change any pick(...) call — no casts at the call sites
+//   - keep the two existing overloads exactly as they are
 
 constexpr char pick(int)    { return 'i'; }
 constexpr char pick(double) { return 'd'; }
@@ -28,7 +36,7 @@ int main() {
     static_assert(pick(7.5f) == 'i');    // TODO — float promotes to...
 
     // long → int and long → double are equally ranked conversions:
-    static_assert(pick(7L) == 'l');      // ambiguous! add the overload
+    static_assert(pick(7L) == 'l');      // ambiguous — no candidate outranks the other... yet
     return 0;
 }
 

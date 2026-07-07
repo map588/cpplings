@@ -12,17 +12,21 @@
 // is the legibility damage: callers need try/catch to express an
 // ordinary loop.
 //
-// Module 19 gave the right tool: std::optional — absence in the type,
-// checked with an `if`, free.
-//
 // The decision table once more:
 //   expected absence/outcome     → optional / expected(C++23)
 //   exceptional, cross-layer     → exceptions (ctors especially — they
 //                                  have no return channel!)
 //   C / ABI boundaries           → error codes (+[[nodiscard]], C++17)
 //
-// Task: convert next_token to return std::optional<std::string>, and
-// de-try/catch the loop in count_tokens.
+// Task: move "out of tokens" out of the exception channel.
+//   - the static_assert in main states the required signature — satisfy
+//     it, and make all three count_tokens asserts pass
+//   - count_tokens becomes an ordinary loop: no try, no catch
+// Constraints:
+//   - next_token must not throw — exhaustion is an expected outcome and
+//     must live in the return value
+//   - keep the tokenizing logic (space skipping, token slicing) intact
+//   - do not change main
 
 #include <cassert>
 #include <optional>

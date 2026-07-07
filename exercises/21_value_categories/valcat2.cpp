@@ -13,12 +13,19 @@
 //
 // brightest_pixel() below returns by VALUE, so the call is a prvalue —
 // and assigning to a prvalue ("expression is not assignable") is
-// today's compile error. The caller wants to DIM that pixel in place.
+// today's compile error. The caller wants to DIM that pixel in place,
+// writing through the call itself.
 //
-// Task: make brightest_pixel return a reference to the element inside
-// the caller's vector. (Returning a reference INTO a parameter is the
-// legitimate version of valcat4's crime: the caller owns the vector,
-// which outlives the call.)
+// Task: make main compile and pass exactly as written.
+//   - the two assignments through brightest_pixel(image) must modify
+//     the caller's vector (the asserts check the contents)
+// Constraints:
+//   - do not change main
+//   - brightest_pixel still returns "the pixel" — not an index, not a
+//     pointer
+//   - mind the lifetime promise you're making: the object behind what
+//     you return must outlive the call (here the caller's vector does —
+//     valcat4 shows the illegitimate twin)
 
 #include <cassert>
 #include <vector>

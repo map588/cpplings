@@ -22,7 +22,15 @@
 // non-owning interfaces can instead make its dtor `protected` and
 // non-virtual — deletion through the base then doesn't compile.)
 //
-// Task: one line in Sensor.
+// Task: make destruction through the base pointer run the whole object's
+// destructor chain.
+//   - all asserts pass, including live_buffers == 0 after the scope
+//   - runs clean under ASan/UBSan (the watcher builds with them)
+// Constraints:
+//   - main() stays as written — deleting through unique_ptr<Sensor> is
+//     the point, not the bug
+//   - TempSensor stays as written
+//   - the fix is one line, in Sensor
 
 #include <cassert>
 #include <memory>

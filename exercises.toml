@@ -61,6 +61,15 @@ hints = [
 ]
 
 [[exercises]]
+name = "bits1"
+path = "exercises/01_types/bits1.cpp"
+mode = "run"
+hints = [
+  "Set = OR the mask in; clear = AND with the inverted mask; toggle = XOR; test = AND, then compare to zero. A field write must clear the field's old bits before ORing in the new value shifted up; a field read isolates with the mask, then shifts down.",
+  "reg |= ENABLE; is_ready = (reg & READY) != 0; reg &= ~IRQ; reg ^= LED (twice). Field write: reg = (reg & ~MODE_MASK) | (5u << MODE_SHIFT); read: mode = (reg & MODE_MASK) >> MODE_SHIFT. The 8-bit one: inverted = static_cast<std::uint8_t>(~ctrl) — ~ happened in int.",
+]
+
+[[exercises]]
 name = "types4"
 path = "exercises/01_types/types4.cpp"
 mode = "run"
@@ -114,6 +123,15 @@ mode = "run"
 hints = [
   "Through a const reference you may only call member functions marked const. Which Counter methods don't mutate?",
   "Add const to value() and is_even(): `int value() const { ... }`. Leave increment() non-const — it mutates.",
+]
+
+[[exercises]]
+name = "volatile1"
+path = "exercises/02_const_constexpr/volatile1.cpp"
+mode = "run"
+hints = [
+  "The error says the call 'discards qualifiers' — the same refusal you'd get passing const data to a plain T& parameter. The helpers claim the register is ordinary memory; its type says volatile. Propagate the qualifier through the parameter types, just like const-correctness.",
+  "write_reg takes volatile std::uint32_t*; read_reg and wait_until_set take const volatile std::uint32_t* (both qualifiers: they only read, and every read must really happen). Nothing else changes.",
 ]
 
 [[exercises]]
@@ -333,6 +351,16 @@ extra_files = ["exercises/06_linkage_odr/linkage5_other.cpp"]
 hints = [
   "No link error this time — namespace-scope const has INTERNAL linkage in C++, so each TU owns a private kPi. Same value, different addresses; the identity assert fails.",
   "inline constexpr double kPi = ...; — the C++17 inline variable: definable in the header, folded by the linker into one program-wide object.",
+]
+
+[[exercises]]
+name = "cabi1"
+path = "exercises/06_linkage_odr/cabi1.cpp"
+mode = "run"
+extra_files = ["exercises/06_linkage_odr/cabi1_vendor.cpp"]
+hints = [
+  "Both TUs compile; the LINKER can't find `vendor_init()`. main's object wants the mangled C++ symbol (_Z11vendor_initv) while the vendor emitted the plain C one (vendor_init). The declarations must promise C linkage so the compiler looks up the unmangled names.",
+  "Wrap the three declarations in extern \"C\" { ... } (or prefix each with extern \"C\"). That's precisely what the #ifdef __cplusplus dance in the vendor's real header would have done for you.",
 ]
 
 # ----------------------------------------------------------- 07_classes1
@@ -575,6 +603,16 @@ mode = "run"
 hints = [
   "ConnCloser::operator() should call legacy_close(c). That makes ConnPtr a one-line RAII wrapper for the whole legacy API.",
   "fetch: `ConnPtr c(legacy_open());` then legacy_query(c.get(), x), and delete the manual legacy_close — both exits are covered by the deleter.",
+]
+
+[[exercises]]
+name = "fd1"
+path = "exercises/10_raii_smart_ptrs/fd1.cpp"
+mode = "run"
+platforms = ["linux"]  # counts open fds via /proc/self/fd
+hints = [
+  "Two jobs. The destructor is where the guarantee lives: close fd_ if it's still owned (>= 0). And a move must TRANSFER that duty — take the source's fd and leave -1 behind, or two destructors will close one fd (module 09's steal-and-null, applied to an int).",
+  "~FdGuard() { if (fd_ >= 0) ::close(fd_); }  Move ctor: fd_(std::exchange(other.fd_, -1)) — std::exchange (C++14) steals and marks in one expression; move assign closes its own fd first, then steals the same way. In reload_config: FdGuard fd(::open(kConfigPath, O_RDONLY));, use fd.get() for the checks and the read, and delete the ::close line — every return path is now covered.",
 ]
 
 # -------------------------------------------------------- 11_polymorphism
@@ -896,6 +934,15 @@ hints = [
 ]
 
 [[exercises]]
+name = "ring1"
+path = "exercises/16_containers/ring1.cpp"
+mode = "run"
+hints = [
+  "Picture the layout: the oldest element lives at head_, and the next free slot is (head_ + count_) % N — every index step wraps with % N, never walks past the array. When a FULL ring is pushed, the slot you overwrite WAS the oldest, so head_ must advance too.",
+  "push: buf_[(head_ + count_) % N] = v; then if (full()) head_ = (head_ + 1) % N; else ++count_;  pop: T v = buf_[head_]; head_ = (head_ + 1) % N; --count_; return v;",
+]
+
+[[exercises]]
 name = "containers1"
 path = "exercises/16_containers/containers1.cpp"
 mode = "run"
@@ -1083,6 +1130,16 @@ hints = [
   "count_tokens collapses to: while (t.next_token()) ++n; — the optional's bool conversion is the loop condition. Delete the try/catch entirely.",
 ]
 
+[[exercises]]
+name = "errno1"
+path = "exercises/20_errors/errno1.cpp"
+mode = "run"
+platforms = ["linux"]  # exercises errno through /proc paths
+hints = [
+  "By the time the error_code is constructed, log_failure has already run — and its failed write() replaced errno (with EBADF, the logger's own problem). errno is only trustworthy on the very next line after the failed call; it must be copied out before ANYTHING else executes.",
+  "if (fd < 0) { const int saved = errno; log_failure(\"...\"); return std::error_code(saved, std::generic_category()); } — the saved local survives the logging, ENOENT and ENOTDIR each reach the caller under their own name, and message() comes along for free.",
+]
+
 # ------------------------------------------------------- 21_value_categories
 
 [[exercises]]
@@ -1233,6 +1290,24 @@ hints = [
   "make_report: out.reserve(k); before the loop — the 1→2→4→8 growth chain collapses to a single allocation and the final assert holds.",
 ]
 
+[[exercises]]
+name = "mmio1"
+path = "exercises/23_memory_layout/mmio1.cpp"
+mode = "run"
+hints = [
+  "The compiler inserts only the padding alignment demands — between two u8 members that's zero bytes, and it never appends a trailing word. Every hole the datasheet shows must be a member you declare yourself.",
+  "Spell out the holes: after PRESCALE add `std::uint8_t reserved0;` (0x05), after IRQ_MASK `std::uint8_t reserved1;` (0x07), and a trailing `std::uint32_t reserved2;` (0x0C). Offsets become 0,4,5,6,7,8,12 and sizeof 0x10.",
+]
+
+[[exercises]]
+name = "endian1"
+path = "exercises/23_memory_layout/endian1.cpp"
+mode = "run"
+hints = [
+  "Shifts operate on the VALUE, not the stored bytes: `id >> 24` is the wire's first (most significant) byte no matter how the host stores id. Emit each byte with a shift; rebuild with shifts and bitwise OR.",
+  "serialize: out[0]=uint8_t(id>>24) … out[3]=uint8_t(id); out[4]=uint8_t(reading>>8); out[5]=uint8_t(reading). deserialize: device_id = (uint32_t{in[0]}<<24)|(uint32_t{in[1]}<<16)|(uint32_t{in[2]}<<8)|in[3]; reading = uint16_t((uint32_t{in[4]}<<8)|in[5]). Shift in a uint32_t for BOTH fields — bare in[4] promotes to int, and on a 16-bit-int target in[4]<<8 overflows it.",
+]
+
 # ----------------------------------------------------------- 24_compile_time
 
 [[exercises]]
@@ -1350,6 +1425,15 @@ hints = [
   "After get(), the future is spent: valid() == false. (One result, moved out, one time.)",
 ]
 
+[[exercises]]
+name = "signal1"
+path = "exercises/25_concurrency/signal1.cpp"
+mode = "run"
+hints = [
+  "Bug 1: a plain bool is not on the standard's allowed list for handlers — the flag must be the exact type the static_assert names: volatile std::sig_atomic_t g_stop = 0;. Bug 2: read the raise() line, then read the std::signal() line — the handler is subscribed to a signal nobody sends, so SIGUSR1 falls through to its default action: terminate.",
+  "std::signal(SIGUSR1, on_shutdown); — now raise(SIGUSR1) runs YOUR handler synchronously (it returns before raise does), g_stop becomes 1, the loop exits on the very next check, and both asserts pass with iterations == 10'000.",
+]
+
 # --------------------------------------------------------- 26_modern_extras
 
 [[exercises]]
@@ -1386,6 +1470,15 @@ mode = "run"
 hints = [
   "After yielding n, loop until 1: while (n != 1) { n = (n % 2 == 0) ? n / 2 : 3 * n + 1; co_yield n; } — each co_yield suspends with all locals preserved.",
   "Mind the trivial case: collatz(1) must yield exactly one value (the leading co_yield n covers it) and then fall off the end — return_void, done.",
+]
+
+[[exercises]]
+name = "bitops1"
+path = "exercises/26_modern_extras/bitops1.cpp"
+mode = "run"
+hints = [
+  "Warm-ups: ENABLED = 0b1011'0110 has 5 bits set; its highest is bit 7, so bit_width is 8; its lowest set bit is bit 1. rotl on a uint8_t wraps the top bit around: 0b1000'0001 rotated left once is 0b0000'0011 == 3.",
+  "dispatch_all: std::size_t n = 0; while (pending != 0) { fired[n++] = std::countr_zero(pending); pending &= pending - 1; } return n; — countr_zero names the lowest set bit, x &= x - 1 clears exactly it.",
 ]
 
 [[exercises]]

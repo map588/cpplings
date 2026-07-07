@@ -19,8 +19,17 @@
 // have survived thirty years of code review, and the iterator interface
 // means they work on any container — list, deque, array — unchanged.
 //
-// Task: reimplement all three function bodies with the algorithms. No
-// `for`, no `while`.
+// Task: reimplement all three function bodies with standard algorithms.
+//   - every assert passes — note total_weight() must return 7.5, not 6:
+//     the hand-rolled loop's accumulator bug is exactly the trap the
+//     algorithm version can inherit if you let it
+//   - heaviest() must stay safe for an EMPTY vector (return 0.0): an
+//     algorithm that answers with an iterator makes you decide what
+//     end() means before dereferencing
+// Constraints:
+//   - no `for`, no `while`, no manual loops of any kind
+//   - one algorithm call per function
+//   - don't change the signatures or the asserts
 
 #include <algorithm>
 #include <cassert>
@@ -28,21 +37,21 @@
 #include <vector>
 
 double total_weight(const std::vector<double>& weights) {
-    int sum = 0;                             // spot the bug — and notice
-    for (double w : weights) sum += w;       // accumulate(..., 0) would
-    return sum;                              // keep it! Use 0.0.
+    int sum = 0;                             // spot the accumulator bug —
+    for (double w : weights) sum += w;       // don't carry it across
+    return sum;
 }
 
 double heaviest(const std::vector<double>& weights) {
     double best = 0;
-    for (double w : weights) {               // TODO: max_element
+    for (double w : weights) {               // TODO
         if (w > best) best = w;
     }
     return best;
 }
 
 bool carries(const std::vector<double>& weights, double exact) {
-    for (double w : weights) {               // TODO: find
+    for (double w : weights) {               // TODO
         if (w == exact) return true;
     }
     return false;

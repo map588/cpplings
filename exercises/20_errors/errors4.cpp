@@ -20,12 +20,20 @@
 //     1. build the new state in temporaries     (may throw — who cares,
 //                                                *this is untouched)
 //     2. validate                                (may throw — same)
-//     3. commit via swap / move-assign           (noexcept — point of
-//                                                no return, but no
-//                                                failures past it)
+//     3. commit with operations that CANNOT throw (point of no return —
+//                                                but nothing can fail
+//                                                past it)
 //
-// Task: give load_crate the strong guarantee. The post-throw asserts
-// define "nothing changed".
+// Task: give load_crate the strong guarantee.
+//   - the program runs and every assert passes — the post-throw
+//     asserts define "nothing changed"
+//   - an overweight crate leaves items_ and total_weight_ exactly as
+//     they were before the call
+// Constraints:
+//   - the capacity check must still throw std::overflow_error
+//   - no try/catch inside load_crate — commit-or-rollback by
+//     construction, not by catching and repairing
+//   - do not change main or Inventory's public interface
 
 #include <cassert>
 #include <stdexcept>

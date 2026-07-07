@@ -16,11 +16,17 @@
 //   - copying a short string is a memcpy of the object — genuinely cheap
 //   - MOVING a short string also copies (module 09's "theft" needs a
 //     heap buffer to steal — that's why move1 used a long string!)
-//   - capacity() starts at the SSO size, not 0
 //
-// Task: predict the three TODOs. (Exact SSO capacity varies — libc++ 22,
-// libstdc++ 15 — the strings below are chosen to behave the same on
-// both.)
+// Task: replace the three TODO_BOOL uses with the values that make the
+// asserts pass — by prediction from the SSO model, not trial and error.
+//   - for each string, decide where its characters must live
+//   - the third one: an empty string has allocated nothing — reason out
+//     what its capacity() can be before you run
+//   - (exact SSO capacity varies — libc++ 22, libstdc++ 15 — the
+//     strings below are chosen to behave the same on both)
+// Constraints:
+//   - don't change chars_inside_object(), the strings, or any assert
+//   - each TODO_BOOL use becomes a literal true or false
 
 #include <cassert>
 #include <string>
@@ -40,7 +46,7 @@ int main() {
     assert(chars_inside_object(tiny) == TODO_BOOL);
     assert(chars_inside_object(huge) == TODO_BOOL);
 
-    // An empty string never allocates — its capacity is the SSO buffer:
+    // An empty string has allocated nothing — so what is its capacity?
     std::string empty;
     assert((empty.capacity() > 0) == TODO_BOOL);
 

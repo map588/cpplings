@@ -29,11 +29,17 @@ container, which operations move your data out from under you.
 - **`std::span`** *(C++20)* — `string_view`'s sibling for any contiguous
   data: one non-owning `{pointer, size}` parameter type that accepts
   `vector`, `std::array`, and C arrays alike.
+- **The no-heap container: a fixed-capacity ring buffer.** Firmware and
+  hard-real-time code ban allocation after startup (fragmentation,
+  nondeterministic latency, uncatchable failure) — the workhorse is a
+  compile-time-sized ring over `std::array` *(C++11)*: wrap-around index
+  arithmetic, overwrite-oldest-when-full, zero allocations (audited).
 
 ## Version notes
 
 | Feature | Standard |
 |---|---|
+| `std::array` | C++11 |
 | `unordered_map` / `unordered_set` | C++11 |
 | `try_emplace`, `insert_or_assign` | C++17 |
 | `contains()` | C++20 |

@@ -10,17 +10,22 @@
 // pushing. ASan will show you the heap-use-after-free, with the free
 // buried inside vector's reallocation.
 //
-// Two honest fixes:
-//   - reserve(n) up front when you know n: one allocation, pointers
-//     stable for the run, no move storms
-//   - or don't hold pointers across growth — hold an INDEX; indexes
-//     survive reallocation
+// Two honest fixes exist: pre-plan the storage so a known day of data
+// never triggers growth (vector's API lets you ask for room up front),
+// or stop holding a pointer across growth — an INDEX survives
+// reallocation. The asserts below pin down which one today wants.
 //
 // (How the elements travel during growth — moved or copied — was
 // move3's noexcept story. Same event, seen from the other side.)
 //
-// Task: fix record_baseline-and-friends with reserve(). The capacity
-// asserts encode the win.
+// Task: make the program run clean under ASan with every assert passing.
+//   - the baseline pointer stays valid for the whole run
+//   - the whole day of telemetry costs exactly ONE allocation — that is
+//     what the capacity assert encodes
+// Constraints:
+//   - `baseline` stays a pointer, taken exactly where it is now
+//   - don't change or remove any assert
+//   - the fix is one line
 
 #include <cassert>
 #include <vector>
@@ -40,9 +45,8 @@ int main() {
     assert(*baseline == 36.6);
 
     assert(samples.size() == 1001);
-    // With reserve done right, the day causes ZERO reallocations:
-    // (uncomment once fixed)
-    // assert(samples.capacity() == 1001);
+    // With the storage plan right, the day causes ZERO reallocations:
+    assert(samples.capacity() == 1001);
     return 0;
 }
 

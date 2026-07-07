@@ -33,6 +33,13 @@ survives a failure.
   (module 19); error codes at C boundaries. Using exceptions as
   control flow for expected cases is both slow (throwing is expensive;
   the happy path is free) and illegible.
+- **`errno` and `<system_error>`** *(C++11)*. Syscalls report failure
+  by return value plus thread-local `errno` — meaningful only
+  *immediately* after the failed call; the next libc call may overwrite
+  it. `std::error_code{errno, std::generic_category()}` gives the raw
+  int a type, a `message()`, and portable comparison against the
+  `std::errc` enumerators — the vocabulary of `filesystem`'s
+  non-throwing overloads and of exception-free codebases.
 
 ## Version notes
 
@@ -40,5 +47,6 @@ survives a failure.
 |---|---|
 | Exceptions, unwinding, `std::exception` hierarchy | C++98 |
 | `noexcept` (specifier & operator) | C++11 (`throw()` removed C++20) |
+| `<system_error>`: `error_code`, `errc`, categories | C++11 |
 | `[[nodiscard]]` — make callers look at error returns | C++17 |
 | `std::expected` | C++23 |

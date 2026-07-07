@@ -24,6 +24,11 @@ brings, and a graduation quiz.
   C++23 (`std::generator`). You'll write a generator-backed coroutine
   against provided machinery — enough to read coroutine code in the
   wild.
+- **`<bit>`** *(C++20)* — the bit-twiddling toolbox, standard and
+  `constexpr` at last: `has_single_bit` (is-power-of-two / one-flag
+  check), `popcount`, `countr_zero` (index of the lowest set bit — the
+  IRQ dispatch idiom, with `x & (x - 1)` to clear it), `bit_width`,
+  `rotl`/`rotr`. What used to be `__builtin_ctz` and friends.
 - **Modules** *(C++20 — reading note)* — `import std;` instead of
   textual `#include`; kills the ODR/include-guard problem class
   (module 06) at the root. Tooling (CMake + recent compilers) became
@@ -37,5 +42,5 @@ brings, and a graduation quiz.
 |---|---|
 | `<chrono>` | C++11 (literals C++14, calendar/time-zones C++20) |
 | `<filesystem>` | C++17 |
-| `std::format`, coroutines, modules | C++20 |
+| `std::format`, coroutines, modules, `<bit>` | C++20 |
 | `std::print`, `std::generator`, `import std;` | C++23 |

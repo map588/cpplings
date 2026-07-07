@@ -12,13 +12,19 @@
 // the report (this module's exercises swap ASan for TSan — they can't
 // be combined).
 //
-// For a lone counter the fix is std::atomic<int>: ++ becomes an
-// indivisible read-modify-write, race gone, no lock needed. Know its
-// limits before falling in love: atomics fix SINGLE-OBJECT races.
-// An invariant across two variables, or a container, needs a mutex
-// (conc3) — two atomics do not make their COMBINATION atomic.
+// For a lone counter, C++11 ships a dedicated wrapper type that makes
+// ++ one indivisible read-modify-write — race gone, no lock needed.
+// Know its limits before falling in love: it fixes SINGLE-OBJECT
+// races. An invariant across two variables, or a container, needs a
+// mutex (conc3) — two race-free objects do not make their COMBINATION
+// race-free.
 //
-// Task: make the counter atomic.
+// Task: make the counter race-free.
+//   - the assert passes: exactly 200'000 — every increment counted
+//   - runs clean under TSan (no data-race report)
+// Constraints:
+//   - no mutex — a lone counter deserves the lighter tool
+//   - keep both threads, the loop counts, and the assert
 
 #include <cassert>
 #include <thread>

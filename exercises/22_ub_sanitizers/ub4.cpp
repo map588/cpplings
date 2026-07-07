@@ -15,15 +15,20 @@
 //   years later. (char*/std::byte* are the blessed exception — they
 //   may alias anything.)
 //
-// The LEGAL transmuters, in order of preference:
+// The lesson: you may not LIE about a pointer's type — but you may
+// always COPY bytes into a real object of the type you want. The
+// standard library has blessed transmuters for exactly this (one as
+// old as C, one new in C++20); optimizers turn them into the single
+// load you were trying to write anyway. This file already includes
+// the header one of them lives in.
 //
-//     std::bit_cast<To>(from)        // C++20: constexpr-friendly,
-//                                    // sizes must match, no UB
-//     std::memcpy(&to, &from, n)     // the classic; compilers compile
-//                                    // it to a plain register move
-//
-// Task: parse_u32 reads a u32 from byte OFFSET 1 of a packet through a
-// casted pointer. Fix it with memcpy (or bit_cast from a copied array).
+// Task: make parse_payload return the u32 stored at byte offset 1.
+//   - the assert passes (0x12345678)
+//   - runs clean under the sanitizers (no misaligned-load report)
+// Constraints:
+//   - keep the packet bytes and the assert
+//   - no reinterpret_cast of the payload pointer to uint32_t* — the
+//     cast IS the bug, not a thing to decorate
 
 #include <cassert>
 #include <cstdint>

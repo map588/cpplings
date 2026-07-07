@@ -12,18 +12,19 @@
 // declares but does not DEFINE — no storage is allocated. Use it and the
 // LINKER complains: undefined symbol Widget::live_count. (Module 06
 // energy — recognize the error text!) The classical fix was an
-// out-of-class definition in exactly one .cpp file:
+// out-of-class definition in exactly one .cpp file — pure ceremony.
+// C++17 made the ceremony obsolete: the same mechanism that lets a
+// module-06 header variable be defined in one place lets a static
+// member declare AND define itself on its one line inside the class.
 //
-//     int Widget::live_count = 0;
+// (Tracker in special1 already used it — now you know why that worked.)
 //
-// C++17's inline variables made that ceremony obsolete:
-//
-//     inline static int live_count = 0;     // declares AND defines,
-//                                           // even in a header
-//
-// (Tracker in special1 already used this — now you know why it worked.)
-//
-// Task: fix the declaration the modern way.
+// Task: give live_count storage, the modern way.
+//   - compiles, LINKS, and every assert passes
+//   - the fix is confined to the one declaration line inside the class
+// Constraints:
+//   - no out-of-class definition (that's the pre-C++17 way)
+//   - live_count still starts at 0; don't change main or the asserts
 
 #include <cassert>
 

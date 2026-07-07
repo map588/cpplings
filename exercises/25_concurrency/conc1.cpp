@@ -15,10 +15,21 @@
 // applied to threads (it also carries a stop_token for cooperative
 // cancellation). Default to jthread.
 //
-// Task: fix word_total — either join the threads before returning, or
-// (better) make them jthreads and let scope do it. Note the result
-// pattern: each thread writes ITS OWN slot, no sharing, no lock needed
-// — the parallel-sum shape you'll use everywhere.
+// Note word_total's result pattern before you fix it: each thread
+// writes ITS OWN slot of per_doc — no sharing, no lock needed. That's
+// the parallel-sum shape you'll use everywhere. The bug is only about
+// the workers' fate — and therefore about WHEN the totaling loop gets
+// to read.
+//
+// Task: make word_total wait properly for its workers.
+//   - the program exits 0 — no std::terminate
+//   - the assert passes: every worker finished writing before the
+//     totaling loop reads per_doc
+// Constraints:
+//   - keep the one-slot-per-thread pattern: no mutexes, no atomics —
+//     nothing here shares
+//   - the workers must still run concurrently (spawning one and
+//     waiting for it before spawning the next doesn't count)
 
 #include <cassert>
 #include <string>

@@ -9,17 +9,23 @@
 //
 // std::optional<T> (C++17) moves "might be absent" into the TYPE:
 //
-//     std::optional<std::size_t> find(...);     // can't be misread
+//     std::optional<T> find(...);                // can't be misread
 //
-//     if (auto i = find(...)) use(*i);           // operator bool + deref
-//     find(...).value_or(0)                      // fallback in one call
-//     i.has_value()  /  i.value()                // explicit spellings
+//     if (auto v = find(...)) use(*v);           // operator bool + deref
+//     find(...).value_or(fallback)               // fallback in one call
+//     v.has_value()  /  v.value()                // explicit spellings
 //
 // The empty state is std::nullopt — `return std::nullopt;` reads
 // exactly like what it means.
 //
-// Task: convert find_device to optional<std::size_t>. The call sites
-// below already speak optional — they define the API.
+// Task: rewrite find_device so the sentinel is gone and main compiles
+// as written.
+//   - the program compiles and every assert passes
+//   - the call sites in main define the API — read them to pin down
+//     the exact return type they demand
+// Constraints:
+//   - do not change main
+//   - no negative numbers, no magic values — absence lives in the type
 
 #include <cassert>
 #include <optional>

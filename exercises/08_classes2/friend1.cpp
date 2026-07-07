@@ -8,21 +8,28 @@
 // The pattern worth learning is the HIDDEN FRIEND idiom: declare AND
 // DEFINE the friend inside the class:
 //
-//     class Temperature {
-//         friend bool is_freezing(const Temperature& t) {
-//             return t.celsius_ <= 0.0;
+//     class Wallet {
+//         friend bool can_afford(const Wallet& w, int price) {
+//             return w.balance_ >= price;   // full access to privates
 //         }
+//         int balance_ = 0;
 //     };
 //
 // Such a function is NOT a member (no this; it takes the object as a
 // parameter) and is NOT visible to ordinary lookup — it can only be
-// found by ADL (module 05!), i.e. by calling is_freezing(temp) with a
-// Temperature argument. Benefits: the global namespace stays clean, the
+// found by ADL (module 05!), i.e. by calling can_afford(w, 5) with a
+// Wallet argument. Benefits: the global namespace stays clean, the
 // overload set stays small, and conversions can't sneak into the
 // argument. It's how operator<< for your types is usually written.
 //
-// Task: is_freezing and operator<< both need access to celsius_.
-// Move them into the class as hidden friends.
+// Task: give is_freezing and operator<< access to celsius_ — as hidden
+// friends.
+//   - compiles and every assert passes
+//   - both stay NON-members (no this; the object arrives as a
+//     parameter) and remain callable exactly as main calls them
+// Constraints:
+//   - celsius_ stays private — no getters, no making it public
+//   - don't change main
 
 #include <cassert>
 #include <sstream>

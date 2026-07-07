@@ -25,6 +25,11 @@ compile time instead of runtime.
 - **`constinit` (C++20).** Forces compile-time *initialization* of a
   static/global without making the variable itself const. Kills the "static
   initialization order fiasco" for that variable.
+- **`volatile` (inherited from C).** The *other* qualifier: every read/write
+  in the source is a real access, emitted in order — for memory-mapped I/O
+  and signal handlers. It is **not** a thread-synchronization tool (that's
+  `std::atomic`, C++11). Like const, dropping it silently is forbidden, and
+  it propagates through APIs the same way.
 
 ## Version notes
 
@@ -35,3 +40,4 @@ compile time instead of runtime.
 | `constexpr` lambdas, `if constexpr` | C++17 |
 | `consteval`, `constinit`, `constexpr` virtual / try / `std::vector` in constexpr | C++20 |
 | `mutable` members (escape hatch from const) | C++98 |
+| Compound assignment on `volatile` lvalues deprecated | C++20 |

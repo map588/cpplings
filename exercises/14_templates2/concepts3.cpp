@@ -1,26 +1,30 @@
 // concepts3.cpp
 //
 // Before concepts, "different code per category of T" meant enable_if
-// gymnastics or tag dispatch. Now: write several templates with
-// different constraints, and overload resolution picks the MOST
-// CONSTRAINED one that matches (subsumption):
+// gymnastics or tag dispatch. Now: write several templates with the
+// SAME signature but different constraints, and overload resolution
+// picks the MOST CONSTRAINED one the argument satisfies (subsumption).
+// A constrained template beats an unconstrained one outright — no
+// ambiguity, no tie-breaking ritual.
 //
-//     template <typename T>            std::string describe(T);  // anything
-//     template <std::integral T>       std::string describe(T);  // tighter
-//     template <std::floating_point T> std::string describe(T);  // tighter
+// Two spellings for "T, which must satisfy SomeConcept", both worth
+// recognizing on sight:
 //
-//     describe(42)      → the integral version (more constrained beats
-//                         unconstrained — no ambiguity)
-//     describe(2.5)     → the floating_point version
-//     describe("hi")    → the fallback
+//     template <SomeConcept T> ReturnType f(T x);   // constrained param
+//     ReturnType f(SomeConcept auto x);             // C++20 abbreviated
 //
-// The `template <std::integral T>` shorthand means "T, which must
-// satisfy std::integral". Even shorter — the C++20 abbreviated form:
+// The ready-made category concepts you met in concepts1 slot straight
+// in there.
 //
-//     std::string describe(std::integral auto x);
-//
-// Task: only the fallback exists. Add the two constrained overloads the
-// asserts demand.
+// Task: add overloads of describe() so that every assert passes.
+//   - integer arguments report "a whole number"
+//   - floating-point arguments report "a real number"
+//   - everything else still falls through to "something"
+// Constraints:
+//   - keep the unconstrained fallback exactly as it is
+//   - no enable_if, no tag dispatch, no if constexpr, no
+//     specializations — constraints alone must steer each call
+//   - do not change the asserts
 
 #include <cassert>
 #include <concepts>

@@ -8,19 +8,25 @@
 // the base run the base version; your "override" only runs when someone
 // calls it directly on the derived type.
 //
-// RedactingLogger below has TWO such near-misses:
-//   - format() dropped the const
-//   - prefix() takes std::string instead of const std::string&
+// RedactingLogger below has TWO such near-misses — a different detail is
+// wrong in each function.
 //
 // This is why `override` (C++11) exists. It's a CLAIM the compiler must
-// verify: "this overrides something — error if not." Add it to both
-// functions and the compiler will hand you the exact mismatches the
-// runtime was hiding.
+// verify: "this overrides something — error if not." Make the claim and
+// the compiler hands you the exact mismatches the runtime was hiding.
+// (Adopt the habit: every override, everywhere, forever. clang's
+// -Winconsistent-missing-override and -Wsuggest-override exist to
+// enforce it across a codebase.)
 //
-// Task: slap `override` on both derived functions, read the errors, fix
-// the signatures. (Then adopt the habit: every override, everywhere,
-// forever. clang's -Winconsistent-missing-override and
-// -Wsuggest-override exist to enforce it across a codebase.)
+// Task: make RedactingLogger genuinely override both functions.
+//   - the assert passes: a call through Logger& reaches the redacting
+//     versions of BOTH functions
+//   - both derived functions carry the compiler-verified claim, so any
+//     future signature drift fails to compile instead of hiding
+// Constraints:
+//   - Logger (the base) is correct as written — don't modify it
+//   - keep the redacted output text exactly as it is
+//   - don't dodge dispatch by calling the derived type directly
 
 #include <cassert>
 #include <string>

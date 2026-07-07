@@ -11,15 +11,25 @@
 // name — a different question. The inner parens force "treat it as an
 // expression".)
 //
-// The classics to internalize, because overload resolution (04),
-// binding (03) and movability (09) all key off them:
+// How to classify without a cheat sheet:
+//   - does the expression refer to an object that persists beyond the
+//     expression — something you could sensibly take the address of?
+//     LVALUE.
+//   - does it conjure a fresh, homeless value? PRVALUE.
+//   - is it a persistent object that's been marked "expiring — may be
+//     plundered"? XVALUE.
+// Overload resolution (04), reference binding (03) and movability (09)
+// all key off this taxonomy — these seven expressions are the classics
+// to internalize.
 //
-//   named variable        lvalue   (even if its TYPE is int&&!)
-//   x + 1, 42, x++        prvalue
-//   ++x, *p, arr[i]       lvalue   (++x and x++ disagree!)
-//   std::move(x)          xvalue
-//
-// Task: fix the wrong category claims.
+// Task: some of the category claims below are wrong. Fix them.
+//   - every static_assert passes
+//   - classify each expression from the rules above FIRST; only then
+//     let the compiler check you
+// Constraints:
+//   - edit only the claimed type (int / int& / int&&) in each assert —
+//     never the expression being probed
+//   - do not delete or reorder the static_asserts
 
 #include <type_traits>
 #include <utility>

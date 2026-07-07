@@ -23,7 +23,14 @@
 // HAS state, the attribute gracefully does nothing and the member gets
 // its bytes back.
 //
-// Task: fix Timeline's size with the attribute, then settle the quiz.
+// Task: make Timeline's static_assert hold, then settle the quiz.
+//   - sizeof(Timeline) == 16 — the comparator costs nothing
+//   - both quiz TODOs replaced with the numbers the address rules
+//     demand
+// Constraints:
+//   - Timeline keeps all three members with cmp declared first — no
+//     reordering, no removing cmp, no inheritance contortions
+//   - don't change the asserted 16; quiz — change only the TODOs
 
 #include <cstddef>
 

@@ -14,10 +14,16 @@
 //                                    The check-and-access in one step.
 //   v.index()                      — which alternative, by position
 //
-// The shipped parse_input() assumes every input is a number and
-// get<int>'s its way into an exception. Handle both alternatives.
+// The shipped describe() assumes every input is a number and get<int>'s
+// its way into an exception the moment a word arrives.
 //
-// Task: fix describe() with get_if (or holds_alternative + get).
+// Task: make describe() correct for every alternative Input can hold.
+//   - the program compiles and every assert passes
+//   - describe() never throws, whatever the active alternative
+// Constraints:
+//   - do not change parse_input, main, or the Input alias
+//   - no try/catch — check before you reach, or reach in a way that
+//     cannot fail
 
 #include <cassert>
 #include <string>

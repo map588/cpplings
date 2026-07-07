@@ -14,9 +14,18 @@
 // transform function. Predict the counter at each checkpoint —
 // internalizing this execution model is the whole exercise.
 //
-// (Note `take(1)`: it bounds CONSUMPTION. The filter still has to
-// CHURN through rejects to find that one paid order — laziness saves
-// the transform calls, not the filter's scanning.)
+// (Note: consuming just the FIRST element still forces the filter to
+// CHURN through rejects until it reaches a paid order — laziness saves
+// transform calls, not the filter's scanning.)
+//
+// Task: replace each TODO with the number the counter really holds at
+// that checkpoint.
+//   - the program compiles and every assert passes
+//   - derive each value from the execution model above BEFORE running —
+//     the compiler confirming your prediction is the exercise
+// Constraints:
+//   - do not touch the pipeline, the counter, or total_cents
+//   - do not delete or reorder the asserts
 
 #include <cassert>
 #include <ranges>

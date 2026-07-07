@@ -12,16 +12,22 @@
 // (int, double, pointers) pass by value — a reference is indirection with
 // no savings.
 //
-// Task: this file confuses which things should be const. Fix the
-// declarations so it compiles AND no longer copies the big string. Don't
-// weaken `greeting` — the whole point is that it can't change.
+// This file confuses which things should be const.
+//
+// Task: fix the declarations so the program compiles and passes.
+//   - compiles; every assert passes; exits 0
+//   - count_l no longer copies its argument, and still promises not to
+//     modify it
+// Constraints:
+//   - don't weaken `greeting` — the whole point is that it can't change
+//   - don't change count_l's body, the call sites, or any assert
 
 
 #include <cassert>
 #include <string>
 
-// This takes the string BY VALUE — a full copy per call. Make it take a
-// const reference instead.
+// This takes the string BY VALUE — a full copy per call. But it only
+// ever READS the text...
 std::size_t count_l(std::string text) {
     std::size_t n = 0;
     for (char c : text) {
@@ -33,8 +39,8 @@ std::size_t count_l(std::string text) {
 int main() {
     const std::string greeting = "hello, cpplings!";
 
-    // Tally of calls made so far. Someone marked it const, but a tally
-    // must change — const is wrong HERE (and right on `greeting`).
+    // Tally of calls made so far. Someone marked it const — is that
+    // promise compatible with what a running tally has to do?
     const int calls = 0;
 
     assert(count_l(greeting) == 3);

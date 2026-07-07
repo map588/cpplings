@@ -9,20 +9,26 @@
 // For most T it's a type. But nothing stops someone specializing
 // vector-of-their-thing so that ::const_iterator is a static data
 // member — the grammar genuinely can't tell. The rule: a dependent
-// qualified name is assumed to be a VALUE unless you say `typename`:
-//
-//     typename std::vector<T>::const_iterator it = v.begin();
+// qualified name is assumed to be a VALUE unless you prefix it with the
+// keyword `typename`.
 //
 // (Sibling rule you'll meet in the wild: a dependent member TEMPLATE
 // needs `.template`, as in `obj.template get<0>()`. Same ambiguity,
 // other keyword.)
 //
-// Honest modern advice: `auto it = v.begin();` makes the whole question
-// disappear, and C++20 relaxed `typename` in several spots. But you WILL
-// meet this error in real codebases — learn its face.
+// Honest modern advice: `auto` makes the whole question disappear — no
+// dependent type name, no keyword, same iterator — and C++20 relaxed
+// `typename` in several spots. But you WILL meet this error in real
+// codebases: learn its face.
 //
-// Task: fix sum_every_other twice — once with typename (do it, feel the
-// history), then once more however you like.
+// Task: make sum_every_other compile — twice.
+//   - first pass: keep the iterator's full spelled-out dependent name and
+//     satisfy the parser (do it once, feel the history)
+//   - second pass: the modern spelling that makes the question vanish
+//   - both asserts pass in the version you leave behind
+// Constraints:
+//   - keep the loop logic; no index-based rewrite
+//   - don't change any assert
 
 #include <cassert>
 #include <vector>

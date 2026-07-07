@@ -23,8 +23,13 @@
 // carves out types: a class may be defined once PER TU, as long as all
 // TUs agree token-for-token. Twice in the SAME TU is still an error.
 //
-// Task: fix linkage2_point.h so this file compiles. (linkage2_shapes.h
-// already has a guard — peek at it for the pattern.)
+// Task: make this file compile, run, and pass both asserts.
+//   - the fix belongs in linkage2_point.h
+// Constraints:
+//   - keep both #includes below exactly as they are — deleting the direct
+//     include would hide the bug, not fix the header
+//   - linkage2_shapes.h is already correct; don't touch it
+//   - don't change the asserts
 
 #include "linkage2_point.h"
 #include "linkage2_shapes.h"

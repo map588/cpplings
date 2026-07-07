@@ -2,6 +2,14 @@
 //
 // Defaults, static locals, and overload ranking, together. Predict
 // everything BEFORE running.
+//
+// Task: make the program compile and pass every assert.
+//   - replace each TODO and '?' with your prediction
+//   - the ambiguous call in part 3 must compile — resolve it at the call
+//     site, in a form the next reader can see is deliberate
+// Constraints:
+//   - keep `u` an unsigned initialized from 4u
+//   - don't change bump() or which(), and don't delete any call
 
 #include <cassert>
 
@@ -27,8 +35,8 @@ int main() {
     static_assert(which(0.5f) == '?');       // TODO
 
     // 3. unsigned → int and unsigned → double are BOTH conversions, so
-    //    this call is ambiguous and won't compile. Fix the call site —
-    //    say which one you mean with a static_cast (keep the 4u!).
+    //    this call is ambiguous and won't compile. Say which one you
+    //    mean — either is a fine choice; the point is to choose visibly.
     unsigned u = 4u;
     char c = which(u);
     assert(c == 'i' || c == 'd');  // either choice is fine — just choose

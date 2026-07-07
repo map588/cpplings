@@ -16,13 +16,16 @@
 // compares or stores the address: an identity check, a map keyed by
 // pointer, an ABI boundary.
 //
-// C++17 closed the gap with INLINE VARIABLES — linkage4's folding rule,
-// applied to data:
+// C++17 closed the gap: the folding rule you used in linkage4 applies to
+// VARIABLES too — one keyword turns a header-defined constant into a
+// single program-wide object that every TU shares.
 //
-//     inline constexpr double kPi = 3.14159;   // ONE object, program-wide,
-//                                              // definable in a header
-//
-// Task: fix linkage5_config.h so both TUs see the same object.
+// Task: make the program run and exit 0.
+//   - both asserts pass: the value is right AND &kPi is the same address
+//     in every TU
+// Constraints:
+//   - the fix goes in linkage5_config.h; kPi stays defined in the header
+//   - don't touch linkage5_other.cpp or the asserts
 
 #include "linkage5_config.h"
 

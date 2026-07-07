@@ -62,6 +62,14 @@ class Exercise:
         # "address" (ASan+UBSan, default) | "thread" (TSan — they can't
         # be combined) | "none"
         self.sanitizers: str = entry.get("sanitizers", "address")
+        # sys.platform prefixes this exercise needs (e.g. ["linux"] for
+        # /proc users). Empty = runs everywhere. Unsupported exercises
+        # are skipped, not failed.
+        self.platforms: list[str] = entry.get("platforms", [])
+
+    def supported_here(self) -> bool:
+        return (not self.platforms
+                or any(sys.platform.startswith(p) for p in self.platforms))
 
     def sources(self) -> list[Path]:
         return [self.path] + [ROOT / p for p in self.extra_files]
@@ -156,7 +164,7 @@ def cmd_watch(exercises: list[Exercise], cxx: str) -> None:
 
     def pick_current() -> Exercise | None:
         for ex in exercises:
-            if ex.has_marker():
+            if ex.has_marker() and ex.supported_here():
                 return ex
         return None
 
@@ -220,6 +228,10 @@ def cmd_run(exercises: list[Exercise], cxx: str, name: str) -> None:
     ex = next((e for e in exercises if e.name == name), None)
     if ex is None:
         sys.exit(f"error: no exercise named '{name}' (see: cpplings.py list)")
+    if not ex.supported_here():
+        print(yellow(f"~ {ex.name} needs {'/'.join(ex.platforms)} "
+                     f"(you're on {sys.platform}) — skipped"))
+        return
     passed, output = build_and_run(cxx, ex.sources(), ex.name, ex.mode, ex.sanitizers)
     if output.strip():
         print(output.strip())
@@ -246,14 +258,23 @@ def cmd_hint(exercises: list[Exercise], name: str) -> None:
 def cmd_list(exercises: list[Exercise]) -> None:
     width = max(len(e.name) for e in exercises) + 2
     for ex in exercises:
-        status = yellow("PENDING") if ex.has_marker() else green("DONE   ")
+        if not ex.supported_here():
+            status = yellow("SKIP   ") + f" (needs {'/'.join(ex.platforms)})"
+        elif ex.has_marker():
+            status = yellow("PENDING")
+        else:
+            status = green("DONE   ")
         print(f"{ex.name:<{width}} {status} {ex.rel_path}")
-    done = sum(1 for e in exercises if not e.has_marker())
-    print(f"\n{progress_bar(done, len(exercises))}")
+    here = [e for e in exercises if e.supported_here()]
+    done = sum(1 for e in here if not e.has_marker())
+    print(f"\n{progress_bar(done, len(here))}")
 
 
 def cmd_verify(exercises: list[Exercise], cxx: str) -> None:
     for ex in exercises:
+        if not ex.supported_here():
+            print(f"{yellow('SKIP')} {ex.name} — needs {'/'.join(ex.platforms)}")
+            continue
         if ex.has_marker():
             print(f"{yellow('PENDING')} {ex.name} — still has the marker")
             sys.exit(1)
@@ -269,7 +290,12 @@ def cmd_verify(exercises: list[Exercise], cxx: str) -> None:
 def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
     """CI check: every solution passes; every shipped exercise fails."""
     problems = 0
+    checked = 0
     for ex in exercises:
+        if not ex.supported_here():
+            print(f"{yellow('SKIP')} {ex.name} — needs {'/'.join(ex.platforms)}")
+            continue
+        checked += 1
         missing = [s for s in ex.solution_sources() if not s.exists()]
         if missing:
             print(f"{red('MISSING')} solution file(s) for {ex.name}: "
@@ -294,7 +320,9 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
     if problems:
         print(red(f"\n{problems} problem(s) found"))
         sys.exit(1)
-    print(green(f"\nAll {len(exercises)} exercises check out."))
+    skipped = len(exercises) - checked
+    note = f" ({skipped} skipped on this platform)" if skipped else ""
+    print(green(f"\nAll {checked} exercises check out.{note}"))
 
 
 def main() -> None:

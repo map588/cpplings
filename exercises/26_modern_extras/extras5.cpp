@@ -2,7 +2,14 @@
 //
 // The last exercise. Every TODO below is a flagship fact from one
 // module of this course — if one stumps you, the comment names where
-// to look. Predict all, run once, graduate.
+// to look.
+//
+// Task: replace every TODO / TODO_BOOL with your prediction.
+//   - the program compiles and every assert and static_assert passes
+// Constraints:
+//   - change only the TODO values — the probes stay as they are
+//   - predict first, run second: pasting in whatever the program
+//     prints graduates the compiler, not you
 //
 // (And the two reading notes to leave with:
 //   MODULES (C++20): `import std;` replaces textual #include — the

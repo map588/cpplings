@@ -23,8 +23,16 @@
 // red-black tree, not a hash table. (Need raw speed and no order?
 // unordered_map. Need order or stable iterators? map.)
 //
-// Task: has_passed() pollutes the map. Make it actually read-only —
-// signature included.
+// Task: make has_passed() a true query — one that CANNOT grow the map.
+//   - all asserts pass, including scores.size() == 2 AFTER the ghost
+//     lookup
+//   - missing players simply haven't passed: return false, add nothing
+//   - change the signature so the compiler itself would reject a
+//     mutating implementation
+// Constraints:
+//   - one lookup per call — resist checking existence first and then
+//     fetching the value separately
+//   - don't change main() or the asserts
 
 #include <cassert>
 #include <map>

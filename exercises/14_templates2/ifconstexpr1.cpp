@@ -8,10 +8,10 @@
 // `if constexpr` (C++17) decides at COMPILE TIME, and the untaken
 // branch is DISCARDED — never instantiated for that T:
 //
-//     if constexpr (std::is_pointer_v<T>) {
-//         ... *value ...                  // only exists when T is a pointer
+//     if constexpr (std::is_arithmetic_v<T>) {
+//         // this code only EXISTS when the trait holds
 //     } else {
-//         ...                             // only exists otherwise
+//         // and this only when it doesn't
 //     }
 //
 // One function body, per-type behavior, no specialization ladder, no
@@ -19,11 +19,19 @@
 // C++11-era template metaprogramming tricks.
 //
 // The condition must be a compile-time constant — type traits
-// (<type_traits>, C++11; the _v shorthands are C++17) are the usual
-// fuel: std::is_pointer_v, std::is_same_v, or any concept used as a
-// bool, like std::integral<T>.
+// (<type_traits>, C++11; the _v shorthands are C++17) or any concept
+// used as a bool are the usual fuel.
 //
-// Task: one keyword (twice).
+// Task: make to_display() compile and behave for all four callers.
+//   - the int, bool, and int* calls in main() each get the right string
+//   - every assert passes, including the nullptr case — a pointer's
+//     null-ness is NOT a compile-time fact, so that check must stay a
+//     runtime decision
+// Constraints:
+//   - one function body: no overloads, no specializations, no helpers
+//   - don't change the conditions being tested — only how (and when)
+//     the branching happens
+//   - the fix is one keyword, used twice
 
 #include <cassert>
 #include <string>

@@ -6,21 +6,28 @@
 // worse, WRITE) whatever lives next door — heap metadata, other
 // objects, eventually security advisories.
 //
-// The specimen: a <= where < belonged, the most common OOB in
-// existence. v[v.size()] is one past the end. ASan's
-// heap-buffer-overflow report shows the bad index's offset and what
-// allocation it tramples past.
+// Two different bugs below, needing two different medicines:
 //
-// Defense in depth:
-//   - range-for when you don't need the index at all (it can't miss)
-//   - .at(i) — bounds-checked, throws std::out_of_range; right where
-//     the index comes from untrusted input
-//   - debug STL modes / hardened libc++ check [] too — in debug builds
+//   sum_all's loop overshoots by exactly one element — the most common
+//   out-of-bounds in existence. ASan's heap-buffer-overflow report
+//   shows the bad read's offset and the allocation it tramples past.
 //
-// Task: fix the loop bound. Then make the lookup with the USER-PROVIDED
-// index use .at() — let hostile input throw instead of trample.
+//   lookup() forwards an index straight from "the network" into
+//   unchecked access. A loop bound you can prove correct; hostile
+//   input you can't — and vector offers a second way to index, one
+//   that checks and THROWS instead of trampling. Untrusted input is
+//   exactly where it belongs.
+//
+// Task: make both functions safe.
+//   - sum_all returns 60 and runs clean under ASan
+//   - lookup(data, 1) still returns 20; lookup(data, 9999) throws
+//     std::out_of_range (main catches it — `caught` must end true)
+// Constraints:
+//   - don't change main or any assert
+//   - sum_all must still visit every element
 
 #include <cassert>
+#include <stdexcept>
 #include <vector>
 
 int sum_all(const std::vector<int>& v) {

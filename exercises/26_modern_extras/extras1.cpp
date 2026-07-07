@@ -11,13 +11,24 @@
 // Conversion rules carry the safety:
 //   - LOSSLESS conversions are implicit: seconds → milliseconds, fine.
 //   - LOSSY ones don't compile: milliseconds → seconds needs an
-//     explicit duration_cast (truncation you must sign for):
-//         duration_cast<seconds>(2500ms)          // 2s, signed-for
+//     explicit duration_cast (truncation you must sign for).
 //   - .count() unwraps the raw number — keep it at the very edges.
 //
-// Task: retry_delay() mixes bare ints and hope. Give it chrono types:
-// it takes an attempt number and returns 100ms doubled per attempt
-// (100, 200, 400...), capped at 3 seconds. The asserts speak chrono.
+// retry_delay() below mixes bare ints and hope — its "cap at 3"
+// compares a milliseconds-flavored 100 against a seconds-flavored 3
+// and calls it policy. The asserts speak chrono: they compare the
+// result against 100ms and against 3s directly, so both the doubling
+// and the cap must mean what they say.
+//
+// Task: give retry_delay chrono types end to end.
+//   - returns the unit-safe "100ms doubled per attempt" (100, 200,
+//     400, ...), capped at three actual seconds
+//   - all asserts in main pass, unchanged
+// Constraints:
+//   - the return type is a chrono duration — no bare int in the
+//     signature
+//   - no .count() inside retry_delay: let the TYPES do the comparing
+//   - don't change main
 
 #include <cassert>
 #include <chrono>

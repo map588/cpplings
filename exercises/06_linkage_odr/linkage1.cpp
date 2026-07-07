@@ -15,15 +15,19 @@
 //                        // in C++: A FULL DEFINITION (zero-initialized).
 //                        //       Two TUs defining it = duplicate symbol.
 //
-// To DECLARE a variable without defining it, you must say extern:
-//
-//     extern int hit_count;   // "it exists, with external linkage,
-//                             //  someone else defines it"
+// So this file must not DEFINE hit_count — it needs a way to say "that
+// variable exists, with external linkage; someone else defines it". C++
+// has a one-keyword spelling for exactly that.
 //
 // Note the error you get right now comes from the LINKER (duplicate
 // symbol), not the compiler — both TUs compile happily in isolation.
 //
-// Task: turn this file's definition into a declaration.
+// Task: make the two files link, run, and exit 0.
+//   - the assert must observe the increments made by the OTHER file
+// Constraints:
+//   - linkage1_tracker.cpp stays untouched — it rightfully owns the counter
+//   - this file must keep referring to that same hit_count: no local
+//     stand-in, no renaming, no accessor function
 
 #include <cassert>
 

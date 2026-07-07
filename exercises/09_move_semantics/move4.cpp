@@ -19,14 +19,18 @@
 // "I'll help the compiler move it out!" — but elision constructs in
 // place, and std::move RUINS that: the return expression is no longer a
 // plain prvalue/name, elision is off the table, and you've forced the
-// move you tried to save. Clang even ships a warning for it
-// (-Wpessimizing-move, included in -Wall — read it when this compiles).
-//
-// Rule: `return local;` and `return T{...};` — bare. Never std::move a
-// return value. (Exception that proves the rule: returning a MEMBER,
+// very move you tried to save. Compilers even ship a warning for this
+// pessimization (clang's is in -Wall) — helping the compiler here only
+// gets in its way. (Exception that proves the rule: returning a MEMBER,
 // like `return std::move(pair.first);` — that one's real, module 15.)
 //
-// Task: fix both factory functions; the counters define "fixed".
+// Task: fix both factory functions so each construction is the ONLY
+// event.
+//   - all asserts pass: constructions == 1 and moves == 0, both times
+// Constraints:
+//   - make_named keeps its named local `w`; make_prvalue still builds
+//     Widget{1}
+//   - don't change Widget, main, or the asserts
 
 #include <cassert>
 #include <utility>

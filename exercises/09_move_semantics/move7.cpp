@@ -9,7 +9,13 @@
 //   No warning at any -W level. `const` and "movable" are enemies:
 //   a const local you intend to move from shouldn't be const.
 //
-// Predict every counter. The TODO values are lies.
+// Task: replace every TODO with the count that actually occurs.
+//   - all six assert pairs pass
+// Constraints:
+//   - the TODO values are the ONLY thing you may change — `frozen`
+//     stays const, every std::move stays where it is
+//   - predict all six on paper before your first compile; being able
+//     to read these cases cold is the point of the quiz
 
 #include <cassert>
 #include <utility>

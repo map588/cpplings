@@ -15,9 +15,16 @@
 // HEADER is forbidden in every style guide: it inflicts that risk on
 // every file that includes it.
 //
-// Task: serialize() is ambiguous. We want json's serialize and yaml's
-// indent_width. Replace the directives with precise using-declarations
-// (or qualification) so it compiles.
+// Below, serialize() is ambiguous. main() wants json's serialize and
+// yaml's indent_width.
+//
+// Task: make the file compile with every assert passing — and make it
+// robust: a name added to json or yaml tomorrow must not be able to
+// break this file or change what it calls.
+// Constraints:
+//   - both using-directives must go
+//   - don't change any assert line (main keeps using the two names
+//     unqualified)
 
 #include <cassert>
 #include <string>

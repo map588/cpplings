@@ -19,10 +19,19 @@
 //
 // The exercise: a fixed Slot that hosts a Session object on demand.
 // Both TODOs are missing — right now nothing ever constructs or
-// destroys the Session, and the counters know.
+// destroys the Session, and the `alive` counter knows.
 //
-// Task: construct in activate() (placement new), destroy in
-// deactivate() (explicit destructor call).
+// Task: complete activate() and deactivate().
+//   - activate() begins a Session's lifetime inside storage_ — no
+//     allocation — and returns a pointer to it
+//   - deactivate() ends that lifetime (the string member must be
+//     freed, the counter must drop — nothing else will do it)
+//   - every assert passes, including the reuse round; runs clean
+//     under ASan (leaks count)
+// Constraints:
+//   - Slot keeps its raw byte-array storage — don't swap in a
+//     Session member, std::optional, or unique_ptr
+//   - don't change main or the asserts
 
 #include <cassert>
 #include <cstddef>
@@ -41,12 +50,13 @@ struct Session {
 class Slot {
 public:
     Session* activate(const std::string& user) {
-        // TODO: construct a Session into storage_ with placement new
+        // TODO: begin a Session's lifetime HERE, in storage_ — not on
+        // the heap
         return nullptr;
     }
 
     void deactivate(Session* s) {
-        // TODO: run the destructor — nobody else will
+        // TODO: end the Session's lifetime — nobody else will
     }
 
 private:

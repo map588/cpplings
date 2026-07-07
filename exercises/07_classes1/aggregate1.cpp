@@ -14,7 +14,8 @@
 // C++20's DESIGNATED INITIALIZERS fix the fragility (C had them since
 // C99!):
 //
-//     Config c{.port = 9000, .verbose = true};
+//     struct Point { int x = 0; int y = 0; int z = 0; };
+//     Point p{.x = 1, .z = 5};      // y keeps its default
 //
 // Named, self-documenting, immune to member insertions ABOVE — and
 // unmentioned members keep their NSDMI defaults. Rules: designators must
@@ -26,8 +27,13 @@
 // `Config() = default;` — un-aggregates the type in C++20, and
 // designated init stops working. The static_assert guards that.
 //
-// Task: rewrite both initializers with designators. `debug` should state
-// ONLY what differs from the defaults.
+// Task: rewrite both initializers so member NAMES, not positions, do
+// the talking.
+//   - compiles (static_assert included) and every assert passes
+//   - `debug` states ONLY what differs from the defaults
+// Constraints:
+//   - don't reorder or edit Config's members; don't add constructors
+//   - don't change the asserts
 
 #include <cassert>
 #include <string_view>

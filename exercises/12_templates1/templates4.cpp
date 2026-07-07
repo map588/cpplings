@@ -1,20 +1,19 @@
 // templates4.cpp
 //
 // Sometimes one type needs a DIFFERENT implementation than the generic
-// recipe. That's (full) SPECIALIZATION:
+// recipe. That's (full) SPECIALIZATION — here's the shape, on somebody
+// else's class:
 //
 //     template <typename T>             // the generic recipe
-//     struct Formatter { ... };
+//     struct Traits { ... };
 //
-//     template <>                       // "for bool, use THIS instead"
-//     struct Formatter<bool> {
-//         static std::string format(bool b) { ... }
-//     };
+//     template <>                       // "for char, use THIS instead"
+//     struct Traits<char> { ... };
 //
 // The empty `template <>` says "nothing left to deduce — this is the
-// concrete recipe for exactly Formatter<bool>." A specialization
-// replaces the generic class WHOLESALE: it shares nothing, inherits
-// nothing, must declare every member it wants.
+// concrete recipe for exactly Traits<char>." A specialization replaces
+// the generic class WHOLESALE: it shares nothing, inherits nothing, and
+// must declare every member it wants.
 //
 // (For FUNCTION templates, prefer plain overloads over specialization —
 // overload resolution considers overloads but largely ignores function
@@ -22,8 +21,16 @@
 // templates: specialization is the normal tool, and the standard library
 // is full of it — std::hash<YourType>, std::formatter<T>, char_traits.)
 //
-// Task: bools are printing as "1". Specialize Formatter for bool to say
-// "yes"/"no".
+// Task: bools are printing as "1"/"0" — make Formatter<bool> honest
+// without touching the generic recipe.
+//   - all four asserts pass ("yes"/"no" for bool; int and double
+//     formatting unchanged)
+// Constraints:
+//   - the generic Formatter and main() stay exactly as they are
+//   - no is-it-a-bool branching inside the generic format — bool gets
+//     its own recipe
+//   - remember: nothing is inherited; your recipe must declare
+//     everything the call sites need
 
 #include <cassert>
 #include <string>

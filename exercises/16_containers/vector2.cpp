@@ -11,20 +11,23 @@
 // invalidated; with a reallocation in play this graduates from wrong
 // to undefined.)
 //
-// The idiom: erase() RETURNS the iterator to the shifted-in element.
-// Branch on it:
+// The standard's escape hatch: erase() RETURNS a fresh, valid iterator
+// to the element that slid into the hole. A correct loop therefore
+// advances EITHER by incrementing OR by taking what erase hands back —
+// never both for the same element.
 //
-//     for (auto it = v.begin(); it != v.end(); /* nothing! */) {
-//         if (bad(*it)) it = v.erase(it);     // erase advances us
-//         else ++it;                          // we advance ourselves
-//     }
+// (C++20 buried this whole pattern under a single library call, which
+// module 17 celebrates. Learn the idiom anyway: you'll read it in every
+// pre-2020 codebase, and write it for maps.)
 //
-// (C++20 buried this whole exercise under one line — std::erase_if(v,
-// pred) — which module 17 celebrates. Learn the idiom anyway: you'll
-// read it in every codebase, and write it for maps.)
-//
-// Task: drop_failing_grades skips survivors standing behind the fallen.
-// Apply the idiom.
+// Task: fix drop_failing_grades() so no element escapes inspection.
+//   - every grade below 60 is removed; survivors keep their order
+//   - the assert passes (the CONSECUTIVE failures in the data are
+//     there precisely to spring the trap)
+// Constraints:
+//   - erase in place: no second vector, no copy-and-filter
+//   - each element is inspected exactly once
+//   - don't change main() or the assert
 
 #include <cassert>
 #include <vector>

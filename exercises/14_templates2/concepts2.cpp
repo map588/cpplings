@@ -21,9 +21,18 @@
 // right shape satisfies the concept, no inheritance involved (compare
 // module 11's virtual interfaces!).
 //
-// Task: Renderable below is a stub (`= true` accepts everything). The
-// static_asserts specify exactly what it must mean: has .render()
-// convertible to std::string, and .layer() returning exactly int.
+// Task: replace Renderable's `= true` stub with a requires expression
+// that makes all four static_asserts hold.
+//   - the four test types below ARE the spec: Sprite and Backdrop must
+//     satisfy the concept; Sound and Glitch must not
+//   - Backdrop's render() returns const char* and must still pass —
+//     so "returns exactly std::string" is too tight a requirement
+//   - Glitch's layer() returns double and must fail — so "converts
+//     to int" is too loose a requirement
+// Constraints:
+//   - don't touch the test types or the static_asserts
+//   - two requirements are enough; every extra one you add risks
+//     rejecting a type that must pass
 
 #include <concepts>
 #include <string>

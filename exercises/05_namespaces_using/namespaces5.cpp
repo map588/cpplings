@@ -21,9 +21,15 @@
 //       case Red: ...
 //   }
 //
-// Task: the switch uses bare enumerator names without bringing them into
-// scope. One line fixes it. (Qualifying all four cases also works — do
-// the C++20 way.)
+// Below, the switch uses bare enumerator names without bringing them
+// into scope.
+//
+// Task: make describe() compile with the case labels exactly as written —
+// both asserts pass.
+// Constraints:
+//   - add one line; change nothing else
+//   - no Signal:: inside the switch — qualifying all four cases is the
+//     pre-C++20 workaround, not the lesson
 
 #include <cassert>
 #include <type_traits>

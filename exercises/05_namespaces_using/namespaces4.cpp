@@ -8,20 +8,22 @@
 //                      // wrote `std::` for the <<. ADL did it.
 //
 // ADL also powers customization points, and there's an idiom to learn:
-// THE SWAP TWO-STEP. Generic code should swap like this:
-//
-//   using std::swap;   // fallback available...
-//   swap(a, b);        // ...but UNQUALIFIED: ADL finds a type's own swap
+// THE SWAP TWO-STEP. Generic code should arrange two things at once: the
+// standard fallback is in scope, and the call itself is UNQUALIFIED — so
+// ADL is free to find a cheaper swap the type ships in its own namespace,
+// while everything else still lands on the fallback.
 //
 // Calling std::swap(a, b) QUALIFIED pins the generic version (move tmp =
 // a; a = b; b = tmp) and silently skips a cheaper, smarter swap the type
 // provides in its own namespace. It compiles. It works. It's just slower —
 // the worst kind of bug.
 //
-// (C++20's std::ranges::swap does the two-step for you.)
-//
-// Task: shuffle() bypasses geo's custom swap — the assert proves it.
-// Apply the two-step.
+// Task: make shuffle() reach geo's own swap — both asserts pass (in
+// particular, custom_swaps must end up exactly 1).
+// Constraints:
+//   - don't call geo::swap by its qualified name — shuffle() shouldn't
+//     have to know which namespace owns the better swap
+//   - don't touch namespace geo or the asserts
 
 #include <cassert>
 #include <utility>

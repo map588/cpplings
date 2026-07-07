@@ -7,8 +7,7 @@
 // Modern shape: return a std::tuple (C++11), unpack with STRUCTURED
 // BINDINGS (C++17):
 //
-//     std::tuple<int, int, double> stats(...);
-//     auto [lo, hi, mean] = stats(v);      // three named locals, sized
+//     auto [a, b, c] = three_things();     // three named locals, sized
 //                                          // and typed by the tuple
 //
 // Bindings unpack more than tuples — anything with a known member list:
@@ -21,8 +20,16 @@
 // std::tie for the assignment-to-existing-variables case:
 //     std::tie(lo, hi) = bounds();      // also: the operator< trick
 //
-// Task: stats() returns only the minimum. The bindings in main demand
-// {min, max, mean} — deliver them. (One pass, no algorithms needed.)
+// Task: stats() returns only the minimum; the binding in main demands
+// {min, max, mean}. Deliver all three.
+//   - the program compiles and every assert passes
+//   - one pass over the data, no <algorithm>
+//   - mind the TYPE of each returned value: the mean must be exact by
+//     construction, not by lucky arithmetic
+// Constraints:
+//   - do not change main
+//   - the asserts dictate the element types of the result — derive
+//     them, don't guess
 
 #include <cassert>
 #include <tuple>

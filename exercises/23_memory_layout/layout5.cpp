@@ -2,19 +2,31 @@
 //
 // You can replace global operator new — and counting calls to it is
 // the cheapest profiler you'll ever own. The override below forwards
-// to malloc and tallies. Suddenly library behavior is measurable fact:
+// to malloc and tallies. Suddenly this course's claims are up for
+// audit as measurable fact:
 //
-//   - std::string under SSO (module 15): zero allocations
-//   - vector::reserve: exactly one
-//   - vector growth from nothing: one PER capacity step (1, 2, 4...)
-//   - shared_ptr<T>(new T): TWO (object + control block) —
-//     make_shared: ONE, fused (module 10's claim, now audited)
+//   - module 15 claimed small strings and big strings pay differently
+//     (SSO)
+//   - module 10 claimed make_shared FUSES what shared_ptr<T>(new T)
+//     buys separately — recall where a control block lives
+//   - module 16 claimed a vector growing from nothing pays once per
+//     capacity step (doubling from 1 on this course's platforms), and
+//     that a caller who knows the final size can pre-plan instead
 //
-// Predict every TODO. The growth-chain answer assumes the doubling
-// libc++/libstdc++ both use from capacity 1 (this course's platforms).
+// Predict every TODO from those claims — before running anything.
 //
-// Task: numbers, then one fix — make_report() allocates more than it
-// must; apply module 16's cure and the final assert's demand.
+// Then the finale: make_report() allocates more than it must. It
+// knows k before the loop starts — let it pre-plan the storage, and
+// the final assert's 1 becomes the truth.
+//
+// Task: replace each TODO with an allocation count, then make
+// make_report cost exactly one allocation.
+//   - every assert passes
+// Constraints:
+//   - don't touch the operator new/delete machinery
+//   - make_report keeps its push_back loop — the fix is one added
+//     line, not a rewrite
+//   - the final assert keeps its 1
 
 #include <cassert>
 #include <cstdlib>
@@ -54,7 +66,8 @@ int main() {
 
     news = 0;
     { auto two_step = std::shared_ptr<int>(new int(5)); }
-    assert(news == TODO);                       // object + control block
+    assert(news == TODO);                       // the two-step: what does
+                                                // each step buy?
 
     news = 0;
     { auto fused = std::make_shared<int>(5); }

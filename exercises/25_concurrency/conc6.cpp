@@ -11,21 +11,25 @@
 // while payload's write hasn't reached it yet — using the flag without
 // receiving the data it advertises.
 //
-// The memory model (C++11) fixes both with one upgrade:
+// The memory model (C++11) fixes both with one upgrade — to the FLAG
+// alone: make it an atomic, store it with RELEASE semantics, load it
+// with ACQUIRE semantics. Release + acquire creates HAPPENS-BEFORE:
+// everything the writer did before its release-store (the payload
+// write!) is visible to the reader once its acquire-load sees the
+// flag. The flag carries the data's visibility with it. (Plain atomic
+// ops default to seq_cst, which includes acquire/release — correct,
+// marginally stronger than needed; the explicit orders here are the
+// lesson, not an optimization demand.)
 //
-//     std::atomic<bool> ready{false};
-//     writer:  ready.store(true, std::memory_order_release);
-//     reader:  ready.load(std::memory_order_acquire)
-//
-// RELEASE on the store + ACQUIRE on the load creates HAPPENS-BEFORE:
-// everything the writer did before the release (the payload write!) is
-// visible to the reader after its acquire. The flag carries the data's
-// visibility with it. (Plain atomic ops default to seq_cst, which
-// includes acquire/release — correct, marginally stronger than needed;
-// explicit orders here are the lesson, not an optimization demand.)
-//
-// Task: make `ready` atomic with release/acquire (payload itself can
-// stay a plain int — that's the point of the pattern).
+// Task: make the publication safe.
+//   - the assert passes (42 arrives) and the program finishes
+//   - runs clean under TSan (no data-race report)
+// Constraints:
+//   - `payload` stays a plain int — publishing NON-atomic data through
+//     an atomic flag is the point of the pattern
+//   - no mutex, no cv — this is the flag's job
+//   - spell your memory orders explicitly: release on the store,
+//     acquire on the load
 
 #include <cassert>
 #include <thread>

@@ -11,20 +11,20 @@
 // shift every keeper toward the front, return an iterator to the new
 // LOGICAL end. The tail behind it: moved-from junk, still inside v.
 //
-// THE ERASE–REMOVE IDIOM completes the job:
+// Completing the job is the famous ERASE–REMOVE IDIOM: remove
+// partitions the keepers to the front and hands you the new logical
+// end; the container's own erase must then chop the tail — only a
+// member knows how to shrink. C++20 finally shipped free functions
+// (named after what everyone always wished remove did) that do both
+// steps in one call AND report how many elements went away.
 //
-//     v.erase(std::remove(v.begin(), v.end(), 0), v.end());
-//             |---- partition keepers ----------|  ^ chop the tail
-//
-// C++20 finally shipped the spelling everyone wanted:
-//
-//     std::erase(v, 0);                  // by value
-//     std::erase_if(v, pred);            // by predicate
-//     // free functions; they also return how many went away
-//
-// Task: dropped_packets() is half an idiom. Finish it — once the old
-// way (do it, you'll read it in every pre-2020 codebase), then redo it
-// with std::erase.
+// Task: make drop_zeros() actually drop the zeros AND report the count.
+//   - readings ends up {5, 7, 3}; dropped == 3
+//   - the vector must genuinely shrink — no moved-from junk left in
+//     the tail
+// Constraints:
+//   - no hand-written loops; no extra pass over the data just to count
+//   - don't change main() or the asserts
 
 #include <algorithm>
 #include <cassert>

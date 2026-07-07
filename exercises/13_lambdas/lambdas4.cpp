@@ -14,15 +14,23 @@
 //
 // Capture-choice rules of thumb:
 //   - the closure outlives the current scope (stored, returned,
-//     async)? → capture by VALUE, or move what you need in:
-//     [snapshot = prices[0]]
+//     async)? → capture by VALUE: take a snapshot, or move what you
+//     need into the closure
 //   - the closure is consumed before the scope ends (passed straight
 //     to std::sort, count_if)? → [&] is fine and cheap
 //   - container ELEMENTS are extra treacherous: even if the container
 //     lives on, its elements move (module 16: iterator invalidation)
 //
-// Task: cheapest_first should remember the FIRST price as a value, not
-// chase the element's address.
+// Task: make launch_price remember the launch price instead of chasing
+// the element's address.
+//   - both asserts pass; runs clean under ASan (the watcher builds
+//     with it)
+// Constraints:
+//   - launch_price stays a zero-argument lambda created BEFORE the
+//     growth loop, and still returns 99
+//   - the snapshot lives inside the closure — don't add outer variables
+//     to capture instead
+//   - the growth loop and the asserts stay untouched
 
 #include <cassert>
 #include <vector>

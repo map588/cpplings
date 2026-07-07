@@ -27,6 +27,17 @@ reason about, measure, and exploit. This module makes layout visible.
 - **Counting allocations.** Replacing global `operator new` reveals what
   the library really does: vector growth chains, SSO, and
   `make_shared`'s fused single allocation.
+- **Register-map overlays (MMIO).** Firmware matches a struct to a
+  datasheet's byte-offset table and audits it with `offsetof` +
+  `static_assert` — which only works for standard-layout types. The
+  compiler inserts just the padding alignment demands, so datasheet
+  holes become explicit reserved members (not `#pragma pack`, which
+  hurts codegen on strict-alignment cores).
+- **Endianness.** Multi-byte integers have a byte *order* in memory;
+  wire protocols are usually big-endian while your host probably isn't.
+  `std::endian` *(C++20)* names the host order; shift-and-mask
+  arithmetic (de)serializes portably because arithmetic is defined on
+  values, not bytes.
 
 ## Version notes
 
@@ -37,3 +48,6 @@ reason about, measure, and exploit. This module makes layout visible.
 | `[[no_unique_address]]` | C++20 |
 | `std::construct_at` / `destroy_at` (constexpr-friendly placement) | C++20 |
 | `std::launder` (the dark corners we skip) | C++17 |
+| `offsetof` (inherited from C, `<cstddef>`) | C++98 |
+| `std::endian` (`<bit>`) | C++20 |
+| `std::byteswap` (mentioned) | C++23 |

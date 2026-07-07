@@ -16,8 +16,14 @@
 // null-checks-after-the-fact. Run this as-is and watch the sanitizer
 // report the exact line.
 //
-// Task: find() legitimately returns nullptr for missing keys. The caller
-// forgot. Fix the CALLER (lookup_or_zero) — find() is correct.
+// Task: find() legitimately returns nullptr for missing keys — the caller
+// forgot that. Fix the CALLER so a missing key yields 0.
+//   - both asserts pass; the sanitizers stay silent; exits 0
+// Constraints:
+//   - find() and the table are correct — don't touch them
+//   - lookup_or_zero must still go through find() and handle its nullable
+//     result honestly (no pre-scanning the table, no changing find's
+//     contract)
 
 #include <cassert>
 

@@ -4,22 +4,32 @@
 // assert: 3.5 truncated through the int parameters), and now strings
 // need it too.
 //
-// One recipe serves all of them:
+// One recipe can serve all of them — a FUNCTION TEMPLATE. Here's what
+// one looks like, for a different job:
 //
 //     template <typename T>
-//     T largest(T a, T b) { return b < a ? a : b; }
+//     T smallest(T a, T b) { return a < b ? a : b; }
 //
-// The compiler DEDUCES T per call: largest(2, 7) stamps out largest<int>,
-// largest(s1, s2) stamps out largest<std::string>. Each instantiation is
-// a real, separate function.
+// The compiler DEDUCES T per call: smallest(2, 7) stamps out
+// smallest<int>, smallest(s1, s2) stamps out smallest<std::string>. Each
+// instantiation is a real, separate function.
 //
-// Deduction's one demand: CONSISTENCY. largest(3, 2.5) deduces T=int
+// Deduction's one demand: CONSISTENCY. smallest(3, 2.5) deduces T=int
 // from the left argument and T=double from the right — that's an error,
-// not a negotiation. You break the tie yourself: largest<double>(3, 2.5)
-// turns deduction off and conversion on.
+// not a negotiation. You break the tie yourself by naming T at the call
+// site — smallest<double>(3, 2.5) — which turns deduction off and
+// ordinary conversion on.
 //
-// Task: templatize largest, then fix the mixed-type call at the bottom
-// with an explicit template argument.
+// Task: one largest() that serves every call in main.
+//   - all four asserts pass — including the double one that today's int
+//     version silently truncates
+//   - exactly one definition of largest remains
+//   - the mixed-type call compiles without changing its arguments
+// Constraints:
+//   - no overloads: one template
+//   - the asserted values stay as they are (the mixed call's spelling may
+//     change, its arguments 3 and 2.5 may not)
+//   - don't cast the arguments
 
 #include <cassert>
 #include <string>

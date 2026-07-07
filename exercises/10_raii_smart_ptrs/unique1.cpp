@@ -19,9 +19,15 @@
 // track of, and historically it also fixed an exception-safety hole in
 // multi-argument calls.)
 //
-// Task: build_report leaks on the early-return path — the same disease
-// raii1 had, in heap-allocation form. Convert it to make_unique and
-// delete every `delete`.
+// build_report below leaks on the early-return path — the same disease
+// raii1 had, in heap-allocation form.
+//
+// Task: make build_report leak-free on every exit path.
+//   - all four asserts pass (Report::alive back to 0 both times)
+//   - no `new` and no `delete` remain anywhere in build_report
+// Constraints:
+//   - keep the early return for lines == 0
+//   - don't change Report or any assert
 
 #include <cassert>
 #include <memory>

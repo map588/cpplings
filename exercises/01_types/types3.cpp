@@ -6,13 +6,19 @@
 // language does not.
 //
 // Consequences:
-//   - uint8_t(200) + uint8_t(100) is the int 300, NOT a wrapped-around 44.
-//     Wraparound only happens if you stuff the result back into a uint8_t.
+//   - adding two uint8_t values is `int` math — the sum does NOT wrap at
+//     256. Wrapping happens only if you stuff the result back into a
+//     uint8_t yourself (and then it's the value modulo 256).
 //   - unsigned arithmetic WRAPS, and that's well-defined behavior.
 //   - signed overflow is UNDEFINED behavior. (INT_MAX + 1 is not "a negative
 //     number" — it's a license for the optimizer to assume it never happens.)
 //
-// Task: fill in the TODO values. Predict before you run!
+// Task: replace each use of TODO with the value the program actually
+// computes. Predict before you run!
+//   - compiles; every assert passes; exits 0
+// Constraints:
+//   - change only the TODO occurrences — not the declarations, the cast,
+//     or any assert's left-hand side
 
 
 #include <cassert>

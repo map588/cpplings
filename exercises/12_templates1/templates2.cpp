@@ -16,8 +16,15 @@
 // That's why template-heavy libraries are header-only, and it's the
 // inline/ODR rules from module 06 that make it legal.)
 //
-// Task: IntStack works, but main also wants a stack of strings.
-// Templatize it (and rename it Stack).
+// IntStack works, but main() already speaks the family's language.
+//
+// Task: give main the Stack family it expects.
+//   - compiles and every assert passes, for Stack<int> and
+//     Stack<std::string> alike
+// Constraints:
+//   - one class template — don't write a second stack for strings
+//   - keep std::vector as the storage (the rule of zero stays intact)
+//   - main() stays untouched
 
 #include <cassert>
 #include <string>

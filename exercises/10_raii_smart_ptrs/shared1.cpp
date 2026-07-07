@@ -15,8 +15,16 @@
 // Default to unique_ptr; reach for shared_ptr when ownership genuinely
 // has no single home — not "I couldn't decide who owns it."
 //
-// Task: predict every use_count. Then fix the hand-off at the bottom of
-// main — it was meant to GIVE the registry ownership, not share it.
+// Task: replace every TODO with the exact count, then fix the hand-off at
+// the bottom of main — it was meant to GIVE the registry ownership, not
+// share it.
+//   - every assert passes, including `a == nullptr` after the hand-off
+//   - the fixed hand-off must not touch the atomic count (re-read the
+//     costs list above if that sounds impossible)
+// Constraints:
+//   - transfer() stays as written; only its call site changes
+//   - don't null out or reset `a` yourself — the hand-off must do it
+//   - on the assert lines, only the TODOs change
 
 #include <cassert>
 #include <memory>
@@ -47,8 +55,8 @@ int main() {
     assert(a.use_count() == TODO);
 
     // Hand the int to the registry FOR KEEPS — a is supposed to be out
-    // of the picture (and the hand-off shouldn't touch the atomic count
-    // at all; moves never do):
+    // of the picture, and a proper hand-off wouldn't touch the atomic
+    // count at all:
     transfer(a);                                 // shares instead of gives
     assert(a == nullptr);                        // we meant to let go
     assert(registry[0].use_count() == 1);        // registry: sole owner

@@ -14,9 +14,14 @@
 // constexpr (C++11; since C++14 the body can use loops, ifs, and local
 // variables like normal code).
 //
-// Task: max_packet_size() is a pure computation, but it isn't usable at
-// compile time, so neither the constexpr variable nor the array bound
-// compiles. One keyword fixes everything.
+// Task: max_packet_size() is a pure computation, but as declared it isn't
+// usable at compile time, so neither the constexpr variable nor the array
+// bound compiles. The fix is a single keyword in the right place.
+//   - compiles; the static_assert holds; both runtime asserts pass
+// Constraints:
+//   - don't change the function's body, name, or parameters
+//   - don't change any check in main — the runtime call at the bottom
+//     must keep working (the same definition serves both times)
 
 #include <cassert>
 #include <cstddef>

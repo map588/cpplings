@@ -19,8 +19,13 @@
 // this single rule is most of the practical reason "moves must be
 // noexcept" is drilled into C++ codebases.
 //
-// Task: Item's move constructor is correct but unmarked. Watch the
-// counters, then add the keyword.
+// Task: make the reallocation transfer by MOVE.
+//   - the asserts pass: moves == 2, copies == 0
+// Constraints:
+//   - the move constructor's BODY is already correct — what's missing
+//     is a promise, not logic
+//   - don't dodge the reallocation (no extra reserve, no capacity
+//     games) and don't touch main, the counters, or the asserts
 
 #include <cassert>
 #include <string>

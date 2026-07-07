@@ -11,8 +11,13 @@
 //
 // Pointer people misread rule 2 constantly, so prove it to yourself here.
 //
-// Task: fix the broken declaration, then fill in the TODO values.
-// Predict before you run.
+// Task: fix the broken declaration, then replace each TODO with the value
+// the program actually produces. Predict before you run.
+//   - compiles; every assert passes; exits 0
+// Constraints:
+//   - ra must end up as a reference that aliases `a` (no pointer, no
+//     copy, no rebinding to something more convenient)
+//   - don't change any assert — `&rb == &b` stays as the proof
 
 #include <cassert>
 

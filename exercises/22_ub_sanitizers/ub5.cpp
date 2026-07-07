@@ -15,8 +15,14 @@
 // "mean", "rate", "percentage" function ever written has had this bug
 // at some point.
 //
-// Task: handle the empty case explicitly (return 0 here — or an
-// optional, module 19, in a design of your own).
+// Task: give average_above an explicit answer for "nothing matched".
+//   - both asserts pass — the empty-filter case must yield 0
+//   - runs clean under the sanitizers (no division-by-zero report)
+// Constraints:
+//   - don't change the asserts or the filtering logic
+//   - no special-casing the test inputs: ANY empty match set yields 0
+//   (a richer design would return an optional — module 19 — but this
+//   function's contract is the int version)
 
 #include <cassert>
 #include <vector>

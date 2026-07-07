@@ -2,9 +2,11 @@
 //
 // Storage and cost — the closure is a struct; reason about it like one.
 //
-//   sizeof: a captureless closure has no members → sizeof == 1 (empty
-//           class rule). Capture an int → sizeof == 4. You pay for
-//           exactly what you capture.
+//   sizeof: the closure is a struct, so ordinary layout rules apply. A
+//           captureless closure has no members — recall what C++ says an
+//           empty class's size must be. Capture an int and the closure
+//           is exactly as big as its one member. You pay for precisely
+//           what you capture.
 //
 //   function pointers: a CAPTURELESS lambda converts to a plain
 //           C-style function pointer (there's no state to smuggle).
@@ -20,9 +22,14 @@
 //           algorithm (templates/auto take the closure type directly,
 //           inlinably — module 12's way).
 //
-// Task: the offset-aware handler can't be a function pointer — give
-// store_handler a parameter type that can hold it (and fix the TODO
-// sizes while you're here).
+// Task: fill in the TODO sizes, and make the handler slot able to hold
+// the offset-aware handler too.
+//   - both static_asserts and both asserts pass
+// Constraints:
+//   - both lambdas stay exactly as written (offsetter keeps its capture)
+//   - keep the single global slot plus store_handler — heterogeneous
+//     callables must flow through the same slot at runtime
+//   - on the static_assert lines, only the TODOs change
 
 #include <cassert>
 #include <cstddef>

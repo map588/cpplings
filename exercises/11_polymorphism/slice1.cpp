@@ -12,12 +12,20 @@
 //   std::vector<Shape> shapes;       // container of VALUES: slices on
 //   shapes.push_back(triangle);      // the way in
 //
-// Polymorphism needs INDIRECTION. References for parameters; for owning
-// containers, std::vector<std::unique_ptr<Shape>> (module 10 — this is
-// the use case that module was building toward).
+// Polymorphism needs INDIRECTION. Parameters that don't copy the object;
+// container slots that OWN a shape without BEING a shape. You already
+// built both tools — module 02's for parameters, and module 10's, whose
+// whole reason to exist is exactly this container.
 //
-// Task: fix describe() to take a reference, and rebuild `shapes` as a
-// vector of unique_ptr<Shape>. (The asserts stay — make them true.)
+// Task: stop the slicing in both habitats.
+//   - all asserts pass exactly as written — note the container asserts
+//     use ->, so the fixed `shapes` must hold something pointer-like
+//   - no leaks: the container owns its shapes (ASan is watching)
+// Constraints:
+//   - Shape, Circle, Square stay as they are
+//   - describe() must still be callable with a Circle directly — no
+//     casts or & at the call site
+//   - don't change any assert
 
 #include <cassert>
 #include <memory>
@@ -49,8 +57,8 @@ int main() {
     shapes.push_back(Circle{});
     shapes.push_back(Square{});
 
-    assert(shapes[0]->name() == "circle");   // (pointer syntax: the fixed
-    assert(shapes[1]->name() == "square");   //  version holds unique_ptrs)
+    assert(shapes[0]->name() == "circle");   // (pointer syntax — a clue about
+    assert(shapes[1]->name() == "square");   //  what the fixed vector holds)
     return 0;
 }
 

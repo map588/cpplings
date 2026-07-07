@@ -7,20 +7,23 @@
 // without TSan you'd see rare crashes and corrupted logs in the field.
 //
 // std::atomic can't help — a vector isn't a single atomic object.
-// This is mutex territory:
+// This is mutex territory: one lock owned RAII-style by a guard
+// object, held for exactly the region that touches the shared thing —
+// acquired at the guard's birth, released at its death, even on
+// exception (module 20's discipline, applied to locks).
 //
-//     std::mutex m;                  // the lock
-//     {
-//         std::lock_guard lk(m);     // RAII: locks now, unlocks at }
-//         shared.push_back(x);       // ...even on exception (module 20)
-//     }
+// Keep the locked region SHORT: threads that serialize their string-
+// building had no reason to be threads. Build outside, append under
+// the lock.
 //
-// Keep the locked region SHORT — format the string before the lock,
-// append under it. (lock_guard is the C++11 classic; scoped_lock
-// (C++17) is its multi-mutex successor — conc4 shows why that
-// matters.)
-//
-// Task: add the mutex and guard the push_back.
+// Task: make the concurrent logging safe.
+//   - the assert passes: all 2'000 entries arrive
+//   - runs clean under TSan (no data-race report)
+// Constraints:
+//   - the string construction stays OUTSIDE the locked region
+//   - both threads keep running concurrently — don't join one before
+//     starting the other
+//   - keep the loop counts and the assert
 
 #include <cassert>
 #include <mutex>

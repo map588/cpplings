@@ -33,11 +33,18 @@ happen with both stack traces.
 - **`std::async`/`std::future`** — task-level parallelism without
   manual threads; a future from `async` blocks in its destructor
   (infamously).
+- **Async-signal safety** — a signal handler interrupts its *own*
+  thread between two machine instructions: reentrancy, not threading.
+  Inside one you may only set a `volatile std::sig_atomic_t` (or
+  lock-free `atomic`) flag and call async-signal-safe functions — no
+  `printf`, no `malloc`, no `cout`. The daemon-shutdown / ISR-flag
+  pattern. (Single-threaded, so this one keeps ASan.)
 
 ## Version notes
 
 | Feature | Standard |
 |---|---|
 | `thread`, `mutex`, `condition_variable`, `atomic`, memory model, `async`/`future` | C++11 |
+| `std::signal`, `std::sig_atomic_t` (from C) | C++98 |
 | `scoped_lock`, `shared_mutex` | C++17 |
 | `jthread` + `stop_token`, `atomic::wait/notify`, `counting_semaphore`, `barrier`/`latch` | C++20 |

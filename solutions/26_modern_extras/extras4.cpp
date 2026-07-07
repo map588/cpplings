@@ -1,6 +1,7 @@
 // extras4.cpp — solution
 
 #include <cassert>
+#include <exception>
 #include <coroutine>
 #include <utility>
 #include <vector>

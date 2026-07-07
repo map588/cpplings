@@ -8,7 +8,7 @@
 //
 // A PURE VIRTUAL function deletes the fallback:
 //
-//     virtual std::string serialize(int value) const = 0;
+//     virtual double area() const = 0;      // some other base's example
 //
 // `= 0` means: no default here; this class is ABSTRACT (cannot be
 // instantiated); every concrete derived class MUST implement this or
@@ -16,13 +16,19 @@
 // at the point of instantiation — the bug can't survive to runtime.
 //
 // (Detail worth knowing: a pure virtual can still HAVE a body, defined
-// out of line — derived overrides may call Exporter::serialize(...)
-// explicitly for shared logic. Rare, but it confuses people on first
-// sight. And destructors of abstract bases: still virtual, module rule
-// unchanged.)
+// out of line — derived overrides may call it explicitly for shared
+// logic. Rare, but it confuses people on first sight. And destructors of
+// abstract bases: still virtual, module rule unchanged.)
 //
-// Task: make serialize pure, then implement the override the compiler
-// demands.
+// Task: make "forgot to implement serialize" impossible to ship.
+//   - Exporter provides no fallback: a derived exporter without its own
+//     serialize must fail to compile at the point of instantiation
+//   - all asserts pass — including the YAML one
+// Constraints:
+//   - JsonExporter and main() stay untouched
+//   - change the base FIRST and recompile — let the error direct you to
+//     YamlExporter (that workflow is the lesson)
+//   - don't change any assert
 
 #include <cassert>
 #include <memory>
@@ -41,8 +47,8 @@ struct JsonExporter : Exporter {
 };
 
 struct YamlExporter : Exporter {
-    // added in a hurry; serialize() never implemented
-    // (when you write it: "value: " + std::to_string(value))
+    // added in a hurry; serialize() never implemented — the assert below
+    // shows the output it owes
 };
 
 int main() {

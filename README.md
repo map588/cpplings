@@ -23,6 +23,11 @@ You need:
 - A C++20 compiler — recent `clang++` (incl. Apple clang) or `g++`
 - Python **3.11+** (the runner is one stdlib-only script)
 
+Linux is the reference platform. Everything works on macOS too, except a
+couple of exercises that need Linux's `/proc` — those are tagged
+`platforms = ["linux"]` in `exercises.toml` and the runner skips them
+automatically elsewhere (they show as `SKIP` in `list`).
+
 ```sh
 python3 cpplings.py        # start the watcher and begin
 ```
@@ -65,9 +70,11 @@ as short reading notes until compiler support is everywhere.
 
 ## Curriculum
 
-Six parts, 27 modules, **148 exercises** — from initialization rules to
+Six parts, 27 modules, **158 exercises** — from initialization rules to
 move semantics, templates & concepts, value categories, UB & sanitizers,
-memory layout, and atomics. See [CURRICULUM.md](CURRICULUM.md) for the
+memory layout, atomics, and a thread of low-level Linux/embedded topics
+(device registers, `volatile`, the C ABI, POSIX fds and `errno`,
+endianness, signal safety). See [CURRICULUM.md](CURRICULUM.md) for the
 full map.
 
 | Part | Theme |

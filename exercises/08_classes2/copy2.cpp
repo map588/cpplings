@@ -4,10 +4,11 @@
 // buffer, double-free. But this time DON'T write the rule of three.
 //
 // The RULE OF ZERO: hold resources through members that already manage
-// themselves. Replace the {pointer, size} pair with a std::vector<int>
-// and DELETE the destructor entirely. The compiler-generated copy ctor,
-// copy assignment, destructor — and both move operations, for free —
-// are all correct, because vector's are.
+// themselves. If the {pointer, size} pair becomes a single standard-
+// library member that owns its storage, there is nothing left for
+// GradeBook to manage: the compiler-generated copy ctor, copy
+// assignment, destructor — and both move operations, for free — are
+// all correct, because the member's are.
 //
 // This is the modern default. The rule of three/five is for the handful
 // of classes that sit at the BOTTOM of the stack and implement the
@@ -15,10 +16,19 @@
 // class above them: rule of zero.
 //
 // Bonus fact: by writing ~GradeBook() the original author also silently
-// disabled move generation for this class (see special1 next) — deleting
-// the destructor doesn't just fix the bug, it makes the class movable.
+// disabled move generation for this class (see special1 next) — the
+// rule-of-zero rewrite doesn't just fix the bug, it makes the class
+// movable.
 //
-// Task: convert GradeBook to the rule of zero. main() must not change.
+// Task: convert GradeBook to the rule of zero.
+//   - compiles, every assert passes, sanitizer-clean (no double-free,
+//     no leak)
+//   - GradeBook declares ZERO special members: no destructor, no
+//     copy/move anything
+//   - no `new` or `delete` remains anywhere in the class
+// Constraints:
+//   - main() must not change
+//   - keep the public member functions' signatures and behavior
 
 #include <cassert>
 #include <cstddef>

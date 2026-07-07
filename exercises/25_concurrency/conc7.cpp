@@ -12,7 +12,8 @@
 //
 //   - pass std::launch::async explicitly. The default policy MAY defer
 //     the task to run lazily on .get() — your "parallel" code, serial.
-//   - .get() once only; it moves the result out (valid() goes false).
+//   - .get() once only: it MOVES the result out. What that leaves
+//     behind is the quiz at the bottom of main.
 //   - the future from std::async BLOCKS IN ITS DESTRUCTOR until the
 //     task finishes (infamous; it means an unused future is a sync
 //     point, not a fire-and-forget).
@@ -21,10 +22,17 @@
 // .get() rethrows it in the calling thread — error handling across
 // threads for free (module 20 wired straight through).
 //
-// Task: parallel_sum runs its halves sequentially. Run the first half
-// as an async task while this thread does the second; combine with
-// .get(). Note there's NO shared mutable state — each task owns its
-// range. That's why no mutex appears: structure, not locks.
+// Task: make parallel_sum actually parallel, and settle the quiz.
+//   - the first half runs as an async task WHILE this thread computes
+//     the second; the combined result satisfies the assert
+//   - the valid() TODO states the truth about a spent future
+// Constraints:
+//   - explicit launch policy — "maybe parallel" doesn't count
+//   - this thread does the second half itself, and only collects the
+//     first half's result AFTER doing its own work — collecting first
+//     would serialize the halves
+//   - no shared mutable state, no mutex: each task owns its range —
+//     structure, not locks
 
 #include <cassert>
 #include <future>

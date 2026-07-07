@@ -33,6 +33,11 @@ like a compiler error. Learn to recognize both.
 - **Include guards.** `#pragma once` (universal in practice) or classic
   `#ifndef`/`#define` guards keep a header from defining the same type
   twice in one TU.
+- **`extern "C"` language linkage.** C++ mangles symbol names to encode
+  overloads; C emits the plain name. `extern "C"` is the bridge — and the
+  reason every C header does the `#ifdef __cplusplus extern "C" {` dance.
+  Mismatch it and both TUs compile, but the linker reports
+  `undefined reference` to a symbol that "obviously" exists.
 
 ## Version notes
 

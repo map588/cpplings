@@ -16,7 +16,12 @@
 // on destruction. Predict the log strings. (Note Pair: its members were
 // declared `right` THEN `left` — declaration order is what counts.)
 //
-// Task: fill in the two TODO strings.
+// Task: replace both TODOs with the exact log strings.
+//   - both asserts pass
+// Constraints:
+//   - work each string out on paper first — the point is prediction,
+//     not printing the log and pasting it in
+//   - don't modify Probe, Pair, or the scopes in main
 
 #include <cassert>
 #include <string>
@@ -31,7 +36,7 @@ struct Probe {
 };
 
 struct Pair {
-    Probe right;   // declared first → constructed first → destroyed LAST
+    Probe right;   // declared before `left` — remember which order counts
     Probe left;
     Pair(std::string& l) : right('r', l), left('l', l) {}
 };

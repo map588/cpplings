@@ -4,15 +4,15 @@
 // keeps it alive. This exercise draws the EXACT boundary, because it's
 // narrower than people think:
 //
-//   EXTENDS — binding directly to the prvalue:
+//   EXTENDS — the reference binds the prvalue directly:
 //     const Reading& r = make_reading();
-//   EXTENDS — binding to a MEMBER of the prvalue (the WHOLE temporary
-//   stays alive to back it):
-//     const std::string& s = make_reading().sensor_name;
+//   EXTENDS — the reference binds a MEMBER SUBOBJECT of the prvalue,
+//   named right there in the initializer (the WHOLE temporary stays
+//   alive to back it).
 //
-//   DOES NOT EXTEND — anything through a function return, even a
-//   function that "just returns its argument":
-//     const std::string& s = pick_name(make_reading());   // DANGLING
+//   DOES NOT EXTEND — anything that reaches the reference through a
+//   function return, even a function that "just returns its argument":
+//   the temporary dies at the semicolon and the reference dangles.
 //
 //   The rule: extension happens when the compiler can SEE, in that one
 //   initialization, that the reference binds the temporary (or its
@@ -20,11 +20,16 @@
 //   compiler can't know what the reference inside refers to, so the
 //   temporary dies at the semicolon, normally.
 //
-// ASan will show the third case reading freed memory. (clang also
+// ASan will show the dangling case reading freed memory. (clang also
 // warns -Wdangling-gsl on some of these — read it.)
 //
-// Task: fix main's dangling case by binding to the member directly —
-// the extending form.
+// Task: fix the dangling `name` binding in main.
+//   - the program runs clean under ASan/UBSan and both asserts pass
+//   - `name` stays a const std::string& — no copying the string
+// Constraints:
+//   - do not change Reading, make_reading, or pick_name
+//   - no new named variables in main — the fix is in `name`'s
+//     initializer, using one of the extending forms above
 
 #include <cassert>
 #include <string>

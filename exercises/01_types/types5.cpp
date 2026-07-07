@@ -13,9 +13,13 @@
 // And <cstddef> gives std::size_t: unsigned, wide enough for any object
 // size — it's what sizeof and .size() return.
 //
-// Task: replace each alias's type with the SMALLEST exact-width type that
-// satisfies the stated requirement. The static_asserts encode the
-// requirements.
+// Task: give each alias the SMALLEST exact-width type that satisfies its
+// stated requirement.
+//   - compiles with all three static_asserts passing
+// Constraints:
+//   - use exact-width <cstdint> types only (not least/fast variants,
+//     not plain int/long)
+//   - don't change the static_asserts — they encode the requirements
 
 
 #include <cstdint>
