@@ -21,6 +21,10 @@ initialization syntax on top. This module covers the traps that result.
   arithmetic wraps (well-defined); **signed overflow is undefined behavior**.
 - **Fixed-width types** (`<cstdint>`, C++11). Plain `int` only guarantees
   ≥16 bits; when width matters, say so.
+- **Bits, masks, and fields.** Device registers are edited in place: `|` sets,
+  `& ~mask` clears, `^` toggles, `& mask` tests, and a multi-bit field is
+  mask + shift (clear the old bits *first*). Promotion strikes here too:
+  `~` on a `uint8_t` happens in `int`, with 24 surprise high bits.
 
 ## Version notes
 
