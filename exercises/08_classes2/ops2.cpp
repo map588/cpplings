@@ -2,15 +2,13 @@
 //
 // Before C++20, a fully comparable type meant writing six operators
 // (==, !=, <, <=, >, >=) — or generating them from < and == with macro
-// tricks. C++20 collapsed all of it into one line:
-//
-//     auto operator<=>(const Version&) const = default;
-//
-// The "spaceship" operator returns an ordering (here std::strong_ordering:
-// less/equal/greater), and the compiler REWRITES every comparison through
-// it: a < b becomes (a <=> b) < 0, and so on. Defaulting <=> also
-// implicitly declares a defaulted operator== — so one line really does
-// buy all six.
+// tricks. C++20 collapsed all of it into a single DEFAULTED operator:
+// the three-way comparison, spelled <=> and nicknamed the "spaceship".
+// It returns an ordering (here std::strong_ordering: less/equal/
+// greater), and the compiler REWRITES every comparison through it:
+// a < b becomes (a <=> b) < 0, and so on. Defaulting it also implicitly
+// declares a defaulted operator== — so one declaration really does buy
+// all six.
 //
 // The defaulted version compares members LEXICOGRAPHICALLY IN DECLARATION
 // ORDER — for a Version{major, minor, patch} that's exactly semver order,
@@ -18,7 +16,13 @@
 // order is part of your comparison semantics now; reorder members and you
 // reorder sorting.
 //
-// Task: Version isn't comparable at all yet. Make it so — with one line.
+// Task: make Version fully comparable by adding ONE line inside the
+// struct.
+//   - compiles and every assert passes
+// Constraints:
+//   - exactly one added line; do not hand-write any of the six
+//     comparison operators
+//   - don't touch the members, their order, or the asserts
 
 #include <cassert>
 #include <compare>   // the orderings live here (C++20)

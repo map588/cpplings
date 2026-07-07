@@ -18,7 +18,13 @@
 // first, a_ reads an uninitialized b_. (-Wreorder warns; this repo's
 // flags include it via -Wall.)
 //
-// Task: convert this constructor to a member init list.
+// Task: rewrite the constructor so every member is INITIALIZED, never
+// assigned.
+//   - the program compiles and every assert passes
+//   - the constructor body ends up empty
+// Constraints:
+//   - id_ stays const; the members keep their declaration order
+//   - don't change main or the asserts
 
 #include <cassert>
 #include <string>

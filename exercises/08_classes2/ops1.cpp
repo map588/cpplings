@@ -9,16 +9,23 @@
 //      function treats both sides symmetrically.
 //
 //   2. Operators should mean what they mean on ints. operator== is VALUE
-//      equality — and for a fraction, 1/2 IS 2/4. Compare cross-products
-//      (a/b == c/d  ⇔  a*d == c*b), not raw members.
+//      equality — and for a fraction, 1/2 IS 2/4, even though the raw
+//      members differ. Equal value, not equal representation.
 //
-// The arithmetic identity worth memorizing:
-//      a/b + c/d = (a*d + c*b) / (b*d)
+// You learned the arithmetic itself in grade school; the exercise is
+// making the operators say it. (The implicit Fraction(int) constructor
+// is deliberate — it's what lets `half + 1` and `1 + half` work at all.
+// explicit would break that; here the conversion IS the design, the
+// module-07 exception.)
 //
-// Task: both operators below are stubbed with naive member-wise bodies.
-// Fix them. (The implicit Fraction(int) constructor is deliberate — it's
-// what lets `half + 1` and `1 + half` work at all. explicit would break
-// that; here the conversion IS the design, the module-07 exception.)
+// Task: replace both stub bodies with real fraction semantics.
+//   - every assert passes
+//   - no reducing/normalizing required: equality must hold across
+//     UNREDUCED forms (1/2 vs 2/4), and sums may stay unreduced
+// Constraints:
+//   - both operators stay free functions; Fraction(int) stays implicit
+//   - integer arithmetic only — no floating point
+//   - don't change main or the asserts
 
 #include <cassert>
 

@@ -9,16 +9,25 @@
 // copying is wrong — and the RULE OF THREE says: a class that needs ANY
 // of {destructor, copy ctor, copy assignment} needs ALL THREE.
 //
-// Task: write the missing two. The copy constructor allocates its own
-// buffer and copies the contents. Copy assignment is trickiest — the
-// classic direct version must handle, in order:
-//     1. self-assignment (b = b must not free the buffer it's copying!)
-//     2. free the OLD buffer
-//     3. allocate + copy the new contents
-// (Module 09 shows the copy-and-swap idiom that gets this for free.)
+// Copy assignment is the tricky one: it runs on an object that ALREADY
+// owns a buffer, and nothing stops code from assigning an object to
+// itself (main does, through a reference). Get the order of operations
+// wrong and you leak — or read through a pointer you just freed.
+// (Module 09 shows the copy-and-swap idiom that sidesteps the ordering
+// entirely.)
 //
-// The honest fix is a std::vector member — that's copy2. Do it by hand
-// exactly once, here, so you know what the rule of three costs.
+// The honest fix is a member that manages itself — that's copy2. Do it
+// by hand exactly once, here, so you know what the rule of three costs.
+//
+// Task: complete the rule of three.
+//   - compiles, every assert passes, and the run is sanitizer-clean:
+//     no double-free, no use-after-free, no leak
+//   - copies are deep: writing through b never shows through a
+//   - self-assignment is harmless
+// Constraints:
+//   - keep the raw new[]/delete[] design (the self-managing version is
+//     copy2's job)
+//   - don't change main or the destructor
 
 #include <cassert>
 #include <cstddef>

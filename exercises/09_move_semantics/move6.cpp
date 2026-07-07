@@ -23,7 +23,14 @@
 // Rule of thumb: std::move on T&& where T is concrete; std::forward<T>
 // on T&& where T was deduced. Never both, never the other way.
 //
-// Task: one word to change.
+// Task: make store() honor the caller's choice.
+//   - every assert passes: after store(label), `label` is untouched;
+//     after store(std::move(label)), the vault holds two equal strings
+// Constraints:
+//   - the rvalue call must still actually MOVE — an unconditional copy
+//     sneaks past these asserts but fails the point of the exercise
+//   - keep the single template; no overload pair
+//   - don't change main or the asserts
 
 #include <cassert>
 #include <string>

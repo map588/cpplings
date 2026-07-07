@@ -5,23 +5,27 @@
 //
 //   RULE: the moment you write ANY constructor, the compiler stops
 //   generating the default constructor. The Session class below gained a
-//   Session(int) and silently lost `Session s;`. Ask for it back:
-//
-//       Session() = default;        // with NSDMIs supplying the values
+//   Session(const std::string&) and silently lost `Session s;`. There's
+//   nothing to hand-write back: the NSDMIs already describe a default
+//   Session — you only need to ask the compiler to generate the
+//   constructor again.
 //
 //   `= delete` is the opposite tool: remove a function from overload
-//   resolution. It works on ANY function — and a deleted OVERLOAD is the
-//   standard trick for blocking an unwanted implicit conversion:
-//
-//       void set_timeout_ms(int ms);
-//       void set_timeout_ms(double) = delete;   // "no, you're thinking
-//                                               //  of seconds"
-//
-//   Without it, set_timeout_ms(2.5) silently truncates to 2ms (module 01
+//   resolution. It works on ANY function, not just special members —
+//   and deleting a well-chosen OVERLOAD is the standard trick for
+//   turning an unwanted implicit conversion into a compile error.
+//   Right now set_timeout_ms(2.5) silently truncates to 2ms (module 01
 //   all over again — but now at an API boundary you own).
 //
-// Task: restore Session's default constructor, then delete the double
-// overload and fix the buggy call.
+// Task: restore `Session s;`, and make fractional-millisecond calls
+// impossible.
+//   - the program compiles and every assert passes
+//   - set_timeout_ms(2.5) must become a COMPILE ERROR — verify that,
+//     then fix the call to say what it means in integer milliseconds
+// Constraints:
+//   - keep Session(const std::string&) and both NSDMIs
+//   - no hand-written body for the default constructor
+//   - set_timeout_ms(int) keeps its signature; don't change the asserts
 
 #include <cassert>
 #include <string>

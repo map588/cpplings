@@ -13,16 +13,21 @@
 //     to_seconds(5, 30)   // meant 30 seconds + 5 minutes. Compiles.
 //                         // Computes 5 seconds + 30 minutes.
 //
-// `explicit` turns the conversion off: callers must NAME the type,
-// Seconds{30}, so a swap becomes a type error instead of a wrong answer.
+// `explicit` turns the conversion off: callers must NAME the type they
+// mean, so a swap becomes a type error instead of a wrong answer.
 //
 // Guideline (straight from the Core Guidelines): single-argument
 // constructors are `explicit` BY DEFAULT; leave one implicit only when
 // the conversion is genuinely part of the type's meaning (std::string
 // from a literal is the classic exception).
 //
-// Task: make both constructors explicit, then fix the buggy call site so
-// it says what it means.
+// Task: make unit mix-ups a compile error, then fix the call.
+//   - the program compiles and the assert passes (total == 330)
+//   - after your change, the original call to_total_seconds(5, 30) must
+//     NOT compile — check that before you fix the call site
+// Constraints:
+//   - don't change to_total_seconds' signature, body, or the assert
+//   - fix the CALL to say what its author meant (30 s + 5 min)
 
 #include <cassert>
 

@@ -14,9 +14,15 @@
 // value to it, and call anything without preconditions (.size(),
 // .clear(), ...). You may NOT assume what it contains.
 //
-// Task: archive() copies. Make it move. (The function receives the
-// string by value — its caller already decided to hand over a copy; the
-// member grab inside should not pay for ANOTHER one.)
+// Task: store() still pays for a full copy — make the buffer flow
+// through instead.
+//   - every assert passes: log.contents must end up owning the very
+//     same heap buffer `entry` started with (pointer identity — zero
+//     new allocations)
+// Constraints:
+//   - keep store's by-value parameter (its caller already decided how
+//     to hand the string over; move5 explains why by-value is right)
+//   - don't change main, the asserts, or Archive's member
 
 #include <cassert>
 #include <string>

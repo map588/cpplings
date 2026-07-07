@@ -15,11 +15,18 @@
 // all silently copying. This is also why the rule-of-five says five:
 // writing the destructor without the moves doesn't break, it just crawls.
 //
-// The Tracker member counts what actually happens to it. Predict the
-// counters. Then fix Logged so moving works WITHOUT deleting its
-// destructor (it's load-bearing, says the comment): default the moves —
-// and note you must also default the copies and the default ctor, since
-// declaring moves would otherwise delete/suppress them.
+// The Tracker member counts what actually happens to it.
+//
+// Task: fill in every TODO with the true count, and make Logged movable
+// again.
+//   - every assert passes
+//   - `Logged d = std::move(c)` must actually MOVE the Tracker — the
+//     counters prove it — with ~Logged still in place
+// Constraints:
+//   - keep the destructor; it's load-bearing, says the comment
+//   - don't change Tracker, Plain, or main (other than the TODOs)
+//   - re-read the table before declaring anything in Logged: every row
+//     you trigger has consequences for the other special members
 
 #include <cassert>
 #include <utility>

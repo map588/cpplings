@@ -2,24 +2,29 @@
 //
 // API design: how should a "store this" function take its parameter?
 //
-//   void set_name(const std::string& n) { name_ = n; }
+//   Option A — take a reference-to-const and assign from it:
 //     lvalue arg:  1 copy (the assignment)
-//     rvalue arg:  1 copy — the const& happily binds the temporary
+//     rvalue arg:  ALSO 1 copy — the const& happily binds the temporary
 //                  (module 03), and then you COPY it. The caller's
 //                  std::move accomplished nothing!
 //
-//   void set_name(std::string n) { name_ = std::move(n); }   // SINK
-//     lvalue arg:  1 copy (into n) + 1 cheap move
-//     rvalue arg:  0 copies — the temporary is elided straight into n
-//                  (move4!), then 1 move into place
+//   Option B — the SINK: accept the parameter BY VALUE, then hand that
+//   value onward into the member:
+//     lvalue arg:  1 copy (into the parameter) + 1 cheap move
+//     rvalue arg:  0 copies — the temporary is elided straight into the
+//                  parameter (move4!), then 1 move into place
 //
 // The by-value "sink" parameter is one overload that's optimal-ish for
-// both cases. The const& version is never better and is strictly worse
-// for rvalues. (The third option — overloading on const&/&& — wins a
-// move but doubles your API; perfect forwarding (move6) generalizes it.)
+// both cases. Option A is never better and is strictly worse for
+// rvalues. (The third option — overloading on const&/&& — wins a move
+// but doubles your API; perfect forwarding (move6) generalizes it.)
 //
-// Task: Profile::set_tag is the const&-and-copy version. The counters in
-// main demand sink behavior. Convert it.
+// Task: convert Profile::set_tag into a sink.
+//   - every assert passes — a temporary costs {0 copies, 1 move}, a
+//     kept lvalue costs {1 copy, 1 move}
+// Constraints:
+//   - exactly ONE set_tag (no const&/&& overload pair)
+//   - don't change Tag, main, or the asserts
 
 #include <cassert>
 #include <utility>

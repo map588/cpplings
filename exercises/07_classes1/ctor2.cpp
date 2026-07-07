@@ -4,11 +4,11 @@
 //
 //   DEFAULT MEMBER INITIALIZERS (NSDMI) — the default lives AT THE
 //   MEMBER, once:
-//       int seconds = 30;
-//   Every constructor whose init list doesn't mention `seconds` uses it.
+//       struct Widget { int size = 64; };
+//   Every constructor whose init list doesn't mention `size` uses it.
 //
 //   DELEGATING CONSTRUCTORS — a constructor can forward to another:
-//       Timer(int s) : Timer(s, false) {}
+//       Widget() : Widget(64, false) {}
 //   One constructor holds the real logic; the rest are one-liners.
 //   (A delegating constructor may not ALSO have a member init list —
 //   delegate or initialize, not both.)
@@ -18,9 +18,15 @@
 // this exercise: someone added the (int) constructor and got the default
 // wrong.
 //
-// Task: 1) move the default for `seconds` (30) into an NSDMI,
-//       2) make Timer(int) delegate to Timer(int, bool),
-//       3) Timer() can then be `= default`.
+// Task: fix the wrong default so the drift can never come back.
+//   - every assert passes
+//   - the default value for each member is written in exactly ONE place
+//   - exactly ONE constructor actually initializes members; the others
+//     delegate or are compiler-generated
+// Constraints:
+//   - all three call forms in main must keep working
+//   - just flipping `true` to `false` doesn't count — restructure so a
+//     future constructor can't repeat the mistake
 
 #include <cassert>
 

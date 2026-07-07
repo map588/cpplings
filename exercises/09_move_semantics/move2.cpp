@@ -1,20 +1,29 @@
 // move2.cpp
 //
 // copy1 (module 08) made you write the rule of three for IntBuffer.
-// Completing it to the RULE OF FIVE means adding the two move members,
-// and the recipe is always the same:
+// Completing it to the RULE OF FIVE means adding the two move members.
+// What each one owes:
 //
-//   move ctor:    STEAL the guts, then NULL the source's pointers
-//                 (so its destructor deletes nullptr — a harmless no-op)
-//   move assign:  guard self-move, free your own guts, steal, null
-//   both:         mark noexcept — moves that can't throw. Stealing a
-//                 pointer can't fail; only allocating can, and moves
-//                 don't allocate. (Why noexcept MATTERS: move3.)
+//   move ctor:    transfer ownership of the guts; the source must be
+//                 left safe to destroy (and to assign a new value to)
+//   move assign:  same — but remember YOU already own a buffer, and
+//                 nothing stops a self-move
+//   both:         must promise they can't throw. The promise is honest:
+//                 stealing never allocates, and only allocation can
+//                 fail. (Why the promise MATTERS: move3. The
+//                 static_assert below insists on it.)
 //
 // The asserts below verify actual theft, pointer-identically, just like
 // move1 did for std::string.
 //
 // Task: implement the move constructor and move assignment.
+//   - compiles (static_assert included) and every assert passes
+//   - sanitizer-clean: no leak, no double-free — moved-from objects
+//     still get destroyed
+//   - moves must steal (pointer identity), not copy elements
+// Constraints:
+//   - the copy operations and destructor stay exactly as they are
+//   - don't change main or the asserts
 
 #include <cassert>
 #include <cstddef>
@@ -39,9 +48,7 @@ public:
         return *this;
     }
 
-    // Rule of five — the missing two go here:
-    // IntBuffer(IntBuffer&& other) noexcept ...
-    // IntBuffer& operator=(IntBuffer&& other) noexcept ...
+    // Rule of five — the missing two go here.
 
     const int* data() const { return data_; }
     int& operator[](std::size_t i) { return data_[i]; }
