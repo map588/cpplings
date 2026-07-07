@@ -25,9 +25,19 @@
 // part of the type's identity. (Requirement: the NTTP type must be a
 // structural type — public members, no custom ==, roughly.)
 //
-// Task: RingBuffer below takes its config the runtime way and lost all
-// of those properties. Make `Cfg` a class-type NTTP; the asserts and
-// the static_asserts encode the contract.
+// RingBuffer below takes its config the runtime way and lost all of
+// those properties — note data_'s wishful 64.
+//
+// Task: rebuild RingBuffer so its config is a compile-time property
+// of the type.
+//   - main compiles AS WRITTEN — RingBuffer<RingConfig{...}> is the
+//     interface the callers already expect
+//   - data_ has EXACTLY capacity elements: no 64-slot hope, no heap
+//   - every assert passes, including the different-types static_assert
+// Constraints:
+//   - RingConfig itself stays unchanged
+//   - push()'s logic stays as-is apart from where the config comes from
+//   - don't change main
 
 #include <cassert>
 #include <cstddef>
@@ -38,7 +48,8 @@ struct RingConfig {
     bool overwrite_when_full;
 };
 
-class RingBuffer {                    // TODO: template <RingConfig Cfg>
+class RingBuffer {                    // TODO: the config arrives one whole
+                                      // compile phase too late
 public:
     explicit RingBuffer(RingConfig cfg) : cfg_(cfg) {}
 

@@ -19,8 +19,16 @@
 // `from`, the loop position — sleeps between calls. It's lambdas3's
 // stateful closure idea, generalized to suspendable control flow.
 //
-// Task: implement collatz() — co_yield the whole Collatz sequence of n
-// (n, then n even ? n/2 : 3n+1, ... down to 1 inclusive), then finish.
+// Task: implement collatz() — yield the WHOLE Collatz sequence of n:
+// n itself first, then repeatedly (even → halve, odd → 3n+1), down to
+// and including 1, then finish.
+//   - collatz(6) yields exactly 6, 3, 10, 5, 16, 8, 4, 2, 1
+//   - collatz(1) yields exactly one value and then reports done —
+//     mind the trivial case
+// Constraints:
+//   - it stays a coroutine: values come out one co_yield at a time
+//     as the caller pulls, not from a pre-built container
+//   - don't modify the Generator machinery or main
 
 #include <cassert>
 #include <coroutine>

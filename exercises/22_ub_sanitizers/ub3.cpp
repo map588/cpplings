@@ -19,10 +19,18 @@
 //
 // The shape below is the realistic one: a "remember the best element"
 // loop that remembers an ADDRESS inside the loop body — every iteration's
-// `score` is a fresh object that dies at the iteration's end.
+// `score` is a fresh object that dies at the iteration's end. The fix
+// is to remember something that OUTLIVES the loop; there are two
+// honest choices, and either works.
 //
-// Task: track the best VALUE (or an index into `entries`), not the
-// address of a per-iteration local.
+// Task: make main() report the right winner without reading a ghost.
+//   - the winning result (94) is asserted at the end — adapt the
+//     assert's spelling to your representation, not its value
+//   - runs clean under ASan (no stack-use-after-scope report)
+// Constraints:
+//   - keep the loop and the per-iteration `score` computation
+//   - don't hoist `score` out of the loop — fix WHAT is remembered,
+//     not where the local happens to live
 
 #include <cassert>
 #include <vector>

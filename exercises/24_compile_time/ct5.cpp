@@ -13,17 +13,24 @@
 // An `if constexpr` condition is ITSELF evaluated at compile time — so
 // the question "am I being constant-evaluated?" is being asked DURING
 // constant evaluation, and the answer is always yes. The runtime branch
-// below is dead code in every instantiation. clang even has a warning
-// for it (-Wconstant-evaluated — read it in the build output!).
+// below is dead code in every instantiation — the compilers even warn
+// about it (read the build output!).
 //
-// The correct spelling is a PLAIN if: codegen sees both branches, the
-// constant evaluator takes one, runtime takes the other, and the
-// optimizer deletes the compile-time branch from the emitted code
-// (the condition folds to false at runtime).
+// The repair follows from the diagnosis: the question must be asked
+// when the function actually RUNS, not while its branches are being
+// selected at compile time. Both branches must survive to codegen;
+// the optimizer will still fold the check away at runtime. The fix
+// DELETES more than it adds. (C++23 closed the trap with dedicated
+// syntax: `if consteval { }`.)
 //
-// (C++23 closed the trap with dedicated syntax: `if consteval { }`.)
-//
-// Task: one word to delete. The mode counters tell the truth.
+// Task: make square() report the path that actually computed it.
+//   - static_assert(square(12) == 144) still compiles and passes
+//   - the runtime call takes the runtime path: mode ends up 'r' and
+//     both runtime asserts pass
+// Constraints:
+//   - one function serving both worlds — no overloads, no second
+//     function, no consteval/constinit tricks
+//   - keep the mode-reporting logic and every assert
 
 #include <cassert>
 #include <type_traits>

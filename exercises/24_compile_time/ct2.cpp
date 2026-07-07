@@ -19,8 +19,13 @@
 // t['a'..'f'] = 10..15, t['A'..'F'] = 10..15, everything else 255.
 // With it, parse_hex_byte is two lookups, branchless.
 //
-// Task: implement make_hex_table. The static_asserts audit single
-// entries; the runtime asserts use the whole pipeline.
+// Task: implement make_hex_table.
+//   - every static_assert passes (they audit single entries)
+//   - every runtime assert passes (the whole pipeline)
+// Constraints:
+//   - the function stays consteval, the table stays constexpr
+//   - all 256 entries are COMPUTED — no 256-entry literal
+//   - don't change parse_hex_byte or any assert
 
 #include <array>
 #include <cassert>

@@ -9,21 +9,29 @@
 //   CACHE LINES — two hot variables sharing one 64-byte line ping-pong
 //   between cores ("false sharing"); alignas(64) gives each its own.
 //
-// The tool is alignas (C++11), on a type or a member:
+// The tool is alignas (C++11). On a TYPE it raises every instance's
+// alignment:
 //
 //     struct alignas(64) PerCoreCounter { long n; };
-//     struct Packet { char tag; alignas(16) float lane[4]; };
 //
-// alignas on a MEMBER also forces padding before it (the offset must
-// honor the alignment) and raises the whole struct's alignment — which
-// `new` honors too (aligned operator new, C++17).
+// It works on a single MEMBER too — forcing padding before it (the
+// offset must honor the alignment) and raising the whole struct's
+// alignment, which `new` honors as well (aligned operator new, C++17).
 //
 // Below: Packet's float lane needs 16-byte alignment for dsp_sum4 (it
 // checks, like a debug-mode SIMD intrinsic). As laid out, `lane` sits
 // at offset 4 — a heap Packet can NEVER satisfy the check.
 //
-// Task: alignas the lane, then settle the TODOs (the price of an
-// alignas(64) promise).
+// Task: make every Packet's lane 16-byte aligned, then settle the
+// TODOs (the price of an alignas(64) promise).
+//   - dsp_sum4's alignment assert stops firing; main's assert passes
+//   - both static_asserts hold with your TODO replacements
+// Constraints:
+//   - don't weaken or remove dsp_sum4's check
+//   - Packet keeps both members with tag declared first — no
+//     reordering, no removing tag
+//   - keep the make_unique: the guarantee must hold for HEAP Packets,
+//     not one luckily aligned stack instance
 
 #include <cassert>
 #include <cstdint>

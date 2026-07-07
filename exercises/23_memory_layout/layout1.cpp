@@ -7,20 +7,28 @@
 //      member alignment (so arrays of it stay aligned)
 //
 // The compiler may NOT reorder members for you (declaration order is
-// layout order — C compatibility). So Wasteful below goes:
+// layout order — C compatibility). Wherever the next member's
+// alignment doesn't divide the current offset, the compiler inserts
+// PADDING — invisible bytes you pay for in every element of every
+// array. A million-element vector of a padding-heavy struct: megabytes
+// of air and extra cache misses, all avoidable by declaring the same
+// members in a smarter order.
 //
-//     char tag;        offset 0, then 7 bytes PADDING (double wants 8)
-//     double value;    offset 8
-//     char flag;       offset 16, then 3 padding (int wants 4)
-//     int count;       offset 20 → size 24
+// Apply the two rules to Wasteful below, member by member, offset by
+// offset (typical 64-bit platform — this course's: alignof(int) == 4,
+// alignof(double) == 8). Then find the ordering principle that makes
+// padding evaporate — it's mechanical once you see it.
 //
-// 10 of 24 bytes are air. The cure is mechanical: sort members
-// LARGE-TO-SMALL and the padding evaporates. A million-element vector
-// of these: 8 MB and a third of the cache misses, for a cut-and-paste.
-//
-// Task: fill the TODOs for Wasteful (the numbers assume a typical
-// 64-bit platform — this course's). Then order Packed's members so the
-// final static_assert holds.
+// Task: replace each TODO with the number the two rules predict, then
+// reorder Packed's members so its static_assert holds.
+//   - the file compiles: the static_asserts are the checker
+// Constraints:
+//   - Wasteful's member order stays exactly as declared
+//   - Packed keeps the same four members (names and types) — only
+//     their order is yours
+//   - no pragmas or attributes — declaration order is the only tool
+//   - Packed's static_assert keeps its 16; on Wasteful, change only
+//     the TODOs
 
 #include <cstddef>
 

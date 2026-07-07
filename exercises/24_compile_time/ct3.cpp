@@ -17,10 +17,17 @@
 // functions, both worlds (every constexpr function here still works on
 // runtime data too).
 //
-// Task: implement median_of() — constexpr, takes an initializer_list,
-// copies into a std::vector, sorts (std::sort is constexpr in C++20),
-// returns the middle element. Compile-time callers below, runtime
-// caller at the bottom.
+// Task: implement median_of() — one constexpr function, both worlds.
+//   - the three static_asserts pass: the compiler runs the whole
+//     container lifecycle
+//   - main's runtime assert passes: same function, runtime data
+// Constraints:
+//   - use a container as scratch space inside the function — putting
+//     the values in order is the library's job, not a hand-rolled
+//     selection loop's (every asserted list has odd length; the
+//     median is the middle of the ordered values)
+//   - no allocation escapes: only the int leaves
+//   - don't change the asserts
 
 #include <algorithm>
 #include <cassert>
@@ -28,7 +35,7 @@
 #include <vector>
 
 constexpr int median_of(std::initializer_list<int> values) {
-    return 0;   // TODO: vector scratch + std::sort + middle element
+    return 0;   // TODO: scratch storage, order it, take the middle
 }
 
 // The compiler runs the whole vector lifecycle for these:

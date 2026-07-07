@@ -16,12 +16,20 @@
 //      account first, regardless of direction. Convention-based; works;
 //      audits poorly.
 //
-//   2. std::scoped_lock (C++17) — hand it BOTH mutexes at once:
-//          std::scoped_lock lk(from.m, to.m);
-//      It acquires them with a deadlock-avoidance algorithm, atomically
-//      from your perspective. This is the reason scoped_lock exists.
+//   2. Ask the library to take BOTH locks in one breath. C++17 added
+//      a lock type for exactly this — hand it every mutex you need
+//      and it acquires them all with a deadlock-avoidance algorithm,
+//      atomically from your perspective. This scenario is the reason
+//      that type exists.
 //
-// Task: fix transfer() with a single scoped_lock taking both mutexes.
+// Task: make transfer() deadlock-free.
+//   - the program finishes (no 30-second timeout) and both asserts
+//     pass: alice 80, bob 120
+//   - runs clean under TSan — its lock-inversion report gone too
+// Constraints:
+//   - keep the sleep: your fix must survive the window, not shrink it
+//   - each Account keeps its own mutex, and both accounts stay
+//     protected while the balances move — no single global lock
 
 #include <cassert>
 #include <chrono>

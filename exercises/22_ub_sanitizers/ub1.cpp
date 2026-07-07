@@ -15,12 +15,18 @@
 // real on modern data), lo + hi overflows. UBSan reports the exact
 // line; without UBSan you'd get a negative mid and a wild array read.
 //
-// The classic fix computes the midpoint WITHOUT a sum that can grow:
+// Note what's strange: the ANSWER always fits — the midpoint of two
+// valid ints is itself a valid int between them. Only an intermediate
+// value overflows. That's the thought to hold: rearrange the
+// arithmetic so no intermediate step can leave int's range. The fix
+// is a one-liner (there's more than one honorable way).
 //
-//     int mid = lo + (hi - lo) / 2;      // hi >= lo, so hi-lo fits
-//
-// Task: fix midpoint(). (Alternative honorable fixes: widen to int64_t,
-// or use std::midpoint — yes, C++20 added it BECAUSE of this bug.)
+// Task: make midpoint() correct for any 0 <= lo <= hi <= INT_MAX.
+//   - all three asserts pass
+//   - runs clean under the sanitizers (no UBSan overflow report)
+// Constraints:
+//   - keep the signature: ints in, int out
+//   - don't change the asserts or the test values
 
 #include <cassert>
 #include <climits>

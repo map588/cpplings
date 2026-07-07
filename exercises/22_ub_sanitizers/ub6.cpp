@@ -8,18 +8,23 @@
 //            integral promotion (module 01): your uint8_t math happens
 //            in INT, so "small type" shifts hit int's limits!
 //
-//            The fix is to shift an UNSIGNED value of sufficient width:
-//            1u << 31 is fine; std::uint64_t{1} << n for wide masks.
-//
 // flag_mask() below commits both sins for the right inputs. UBSan
-// reports each as it happens — fix them and re-run until silence:
+// reports each as it happens — re-run until silence:
 //
 //   "left shift of 1 by 31 places cannot be represented in type 'int'"
 //   "shift exponent 32 is too large for 32-bit type 'int'"
 //
-// Task: make flag_mask correct for bit indices 0..63 by building the
-// mask in std::uint64_t. The asserts pin down the edge cases that
-// matter: bit 31 (the int trap) and bit 63 (the top).
+// Both reports blame the same thing — not the shift count, the
+// OPERAND. Ask what type the literal `1` has, and therefore what type
+// the shift happens in. The fix is a one-liner.
+//
+// Task: make flag_mask correct for every bit index in [0, 64).
+//   - all four asserts pass — bit 31 (the int trap) and bit 63 (the
+//     top) are the edge cases that matter
+//   - runs clean under the sanitizers (both reports gone)
+// Constraints:
+//   - keep the signature and the asserts
+//   - no branches, no tables — fix the type the shift happens in
 
 #include <cassert>
 #include <cstdint>
