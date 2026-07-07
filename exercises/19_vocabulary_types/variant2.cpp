@@ -28,8 +28,17 @@
 // vectors; but the type set is fixed at compile time and every visitor
 // names it. Plugins → virtual. Known set → variant.
 //
-// Task: area()'s visitor only handles Circle. The compiler is
-// withholding approval until Rect and Triangle are covered.
+// area()'s visitor only handles Circle — the compiler is withholding
+// approval, at length.
+//
+// Task: make area() handle every Shape.
+//   - the program compiles and every assert passes
+//   - the math: rectangle w·h, triangle base·height/2
+// Constraints:
+//   - keep std::visit + the overloaded idiom (no if/else chains over
+//     the alternatives)
+//   - every alternative's handler must agree on one common result type
+//     — the visitor demands it
 
 #include <cassert>
 #include <variant>
@@ -47,8 +56,7 @@ struct overloaded : Ts... { using Ts::operator()...; };
 double area(const Shape& s) {
     return std::visit(overloaded{
         [](const Circle& c) { return 3.14159 * c.r * c.r; },
-        // TODO: Rect: w * h
-        // TODO: Triangle: base * height / 2
+        // TODO: the compiler's error will tell you exactly who's missing
     }, s);
 }
 

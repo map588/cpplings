@@ -14,15 +14,24 @@
 //                                                // why copy a corpse's
 //                                                // organs? MOVE them.
 //
-// The && overload is where `return std::move(member_);` is CORRECT —
-// the module-09 exception (move4 banned it for locals; a member of an
-// expiring *this is exactly what move was invented for).
+// The && overload is also where the module-09 rule gets its one
+// exception: move4 banned move-on-return for locals, but a member of
+// an EXPIRING *this is exactly what move was invented for — the object
+// is a corpse, plundering it is the point.
 //
 // The Tracker counts what happens to the payload. Ship: one const
 // overload, so even the temporary case copies.
 //
-// Task: add the `const&` / `&&` overload pair for result(). The
-// counters define success.
+// Task: make result() category-aware.
+//   - both counter asserts pass: a persistent parser COPIES its result
+//     out (1 copy, 0 moves); a temporary parser DONATES it (0 copies,
+//     1 move)
+// Constraints:
+//   - do not change Tracker, make_parser, or main
+//   - result_ stays a private member; result() still returns Tracker
+//     by value in both cases
+//   - don't push the choice onto callers — the OBJECT's value category
+//     must select the behavior automatically
 
 #include <cassert>
 #include <utility>

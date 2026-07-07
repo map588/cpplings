@@ -20,7 +20,15 @@
 // marked `enable_borrowed_range`, and algorithms on them return real
 // iterators.)
 //
-// Task: name the container, then call the algorithm on the lvalue.
+// Task: make the program compile, run, and pass its assert.
+//   - the maximum is still found by std::ranges::max_element
+//   - think about who OWNS the scores for as long as `best` points at
+//     them — the fix is a one-liner
+// Constraints:
+//   - load_scores() stays the only source of the data (don't inline
+//     the numbers)
+//   - do not change the assert line — `best` must stay dereferenceable
+//   - no iterator-pair overloads, no handwritten max loop
 
 #include <algorithm>
 #include <cassert>

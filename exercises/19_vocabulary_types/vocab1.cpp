@@ -22,8 +22,13 @@
 // fallible calls. Until C++23 is your floor, the pattern is faked with
 // variant<T, E> — which you now know how to visit.
 //
-// Task: fill the TODOs. Mind #3: any_cast checks the EXACT type — the
-// implicit-conversion family (modules 01/04) does not apply.
+// Task: quiz — make every assert pass by replacing each TODO_BOOL with
+// the correct literal.
+//   - work each answer out from the rules above BEFORE running; #3
+//     rewards thinking about how strict the runtime type check is
+// Constraints:
+//   - do not change the operations on `box` or the order of statements
+//   - do not delete or reorder asserts; edit only the expected values
 
 #include <any>
 #include <cassert>

@@ -22,8 +22,15 @@
 // The compile-time query operator (same keyword, different role):
 //     static_assert(!noexcept(parse_quantity("")));   // "may it throw?"
 //
-// Task: fix the promise (don't fix stoi — garbage input is a legitimate
-// runtime condition here). Make the static_assert at the bottom agree.
+// Task: make the promise honest.
+//   - the graceful-fallback path in main works again: parsing "twelve"
+//     reaches the catch and qty becomes 0 — no std::terminate
+//   - then uncomment the static_assert at the bottom; it must pass
+// Constraints:
+//   - don't "fix" stoi or pre-validate the string — garbage input is a
+//     legitimate runtime condition here, and the throw is correct
+//   - no try/catch inside parse_quantity
+//   - do not change main's logic
 
 #include <cassert>
 #include <string>
@@ -43,7 +50,7 @@ int main() {
     }
     assert(qty == 0);
 
-    // The promise, queried at compile time — uncomment once fixed:
+    // The promise, queried at compile time (see Task):
     // static_assert(!noexcept(parse_quantity(std::string{})),
     //               "parse_quantity may throw — it must not claim otherwise");
     return 0;

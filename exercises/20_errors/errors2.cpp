@@ -18,9 +18,18 @@
 // unwind — two exceptions in flight — is instant std::terminate.
 // That's why dtors are implicitly noexcept.)
 //
-// Task: transmit() leaks when send_packet throws. Make the connection
-// RAII-owned — unique_ptr with a custom deleter (deleter1!) or just a
-// little guard — and delete the manual close.
+// transmit() below leaks when send_packet throws. Two honest routes to
+// the fix: teach an existing RAII owner how to close THIS kind of
+// handle, or write a tiny guard type of your own. Either way, the
+// destructor does the closing — on every path.
+//
+// Task: make transmit() leak-proof.
+//   - both open_connections asserts pass (happy path AND unwound path)
+//   - the length_error still propagates out to main's catch
+// Constraints:
+//   - don't touch the "C library" block; connections still come from
+//     open_conn and must end in close_conn
+//   - no try/catch in transmit — unwinding itself must do the cleanup
 
 #include <cassert>
 #include <memory>
