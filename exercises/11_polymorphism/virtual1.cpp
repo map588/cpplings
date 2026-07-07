@@ -14,7 +14,13 @@
 // queries through const&, module 02), and the derived signature must
 // match the base EXACTLY — const included — or it isn't an override.
 //
-// Task: make area() dispatch dynamically.
+// Task: make total_area see the actual shapes.
+//   - all asserts pass, including total_area(r, t) == 27.0
+// Constraints:
+//   - total_area keeps its (const Shape&, const Shape&) signature
+//   - each derived area() must carry the compiler-verified claim that it
+//     overrides — a future signature typo must fail to compile
+//   - don't change any assert
 
 #include <cassert>
 

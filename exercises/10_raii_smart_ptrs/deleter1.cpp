@@ -11,19 +11,23 @@
 //   // function pointer: stored per-instance → TWO pointers wide
 //   std::unique_ptr<Conn, void(*)(Conn*)> p(legacy_open(), &legacy_close);
 //
-//   // stateless functor: empty type, optimized away → ONE pointer wide
-//   struct ConnCloser {
-//       void operator()(Conn* c) const { legacy_close(c); }
-//   };
+//   // stateless functor TYPE: the how-to-destroy is baked into the type
+//   // itself, so no per-instance storage is needed (empty-base
+//   // optimization) → ONE pointer wide, and the close call can inline
 //   std::unique_ptr<Conn, ConnCloser> p(legacy_open());
 //
-// The functor wins: same size as a raw pointer, and the close call can
-// inline. (The empty deleter takes no storage — empty-base optimization.
-// Lambdas work too since they're functors, but a named struct reads
-// better in an alias.)
+// The functor wins: same size as a raw pointer. (Lambdas work too, since
+// they're functors, but a named struct reads better in an alias.)
 //
-// Task: finish ConnCloser and ConnPtr, then convert fetch() to use them.
-// The static_asserts pin down the size story.
+// Task: finish ConnCloser, then make fetch() leak-free on both paths.
+//   - the file compiles (both static_asserts hold) and all four asserts
+//     pass — no connection may outlive its fetch()
+//   - no manual legacy_close call remains in fetch()
+// Constraints:
+//   - ConnCloser stays stateless and ConnPtr stays the alias — the
+//     static_asserts pin the size story
+//   - keep the early return for result > 100
+//   - don't touch the "C library" block, main, or any assert
 
 #include <cassert>
 #include <memory>

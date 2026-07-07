@@ -9,15 +9,19 @@
 //
 // Notes for the two TODOs below:
 //
-//   - sort's comparator answers "should a come BEFORE b?" — strict
-//     weak ordering, the same contract as operator< (module 08). For
-//     longest-first, compare sizes with >.
-//   - count_if's predicate answers "does this element count?" — bool.
+//   - sort's comparator answers "should a come BEFORE b?" — a strict
+//     weak ordering, the same contract as operator< (module 08). Decide
+//     what "before" means when the longest word goes first.
+//   - count_if's predicate answers "does this element count?" — a bool.
 //   - `const auto&` parameters make a GENERIC lambda (C++14): the
 //     operator() is a template. One comparator works for any container
 //     element type.
 //
-// Task: fill in the two lambdas.
+// Task: replace the two /* TODO */s with lambdas.
+//   - all asserts pass: words end up longest-first, and big == 2
+// Constraints:
+//   - lambdas at the call sites — no named functors, no free functions
+//   - don't pre-arrange `words` by hand; don't change any assert
 
 #include <algorithm>
 #include <cassert>

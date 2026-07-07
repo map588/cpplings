@@ -8,16 +8,22 @@
 //       variable; it can be born inside the closure. (Also the way to
 //       MOVE into a closure: [s = std::move(big)].)
 //
-//   mutable:  [count = 0]() mutable { return ++count; }
-//       removes the const from operator(), letting the body modify the
-//       closure's members. (The keyword from module 02, third meaning.)
+//   mutable:  removes the const from the generated operator(), letting
+//       the body modify the closure's members. The keyword sits between
+//       the parameter list and the body. (Module 02's word, third
+//       meaning.)
 //
 // And because the state is an ordinary member: COPYING the closure
 // copies the state. Two copies = two independent counters. (Want shared
 // state? Capture a reference — or a shared_ptr, module 10.)
 //
-// Task: make next_id compile and behave, then predict the copied
-// closure's output.
+// Task: make next_id compile, then predict what the copy returns.
+//   - all four asserts pass, with TODO replaced by the copy's actual
+//     value — work it out from the copy rule above before running
+// Constraints:
+//   - keep the init-capture [id = 100]: the counter lives inside the
+//     closure, not in an outer variable
+//   - don't change the non-TODO asserts
 
 #include <cassert>
 

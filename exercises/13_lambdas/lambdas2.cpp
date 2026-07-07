@@ -11,8 +11,16 @@
 // everything used — but spelling out each capture documents exactly
 // what the closure depends on. Style guides increasingly demand it.
 //
-// Task: fill in the TODO values (the creation-time rule answers both),
-// then write record_taking — it must MUTATE `stock` through a capture.
+// Task: fill in the TODO values, then write record_taking.
+//   - all five asserts pass
+//   - the two TODO values follow from WHEN each capture happens — work
+//     them out, don't run-and-paste
+//   - record_taking: takes (int n), subtracts n from stock, returns the
+//     remaining stock
+// Constraints:
+//   - record_taking must change the real `stock` through its capture —
+//     the final assert reads the original variable, not the closure
+//   - don't move the `price = 250;` line; don't change any assert
 
 #include <cassert>
 

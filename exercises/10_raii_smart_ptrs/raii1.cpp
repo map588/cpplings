@@ -16,10 +16,14 @@
 // whole idiom. string, vector, unique_ptr, lock_guard, fstream: all the
 // same shape.
 //
-// Task: finish the HandleGuard class and use it in process(). Delete the
-// manual release calls. Guard objects own their resource alone — copying
-// one would mean double-release, so copying is already deleted for you
-// (module 08's =delete).
+// Task: make process() release its handle on every path, using HandleGuard.
+//   - all four asserts pass (open_handles must be 0 after both calls)
+//   - no manual release_handle call remains in process()
+// Constraints:
+//   - keep HandleGuard's copy operations deleted — a copied guard would
+//     mean double-release (module 08's =delete is doing real work here)
+//   - keep the early return; don't restructure the loop to dodge it
+//   - don't change any assert
 
 #include <cassert>
 

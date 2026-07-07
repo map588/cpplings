@@ -11,20 +11,27 @@
 //     ScaleBy triple{3};
 //     triple(7);                                       // 21
 //
-// And this is the SAME THING, written as a lambda:
+// And a lambda is the SAME MACHINE written inline. Here's one for a
+// different job — adding a captured offset:
 //
-//     auto triple = [factor](int x) { return x * factor; };
+//     int bonus = 5;
+//     auto boost = [bonus](int x) { return x + bonus; };    // boost(2) == 7
 //
-// Anatomy:  [factor]   capture list → the members (factor copied in)
-//           (int x)    parameters of operator()
+// Anatomy:  [bonus]    capture list → the members (bonus copied in)
+//           (int x)    the parameter list of operator()
 //           { ... }    body; return type deduced (write `-> int` to force)
 //
 // The compiler generates the struct, names it something unpronounceable,
 // and hands you the object. `auto` is how you hold it — you can't spell
 // the type (lambdas6 has fun with that).
 //
-// Task: scaled_sum uses the functor. Write `scale` as a lambda doing the
-// same job, and make times_ten use it.
+// Task: in times_ten, write `scale` as the lambda twin of ScaleBy{factor}.
+//   - both asserts pass
+// Constraints:
+//   - `scale` must capture `factor` — no hard-coded 10 in the body
+//   - don't use ScaleBy inside times_ten; don't change scaled_sum or
+//     ScaleBy
+//   - keep the `return scale(x);` line as it is
 
 #include <cassert>
 

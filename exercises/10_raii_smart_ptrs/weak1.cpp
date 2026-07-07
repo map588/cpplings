@@ -19,8 +19,14 @@
 // when the parent provably outlives the child). Sideways/back edges:
 // weak.
 //
-// Task: break the cycle — make `parent` a weak_ptr and update
-// first_child_name() to lock it.
+// Task: break the cycle so the nodes can actually die.
+//   - all asserts pass, including Node::alive == 0 at the end
+//   - parent_name(*leaf) still returns "root" while root is alive — and
+//     must safely return "(orphan)" if the parent is already gone
+// Constraints:
+//   - Node keeps both edges (child and parent); the down-edge keeps owning
+//   - don't "fix" it by manually clearing an edge before scope exit
+//   - don't change any assert
 
 #include <cassert>
 #include <memory>
@@ -38,7 +44,8 @@ struct Node {
 };
 
 std::string parent_name(const Node& n) {
-    if (auto p = n.parent) {          // (after the fix: lock() here)
+    if (auto p = n.parent) {          // compiles only while the up-edge owns —
+                                      // this line needs attention after your fix
         return p->name;
     }
     return "(orphan)";

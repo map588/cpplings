@@ -14,8 +14,13 @@
 // be derived from (or overridden), so the compiler may DEVIRTUALIZE
 // calls it can see through — back to direct, inlinable calls.
 //
-// Task: fill in the TODOs. sizeof answers assume a typical 64-bit
-// platform (pointers are 8 bytes) — which is what this course runs on.
+// Task: replace every TODO with the exact value.
+//   - both static_asserts and both asserts pass (sizeof answers assume a
+//     typical 64-bit platform, pointers 8 bytes — what this course runs on)
+// Constraints:
+//   - change nothing but the TODOs
+//   - work each value out from the price list BEFORE running — the point
+//     is to predict, not to bisect
 
 #include <cassert>
 #include <cstddef>
@@ -49,7 +54,7 @@ int main() {
     // 2. Virtual dispatch needs indirection. `v` is a VALUE of static
     //    type VirtPoint — what does each call run?
     ScaledPoint s{};
-    s.x = 1.0; s.y = 2.0;                        // norm2 base: 5.0
+    s.x = 1.0; s.y = 2.0;
 
     VirtPoint v = s;                             // sliced copy (slice1!)
     VirtPoint& r = s;                            // reference to the real s

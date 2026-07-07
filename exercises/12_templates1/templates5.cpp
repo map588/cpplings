@@ -15,15 +15,25 @@
 //   - the BOTTOM of the chain: your line. Start reading from the
 //     breadcrumb that names a file you wrote.
 //
-// Here join_lines() expects every item to support `os << item`. LogEntry
-// doesn't. The fix belongs on LogEntry — and module 08 taught the right
-// shape for it: a HIDDEN FRIEND operator<<.
+// Here join_lines() has an unwritten expectation about T, and LogEntry
+// doesn't meet it. The error will tell you exactly which operation is
+// missing — in its own verbose way. The fix belongs on LogEntry, and
+// module 08 taught the right shape for exactly this kind of operator.
 //
 // (Module 14 shows how concepts turn this archaeology into a one-line
 // "constraint not satisfied" at the call site.)
 //
-// Task: give LogEntry a hidden-friend operator<< printing
-// `level: message`, e.g. "WARN: disk slow".
+// Task: compile it, read the error top to bottom, then fix LogEntry.
+//   - before writing any code: find the missing operation named at the
+//     TOP of the error, and YOUR guilty line at the bottom of the
+//     breadcrumb chain
+//   - both asserts pass; entries print as `level: message` per line,
+//     e.g. "WARN: disk slow"
+// Constraints:
+//   - join_lines is innocent — don't modify it
+//   - the fix lives inside LogEntry (module 08's shape, not a free
+//     function dropped at namespace scope)
+//   - don't change any assert
 
 #include <cassert>
 #include <sstream>
