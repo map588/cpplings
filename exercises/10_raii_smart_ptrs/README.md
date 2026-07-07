@@ -32,6 +32,12 @@ heap objects, with the ownership *policy* encoded in the type.
   release function (C handles, mmaps, sockets). A stateless functor
   deleter is free (empty-base optimization); a function-pointer deleter
   doubles the pointer's size.
+- **Int-shaped handles.** POSIX file descriptors don't fit `unique_ptr`
+  (the empty state is `-1`, `0` is a valid fd, and there's nothing to
+  `delete`) — so you hand-write a small move-only guard: destructor
+  closes, moves steal-and-mark, copies deleted. Fds are a finite
+  per-process resource (`ulimit -n`); the leak is *countable* in
+  `/proc/self/fd`, and this module counts it.
 
 ## Version notes
 

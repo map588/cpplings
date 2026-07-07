@@ -20,9 +20,17 @@
 // (That auto [ptr, ec] unpacking is a structured binding, C++17 —
 // module 19 covers it properly.)
 //
-// Task: implement parse_port. Contract per the asserts: digits parse;
-// garbage and out-of-range values return -1; trailing junk after the
-// number is also a failure (use the returned ptr!).
+// Task: implement parse_port() so every assert passes.
+//   - "8080", "0", "65535" parse to their values
+//   - non-numbers, empty input, values outside [0, 65535], and
+//     negative input all return -1
+//   - "8080/tcp" returns -1: digits followed by ANYTHING is a failure.
+//     The parse result already tells you where parsing stopped — that
+//     is your junk detector
+// Constraints:
+//   - std::from_chars does the parsing: no stoi, no atoi, no exceptions
+//   - no manual character-scanning loop of your own
+//   - don't change the asserts
 
 #include <cassert>
 #include <charconv>
@@ -31,7 +39,7 @@
 // Returns the port number, or -1 if `text` isn't exactly a number
 // in [0, 65535].
 int parse_port(std::string_view text) {
-    return -1;   // TODO: std::from_chars(text.data(), text.data() + text.size(), ...)
+    return -1;   // TODO
 }
 
 int main() {

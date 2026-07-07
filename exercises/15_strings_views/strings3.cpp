@@ -22,8 +22,15 @@
 //   - storing a string_view (member, global): you now have a manual
 //     lifetime contract. Documented owner or std::string member.
 //
-// Task: fix main() — keep the header alive in a named std::string
-// before taking views into it.
+// Task: fix main() so the asserts pass and ASan stays quiet.
+//   - `name` remains a std::string_view produced by first_word()
+//   - the characters it views must be owned by something still alive
+//     when the asserts run
+// Constraints:
+//   - make_header() and first_word() are blameless — don't change them
+//   - don't turn `name` into a std::string, and don't paste the
+//     expected text in as a literal
+//   - the fix lives in main() and is small
 
 #include <cassert>
 #include <string>

@@ -10,10 +10,14 @@
 //   sizeof...(args)    — how many (a compile-time constant)
 //
 //   FOLD EXPRESSIONS (C++17) — apply a binary operator across the pack:
-//     (args + ...)             // a1 + (a2 + (a3 + ...))   unary fold
-//     (args && ...)            // all true?  (empty pack → true)
-//     (0 + ... + args)         // binary fold: a seed value makes the
-//                              // empty pack legal for + too
+//     (args * ...)             // a1 * (a2 * (a3 * ...))   unary fold
+//     (1 * ... * args)         // binary fold: the seed value makes the
+//                              // EMPTY pack legal, and defines its value
+//     (args || ...)            // logic folds too; && and || even have
+//                              // built-in empty-pack answers (true, false)
+//
+// The operand may be any expression that mentions the pack — not just
+// the bare name.
 //
 // Before C++17 every variadic function was a recursion: peel one
 // argument, recurse on the rest, write a base case. Folds deleted ~90%
@@ -21,15 +25,21 @@
 // logic gets complex — variadic2 shows the modern alternative there
 // too.)
 //
-// Task: implement all three TODO bodies with folds. No recursion, no
-// loops.
+// Task: implement the three TODO bodies so every assert and
+// static_assert passes.
+//   - the EMPTY calls must work too: sum() == 0, count_args() == 0,
+//     all_positive() == true — let that drive your choice of fold form
+// Constraints:
+//   - no recursion, no loops, no helper overloads — each body is a
+//     single return statement
+//   - do not change the asserts
 
 #include <cassert>
 #include <cstddef>
 
 template <typename... Ts>
 auto sum(Ts... args) {
-    return 0;   // TODO: fold with + (use the binary form so sum() == 0)
+    return 0;   // TODO
 }
 
 template <typename... Ts>
@@ -39,7 +49,7 @@ constexpr std::size_t count_args(Ts... args) {
 
 template <typename... Ts>
 bool all_positive(Ts... args) {
-    return false;   // TODO: fold with && over (args > 0)
+    return false;   // TODO
 }
 
 int main() {

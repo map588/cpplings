@@ -17,7 +17,14 @@
 // checks whether it still matches after. (We compare saved NUMERIC
 // addresses — uintptr_t — never dereference a possibly-dead pointer.)
 //
-// Task: predict the three TODOs.
+// Task: replace the three TODO_BOOLs so every assert passes — decided
+// from the rules above, not by running it first.
+//   - for each demo, work out WHICH row of the table applies, and
+//     whether the captured thing is a pointer/reference or an
+//     iterator — demo 3 hinges on exactly that distinction
+// Constraints:
+//   - don't change the demos or the asserts
+//   - each TODO_BOOL use becomes a literal true or false
 
 #include <cassert>
 #include <cstdint>

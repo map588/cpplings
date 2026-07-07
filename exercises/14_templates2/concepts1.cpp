@@ -6,24 +6,29 @@
 // Module 12 taught you to archaeology your way out. C++20 says: stop
 // digging, state the requirement.
 //
-//     template <typename T> concept Numeric =
-//         std::integral<T> || std::floating_point<T>;
+// A CONCEPT is a named, compile-time predicate on types. Constrain a
+// template with one, and a bad call fails AT THE CALL SITE:
+// "constraints not satisfied ... does not satisfy 'Numeric'". The
+// diagnostic names the contract instead of the wreckage.
 //
-//     template <Numeric T>                    // constrained!
-//     T average(const std::vector<T>& v) { ... }
+// You rarely build these from raw requires-clauses: <concepts> ships
+// ready-mades (std::integral, std::floating_point, std::copyable,
+// std::invocable...) and they compose with || and &&. (Note bool
+// counts as integral — excluding it is a one-line refinement. Not
+// required today.)
 //
-// Now average(words) fails AT THE CALL SITE: "constraints not
-// satisfied ... because 'std::string' does not satisfy 'Numeric'".
-// The diagnostic names the contract instead of the wreckage.
-//
-// (<concepts> ships ready-mades: std::integral, std::floating_point,
-// std::copyable, std::invocable... compose them with || and &&.
-// Note bool counts as integral — excluding it is a one-line refinement:
-// `&& !std::same_as<T, bool>`. Not required today.)
-//
-// Task: define Numeric, constrain average with it, and then DELETE the
-// std::string call — it was always nonsense; now the compiler says so
-// clearly.
+// Task: make average() reject non-numeric element types at the call
+// site, then delete the std::string call — it was always nonsense; now
+// the compiler says so clearly.
+//   - define a concept named Numeric, satisfied by exactly the integer
+//     and floating-point types, and constrain average() with it
+//   - before deleting the words call, recompile once and READ the new
+//     error: short, at the call site, naming Numeric
+//   - final program compiles and every assert passes
+// Constraints:
+//   - do not change average()'s body or any assert
+//   - deleting the words call alone is not a fix: an unconstrained
+//     average() must no longer exist when you're done
 
 #include <cassert>
 #include <concepts>

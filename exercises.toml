@@ -605,6 +605,15 @@ hints = [
   "fetch: `ConnPtr c(legacy_open());` then legacy_query(c.get(), x), and delete the manual legacy_close — both exits are covered by the deleter.",
 ]
 
+[[exercises]]
+name = "fd1"
+path = "exercises/10_raii_smart_ptrs/fd1.cpp"
+mode = "run"
+hints = [
+  "Two jobs. The destructor is where the guarantee lives: close fd_ if it's still owned (>= 0). And a move must TRANSFER that duty — take the source's fd and leave -1 behind, or two destructors will close one fd (module 09's steal-and-null, applied to an int).",
+  "~FdGuard() { if (fd_ >= 0) ::close(fd_); }  Move ctor: fd_(std::exchange(other.fd_, -1)) — std::exchange (C++14) steals and marks in one expression; move assign closes its own fd first, then steals the same way. In reload_config: FdGuard fd(::open(kConfigPath, O_RDONLY));, use fd.get() for the checks and the read, and delete the ::close line — every return path is now covered.",
+]
+
 # -------------------------------------------------------- 11_polymorphism
 
 [[exercises]]
@@ -1120,6 +1129,15 @@ hints = [
   "count_tokens collapses to: while (t.next_token()) ++n; — the optional's bool conversion is the loop condition. Delete the try/catch entirely.",
 ]
 
+[[exercises]]
+name = "errno1"
+path = "exercises/20_errors/errno1.cpp"
+mode = "run"
+hints = [
+  "By the time the error_code is constructed, log_failure has already run — and its failed write() replaced errno (with EBADF, the logger's own problem). errno is only trustworthy on the very next line after the failed call; it must be copied out before ANYTHING else executes.",
+  "if (fd < 0) { const int saved = errno; log_failure(\"...\"); return std::error_code(saved, std::generic_category()); } — the saved local survives the logging, ENOENT and ENOTDIR each reach the caller under their own name, and message() comes along for free.",
+]
+
 # ------------------------------------------------------- 21_value_categories
 
 [[exercises]]
@@ -1403,6 +1421,15 @@ mode = "run"
 hints = [
   "auto front = std::async(std::launch::async, range_sum, std::cref(v), std::size_t{0}, mid); then return front.get() + back; — explicit policy, or it may run lazily on get().",
   "After get(), the future is spent: valid() == false. (One result, moved out, one time.)",
+]
+
+[[exercises]]
+name = "signal1"
+path = "exercises/25_concurrency/signal1.cpp"
+mode = "run"
+hints = [
+  "Bug 1: a plain bool is not on the standard's allowed list for handlers — the flag must be the exact type the static_assert names: volatile std::sig_atomic_t g_stop = 0;. Bug 2: read the raise() line, then read the std::signal() line — the handler is subscribed to a signal nobody sends, so SIGUSR1 falls through to its default action: terminate.",
+  "std::signal(SIGUSR1, on_shutdown); — now raise(SIGUSR1) runs YOUR handler synchronously (it returns before raise does), g_stop becomes 1, the loop exits on the very next check, and both asserts pass with iterations == 10'000.",
 ]
 
 # --------------------------------------------------------- 26_modern_extras

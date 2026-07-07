@@ -13,9 +13,17 @@
 //                              insert-in-sorted-order position
 //   upper_bound(f, l, x)     → first element > x
 //
-// Task: the leaderboard code forgot one line. Find the function that
-// has the unmet precondition and satisfy it. Then implement
-// rank_position with lower_bound.
+// Task: make every assert pass — honestly.
+//   - the two binary_search asserts must be TRUE ANSWERS about the
+//     data: something in main() leaves a precondition unmet, and the
+//     confident wrong answers start there. Find it, satisfy it
+//   - implement rank_position(): the index where `score` would slot
+//     into the ascending scores — in O(log n)
+// Constraints:
+//   - keep binary_search doing the membership tests; don't reorder or
+//     change the asserts
+//   - no loops or linear scans in rank_position()
+//   - the missing-precondition fix is ONE line in main()
 
 #include <algorithm>
 #include <cassert>
@@ -23,7 +31,7 @@
 
 // Index where `score` would slot into the (ascending) sorted scores:
 std::size_t rank_position(const std::vector<int>& sorted_scores, int score) {
-    return 0;   // TODO: lower_bound, then iterator arithmetic
+    return 0;   // TODO
 }
 
 int main() {

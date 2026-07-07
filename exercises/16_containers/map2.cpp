@@ -10,14 +10,24 @@
 //                              // but may construct the pair even when
 //                              // it then throws it away
 //   m.try_emplace(k, args...)  // C++17: constructs the VALUE only if
-//                              // k is new. The precise tool.
+//                              // k is new
 //
 // The bug below: a settings cache that must KEEP the first value seen
 // per key ("first writer wins") was written with operator[] — last
 // writer wins instead.
 //
-// Task: fix remember() using try_emplace (or insert), and fill in the
-// TODO: what does the bool in insert's return tell you here?
+// Task: make the cache first-writer-wins, and correct the TODO asserts
+// to what really happens.
+//   - "theme" stays "dark" even after remember("theme", "light")
+//   - for the two insert() calls at the bottom: predict what each
+//     reported bool must be and which value the final lookup sees,
+//     then fix the three TODO asserts to match (some may already be
+//     right) — they must all pass
+// Constraints:
+//   - remember() stays a single statement: no check-first-then-insert
+//     two-step (in concurrent code that pattern has a name: a race)
+//   - only the three lines marked TODO may have their values edited;
+//     every other assert stays untouched
 
 #include <cassert>
 #include <map>

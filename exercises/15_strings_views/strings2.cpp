@@ -14,9 +14,19 @@
 // .substr() allocates again for the return. For a parser that runs per
 // line, that's the difference between O(1) and death by allocator.
 //
-// Task: convert extension() to string_views — parameter and return
-// type. (Returning a view is SAFE here: it points into the caller's
-// string, which outlives the call. strings3 shows when it isn't.)
+// Task: make extension() allocation-free on every path — the final
+// pointer-range assert is the proof, and today it fails.
+//   - all asserts pass
+//   - a true fix returns a view INTO the caller's characters:
+//     ext.data() must land inside doc's own buffer
+//   - the function's logic (last dot; empty result when there is none)
+//     stays the same — only what flows in and out of it changes
+//   - (returning a view is SAFE here: it points into the caller's
+//     string, which outlives the call. strings3 shows when it isn't.)
+// Constraints:
+//   - don't change main() or the asserts
+//   - no allocations anywhere in extension(): no std::string locals,
+//     no copies of the characters
 
 #include <cassert>
 #include <string>

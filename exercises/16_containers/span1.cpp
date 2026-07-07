@@ -15,8 +15,16 @@
 //   span<int>         writable view   ← when you mutate the elements
 //   span<int, 4>      compile-time extent (rarer; NTTP, module 12)
 //
-// Task: collapse the three sum_* functions into one sum(std::span<const
-// int>), and update the calls.
+// Task: collapse the three sum_* functions into ONE function named
+// sum() that every call in main() already compiles against.
+//   - all four asserts pass, including the subspan one
+//   - one signature accepts the vector, the std::array, AND the C
+//     array, without copying any elements
+// Constraints:
+//   - exactly one sum function: not a template, not an overload set
+//   - read-only access — the parameter type must not permit writing
+//     to the elements
+//   - don't change main() or the asserts
 
 #include <array>
 #include <cassert>

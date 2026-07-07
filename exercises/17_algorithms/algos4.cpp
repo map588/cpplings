@@ -21,8 +21,18 @@
 //
 //     accumulate(f, l, init, [](acc, x) { return combine(acc, x); })
 //
-// Task: fix fahrenheit() with back_inserter; implement hottest() as an
-// accumulate one-liner (no raw loop).
+// Task: fix fahrenheit() and implement hottest().
+//   - fahrenheit() runs ASan-clean and returns all three converted
+//     values (either honest destination works — the asserts only check
+//     the values)
+//   - hottest() returns the maximum of temps, but never less than
+//     `floor` — note the second assert: the floor wins over a cooler
+//     day
+// Constraints:
+//   - no for/while/manual loops in either function
+//   - hottest() is a single algorithm call — `floor` is not a special
+//     case to branch on, it's a starting value
+//   - don't change the asserts
 
 #include <algorithm>
 #include <cassert>
@@ -39,7 +49,7 @@ std::vector<double> fahrenheit(const std::vector<double>& celsius) {
 }
 
 double hottest(const std::vector<double>& temps, double floor) {
-    return 0;   // TODO: accumulate with `floor` as init and max as the op
+    return 0;   // TODO
 }
 
 int main() {

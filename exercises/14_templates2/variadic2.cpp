@@ -19,12 +19,18 @@
 //
 //     join(", ", 1, "apple", 2.5)   →  "1, apple, 2.5"
 //
-// Provided: piece(), which stringifies ONE argument. The separator
-// logic is the classic trick: prepend the separator before every
-// element EXCEPT the first — track "first" with a bool the fold
-// mutates.
+// Provided: piece(), which stringifies ONE argument. The classic
+// difficulty is the separator: it goes BETWEEN elements, so one element
+// must be treated differently from all the others. A fold can't branch
+// on "am I first?" by itself — but the statement it expands can read
+// and update state living in the enclosing scope.
 //
-// Task: implement join's body with a comma fold. No recursion.
+// Task: implement join()'s body around a comma fold.
+//   - every assert passes, including the one-element and zero-element
+//     calls
+// Constraints:
+//   - one comma fold does all the iteration: no recursion, no loops
+//   - don't change piece() or the asserts
 
 #include <cassert>
 #include <string>
@@ -37,8 +43,7 @@ std::string piece(T value) { return std::to_string(value); }
 
 template <typename... Ts>
 std::string join(const std::string& sep, Ts... args) {
-    // TODO: a comma fold that appends sep (except before the first
-    // element) and piece(args) to a result string.
+    // TODO: build the result here with a comma fold.
     return "";
 }
 
