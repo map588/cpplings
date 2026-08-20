@@ -1489,3 +1489,155 @@ hints = [
   "silent == 3 (truncation, module 01). promotion: true. elision: 0 copies (module 09). const move: 1 copy (module 09's trap).",
   "unique_ptr pointer-sized: true (module 10). reserved-capacity pushes don't reallocate: true (module 16). Congratulations — go build something.",
 ]
+
+# ----------------------------------------------------------- 27_posix_io
+
+[[exercises]]
+name = "posix1"
+path = "exercises/27_posix_io/posix1.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "Two bugs: the open() flags ask to READ (we want O_WRONLY | O_CREAT | O_TRUNC), and write_all/read_all each make ONE stingy call instead of looping until done.",
+  "The loop shape: size_t done = 0; while (done < len) { ssize_t n = stingy_write(fd, buf + done, len - done); if (n < 0) return -1; done += n; } — read_all is the same, plus `if (n == 0) break;` for EOF.",
+]
+
+[[exercises]]
+name = "posix2"
+path = "exercises/27_posix_io/posix2.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "The dance: saved_stdout = dup(STDOUT_FILENO); dup2(capture_fd, STDOUT_FILENO); ...print...; fflush(stdout); dup2(saved_stdout, STDOUT_FILENO); then close saved_stdout and capture_fd.",
+  "If the file comes out empty, either fd 1 never pointed at it (missing dup2) or printf's text was still sitting in stdio's buffer when you swapped fd 1 back (missing fflush BEFORE the restore).",
+]
+
+[[exercises]]
+name = "posix3"
+path = "exercises/27_posix_io/posix3.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "The drain loop hangs because the pipe still has an open write end — yours, fds[1]. close(fds[1]) after the last write; only then can read() return 0.",
+  "The quiz: write() on a pipe with no read ends returns -1 and sets errno to EPIPE (SIGPIPE would have killed us, but it's ignored).",
+]
+
+[[exercises]]
+name = "posix4"
+path = "exercises/27_posix_io/posix4.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "fork copied the whole fd table, so the parent holds a write end it never uses — and waits forever for an EOF its own fd prevents. Child: close(fds[0]). Parent: close(fds[1]) BEFORE the read loop.",
+  "The wait: assert(waitpid(pid, &status, 0) == pid); — waitpid fills `status`, and the WIFEXITED/WEXITSTATUS macros unpack it.",
+]
+
+[[exercises]]
+name = "posix5"
+path = "exercises/27_posix_io/posix5.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "set_nonblocking: int flags = fcntl(fd, F_GETFL); if (flags == -1) return false; return fcntl(fd, F_SETFL, flags | O_NONBLOCK) != -1; — the read-modify-write preserves existing flags.",
+  "Quiz: an empty non-blocking pipe answers -1 (with errno EAGAIN). Three bytes waiting, 64 asked for: 3 — a partial read is a normal answer, not a failure.",
+]
+
+[[exercises]]
+name = "posix6"
+path = "exercises/27_posix_io/posix6.cpp"
+mode = "run"
+platforms = ["linux", "darwin"]
+hints = [
+  "Child loop: for (;;) { ssize_t n = read(up[0], buf, sizeof buf); if (n <= 0) break; uppercase buf[0..n); write_all(down[1], buf, n); } — then the two closes and _exit(0).",
+  "Uppercase per byte: buf[i] = std::toupper(static_cast<unsigned char>(buf[i])); — and change the shipped _exit(1) to _exit(0) so the parent's status assert passes.",
+]
+
+# ----------------------------------------------------------- 28_performance
+
+[[exercises]]
+name = "opts1"
+path = "exercises/28_performance/opts1.cpp"
+mode = "run"
+sanitizers = "none"
+extra_flags = ["-O2"]
+hints = [
+  "This file IS built with -O2, so __OPTIMIZE__ is defined: true. But -O2 never defines NDEBUG (that's -DNDEBUG, a separate decision): false. And -ffast-math is not part of any -O level: false.",
+  "The NaN probe: IEEE 754 says NaN != NaN is TRUE — the one value unequal to itself. (That's exactly the comparison -ffast-math breaks.)",
+]
+
+[[exercises]]
+name = "hints1"
+path = "exercises/28_performance/hints1.cpp"
+mode = "run"
+extra_flags = ["-O2"]
+hints = [
+  "UBSan's report says it: execution reached __builtin_unreachable(). The input has non-digits, so the 'only digits arrive' promise is a lie. Replace the promise with an answer: return -1.",
+  "parse_digit's last line becomes `return -1;`. The caller already skips negatives. ([[likely]]/[[unlikely]] stay — hints are free to keep; unreachable-lies are UB.)",
+]
+
+[[exercises]]
+name = "inline1"
+path = "exercises/28_performance/inline1.cpp"
+mode = "run"
+extra_files = ["exercises/28_performance/inline1_stats.cpp"]
+sanitizers = "none"
+extra_flags = ["-O2"]
+hints = [
+  "The linker error names mean() twice: once from inline1.o, once from inline1_stats.o — both TUs compiled the header's definition. The keyword that says 'multiple identical definitions, fold them' is `inline`.",
+  "In inline1.h: `inline double mean(...)`. Not `static` — that would give each TU its own private copy instead of one shared definition.",
+]
+
+[[exercises]]
+name = "alias1"
+path = "exercises/28_performance/alias1.cpp"
+mode = "run"
+hints = [
+  "saxpy is the loop from the header comment: for (int i = 0; i < n; ++i) y[i] = a * x[i] + y[i]; — __restrict__ changes what the OPTIMIZER may assume, not what you write.",
+  "ASan's 'memcpy-param-overlap' is the contract firing: memcpy's parameters are restrict, overlap is UB. erase_front copies a range onto itself → std::memmove.",
+]
+
+[[exercises]]
+name = "simd1"
+path = "exercises/28_performance/simd1.cpp"
+mode = "run"
+sanitizers = "none"
+extra_flags = ["-O2"]
+hints = [
+  "Vector types do algebra: axpy4 is literally `return a * x + y;` — the scalar a broadcasts to all four lanes.",
+  "lerp4: `return start + (stop - start) * t;` and halfway4: `return (a + b) * 0.5f;` — each is one expression, no loops, no [i].",
+]
+
+[[exercises]]
+name = "simd2"
+path = "exercises/28_performance/simd2.cpp"
+mode = "run"
+sanitizers = "none"
+extra_flags = ["-O2"]
+hints = [
+  "reverse4: __builtin_shufflevector(a, a, 3, 2, 1, 0). Indices 0-3 pick lanes of the first vector, 4-7 the second.",
+  "hsum4: v = v + __builtin_shufflevector(v, v, 2, 3, 2, 3); v = v + __builtin_shufflevector(v, v, 1, 1, 1, 1); return v[0]; — and dot4 is `return hsum4(a * b);`.",
+]
+
+[[exercises]]
+name = "simd3"
+path = "exercises/28_performance/simd3.cpp"
+mode = "run"
+sanitizers = "none"
+extra_flags = ["-O2"]
+arch = ["arm64", "aarch64", "x86_64", "AMD64", "amd64"]
+hints = [
+  "The vector body stops at the last multiple of 4 and leaves i there on purpose. The tail is scalar: for (; i < n; ++i) total += x[i] * y[i]; — identical on both architectures.",
+  "Add the tail AFTER the horizontal sum, accumulating into `total`. Check n=1 and n=0 still work: the vector loop runs zero times and the tail (or nothing) does it all.",
+]
+
+[[exercises]]
+name = "asm1"
+path = "exercises/28_performance/asm1.cpp"
+mode = "run"
+sanitizers = "none"
+extra_flags = ["-O2"]
+arch = ["arm64", "aarch64", "x86_64", "AMD64", "amd64"]
+hints = [
+  "The compiler's error says it: 'invalid output constraint'. Outputs are WRITTEN, and their constraint says so with '=': the aarch64 path wants \"=r\"(out).",
+  "The x86_64 path writes out (movl) before reading %2 (addl), so plain \"=r\" lets the allocator give out and b the SAME register — early-clobber: \"=&r\"(out).",
+]

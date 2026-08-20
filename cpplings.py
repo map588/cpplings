@@ -3,6 +3,7 @@
 
 Usage:
   python3 cpplings.py              # watch mode (default): work through exercises
+  python3 cpplings.py watch NAME   # watch mode, starting at exercise NAME
   python3 cpplings.py run NAME     # build & run one exercise
   python3 cpplings.py hint NAME    # show hints for one exercise
   python3 cpplings.py list         # show all exercises and their status
@@ -18,6 +19,7 @@ Requires Python 3.11+ (tomllib) and a C++20 compiler.
 
 import argparse
 import os
+import platform
 import select
 import shutil
 import subprocess
@@ -66,10 +68,30 @@ class Exercise:
         # /proc users). Empty = runs everywhere. Unsupported exercises
         # are skipped, not failed.
         self.platforms: list[str] = entry.get("platforms", [])
+        # platform.machine() prefixes this exercise needs (e.g.
+        # ["arm64", "aarch64", "x86_64", "AMD64"] for intrinsics /
+        # inline-asm exercises). Empty = any CPU. Same skip semantics
+        # as platforms.
+        self.arch: list[str] = entry.get("arch", [])
+        # extra compiler flags for this exercise (e.g. ["-O2"] for the
+        # performance module)
+        self.extra_flags: list[str] = entry.get("extra_flags", [])
 
     def supported_here(self) -> bool:
-        return (not self.platforms
-                or any(sys.platform.startswith(p) for p in self.platforms))
+        os_ok = (not self.platforms
+                 or any(sys.platform.startswith(p) for p in self.platforms))
+        machine = platform.machine()
+        arch_ok = (not self.arch
+                   or any(machine.startswith(a) for a in self.arch))
+        return os_ok and arch_ok
+
+    def skip_reason(self) -> str:
+        parts = []
+        if self.platforms:
+            parts.append("/".join(self.platforms))
+        if self.arch:
+            parts.append("/".join(self.arch))
+        return " + ".join(parts)
 
     def sources(self) -> list[Path]:
         return [self.path] + [ROOT / p for p in self.extra_files]
@@ -116,8 +138,11 @@ def find_compiler() -> str:
     sys.exit("error: no C++ compiler found (need clang++ or g++, or set CPPLINGS_CXX)")
 
 
-def compile_flags(mode: str, sanitizers: str = "address") -> list[str]:
+def compile_flags(mode: str, sanitizers: str = "address",
+                  extra_flags: list[str] | None = None) -> list[str]:
     flags = list(BASE_FLAGS)
+    if extra_flags:
+        flags += extra_flags
     if mode != "run" or os.environ.get("CPPLINGS_NO_SANITIZERS"):
         return flags
     if sanitizers == "thread":
@@ -127,17 +152,17 @@ def compile_flags(mode: str, sanitizers: str = "address") -> list[str]:
     return flags
 
 
-def build_and_run(cxx: str, sources: list[Path], name: str, mode: str,
-                  sanitizers: str = "address") -> tuple[bool, str]:
+def build_and_run(cxx: str, sources: list[Path], ex: "Exercise",
+                  name: str | None = None) -> tuple[bool, str]:
     """Returns (passed, output)."""
     BUILD_DIR.mkdir(exist_ok=True)
-    binary = BUILD_DIR / name
-    cmd = [cxx, *compile_flags(mode, sanitizers), *map(str, sources),
-           "-o", str(binary)]
+    binary = BUILD_DIR / (name or ex.name)
+    cmd = [cxx, *compile_flags(ex.mode, ex.sanitizers, ex.extra_flags),
+           *map(str, sources), "-o", str(binary)]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
         return False, proc.stderr
-    if mode == "compile":
+    if ex.mode == "compile":
         return True, proc.stderr  # warnings, if any
     try:
         run = subprocess.run([str(binary)], capture_output=True, text=True,
@@ -157,20 +182,25 @@ def progress_bar(done: int, total: int) -> str:
 # ---------------------------------------------------------------- commands
 
 
-def cmd_watch(exercises: list[Exercise], cxx: str) -> None:
+def cmd_watch(exercises: list[Exercise], cxx: str,
+              start_name: str | None = None) -> None:
     hint_level = 0
     current: Exercise | None = None
     last_mtime = 0.0
 
-    def pick_current() -> Exercise | None:
-        for ex in exercises:
+    def next_pending(idx: int, direction: int) -> Exercise | None:
+        """Nearest pending supported exercise, scanning from idx (exclusive)
+        in the given direction, with wraparound."""
+        n = len(exercises)
+        for step in range(1, n + 1):
+            ex = exercises[(idx + direction * step) % n]
             if ex.has_marker() and ex.supported_here():
                 return ex
         return None
 
     def show(ex: Exercise) -> bool:
         nonlocal hint_level
-        passed, output = build_and_run(cxx, ex.sources(), ex.name, ex.mode, ex.sanitizers)
+        passed, output = build_and_run(cxx, ex.sources(), ex)
         os.system("clear" if os.name == "posix" else "cls")
         done = sum(1 for e in exercises if not e.has_marker())
         print(progress_bar(done, len(exercises)))
@@ -185,29 +215,53 @@ def cmd_watch(exercises: list[Exercise], cxx: str) -> None:
             print(red("✗ Not yet:"))
             print(output.strip()[:4000])
             print(f"\n{yellow('h')}+Enter = hint ({len(ex.hints)} available)   "
-                  f"{yellow('q')}+Enter = quit")
+                  f"{yellow('n')}/{yellow('p')} = next/prev   "
+                  f"{yellow('l')} = list   {yellow('q')} = quit   "
+                  f"or type an exercise name")
         return passed
+
+    had_marker = False
+
+    def switch_to(ex: Exercise) -> None:
+        nonlocal current, hint_level, last_mtime, had_marker
+        current = ex
+        hint_level = 0
+        last_mtime = ex.dir_mtime()
+        had_marker = ex.has_marker()
+        show(ex)
+
+    if start_name is not None:
+        start = next((e for e in exercises if e.name == start_name), None)
+        if start is None:
+            sys.exit(f"error: no exercise named '{start_name}' "
+                     f"(see: cpplings.py list)")
+        if not (start.has_marker() and start.supported_here()):
+            # done or unsupported here — begin at the next pending one after it
+            start = next_pending(exercises.index(start), +1)
+    else:
+        start = next_pending(-1, +1)
 
     print(f"cpplings watch mode — compiler: {cxx}")
     while True:
-        ex = pick_current()
-        if ex is None:
-            # all markers removed; double-check everything actually passes
-            print(green(bold("\nAll exercises done — running final verify...\n")))
-            cmd_verify(exercises, cxx)
-            return
-        if ex is not current:
-            current = ex
-            hint_level = 0
-            last_mtime = ex.dir_mtime()
-            show(ex)
+        if current is None or (had_marker and not current.has_marker()):
+            # first pick, or the marker was removed — move forward
+            idx = exercises.index(current) if current else -1
+            nxt = start if current is None else next_pending(idx, +1)
+            start = None
+            if nxt is None:
+                # all markers removed; double-check everything actually passes
+                print(green(bold("\nAll exercises done — "
+                                 "running final verify...\n")))
+                cmd_verify(exercises, cxx)
+                return
+            switch_to(nxt)
         # poll: keyboard or file change
         ready, _, _ = select.select([sys.stdin], [], [], 0.5)
         if ready:
             line = sys.stdin.readline().strip().lower()
             if line == "q":
                 return
-            if line == "h":
+            elif line == "h":
                 if hint_level < len(current.hints):
                     print(f"\n{yellow(f'Hint {hint_level + 1}:')} "
                           f"{current.hints[hint_level]}")
@@ -215,6 +269,27 @@ def cmd_watch(exercises: list[Exercise], cxx: str) -> None:
                 else:
                     print(yellow("No more hints. Check the solution in solutions/ "
                                  "if you're stuck."))
+            elif line in ("n", "p"):
+                direction = +1 if line == "n" else -1
+                nxt = next_pending(exercises.index(current), direction)
+                if nxt is None or nxt is current:
+                    print(yellow("No other pending exercise."))
+                else:
+                    switch_to(nxt)
+            elif line == "l":
+                print()
+                cmd_list(exercises)
+            elif line:
+                target = next((e for e in exercises if e.name == line), None)
+                if target is None:
+                    print(yellow(f"Unknown input '{line}'.  n/p = next/prev   "
+                                 "l = list   h = hint   q = quit   "
+                                 "or type an exercise name"))
+                elif not target.supported_here():
+                    print(yellow(f"~ {target.name} needs "
+                                 f"{target.skip_reason()} — can't run here"))
+                else:
+                    switch_to(target)
         try:
             mtime = current.dir_mtime()
         except FileNotFoundError:
@@ -229,10 +304,10 @@ def cmd_run(exercises: list[Exercise], cxx: str, name: str) -> None:
     if ex is None:
         sys.exit(f"error: no exercise named '{name}' (see: cpplings.py list)")
     if not ex.supported_here():
-        print(yellow(f"~ {ex.name} needs {'/'.join(ex.platforms)} "
-                     f"(you're on {sys.platform}) — skipped"))
+        print(yellow(f"~ {ex.name} needs {ex.skip_reason()} "
+                     f"(you're on {sys.platform}/{platform.machine()}) — skipped"))
         return
-    passed, output = build_and_run(cxx, ex.sources(), ex.name, ex.mode, ex.sanitizers)
+    passed, output = build_and_run(cxx, ex.sources(), ex)
     if output.strip():
         print(output.strip())
     if passed:
@@ -259,7 +334,7 @@ def cmd_list(exercises: list[Exercise]) -> None:
     width = max(len(e.name) for e in exercises) + 2
     for ex in exercises:
         if not ex.supported_here():
-            status = yellow("SKIP   ") + f" (needs {'/'.join(ex.platforms)})"
+            status = yellow("SKIP   ") + f" (needs {ex.skip_reason()})"
         elif ex.has_marker():
             status = yellow("PENDING")
         else:
@@ -273,12 +348,12 @@ def cmd_list(exercises: list[Exercise]) -> None:
 def cmd_verify(exercises: list[Exercise], cxx: str) -> None:
     for ex in exercises:
         if not ex.supported_here():
-            print(f"{yellow('SKIP')} {ex.name} — needs {'/'.join(ex.platforms)}")
+            print(f"{yellow('SKIP')} {ex.name} — needs {ex.skip_reason()}")
             continue
         if ex.has_marker():
             print(f"{yellow('PENDING')} {ex.name} — still has the marker")
             sys.exit(1)
-        passed, output = build_and_run(cxx, ex.sources(), ex.name, ex.mode, ex.sanitizers)
+        passed, output = build_and_run(cxx, ex.sources(), ex)
         if not passed:
             print(f"{red('FAIL')} {ex.name}")
             print(output.strip()[:4000])
@@ -293,7 +368,7 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
     checked = 0
     for ex in exercises:
         if not ex.supported_here():
-            print(f"{yellow('SKIP')} {ex.name} — needs {'/'.join(ex.platforms)}")
+            print(f"{yellow('SKIP')} {ex.name} — needs {ex.skip_reason()}")
             continue
         checked += 1
         missing = [s for s in ex.solution_sources() if not s.exists()]
@@ -302,11 +377,9 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
                   f"{', '.join(str(m) for m in missing)}")
             problems += 1
             continue
-        sol_ok, sol_out = build_and_run(cxx, ex.solution_sources(),
-                                        f"sol_{ex.name}", ex.mode,
-                                        ex.sanitizers)
-        ex_ok, _ = build_and_run(cxx, ex.sources(), f"ex_{ex.name}", ex.mode,
-                                 ex.sanitizers)
+        sol_ok, sol_out = build_and_run(cxx, ex.solution_sources(), ex,
+                                        name=f"sol_{ex.name}")
+        ex_ok, _ = build_and_run(cxx, ex.sources(), ex, name=f"ex_{ex.name}")
         if not sol_ok:
             print(f"{red('SOLUTION FAILS')} {ex.name}")
             print(sol_out.strip()[:2000])
@@ -328,7 +401,8 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="cpplings exercise runner")
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("watch")
+    p_watch = sub.add_parser("watch")
+    p_watch.add_argument("name", nargs="?", default=None)
     p_run = sub.add_parser("run")
     p_run.add_argument("name")
     p_hint = sub.add_parser("hint")
@@ -350,7 +424,7 @@ def main() -> None:
 
     cxx = find_compiler()
     if command == "watch":
-        cmd_watch(exercises, cxx)
+        cmd_watch(exercises, cxx, getattr(args, "name", None))
     elif command == "run":
         cmd_run(exercises, cxx, args.name)
     elif command == "verify":

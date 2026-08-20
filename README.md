@@ -26,16 +26,26 @@ You need:
 Linux is the reference platform. Everything works on macOS too, except a
 couple of exercises that need Linux's `/proc` — those are tagged
 `platforms = ["linux"]` in `exercises.toml` and the runner skips them
-automatically elsewhere (they show as `SKIP` in `list`).
+automatically elsewhere (they show as `SKIP` in `list`). The POSIX module
+is tagged `["linux", "darwin"]`, and two SIMD/asm exercises are tagged
+with the CPUs they support (`arch = ["arm64", ..., "x86_64", ...]`) the
+same way.
 
 ```sh
-python3 cpplings.py        # start the watcher and begin
+python3 cpplings.py               # start the watcher and begin
+python3 cpplings.py watch posix1  # start the watcher at one exercise
 ```
 
-The watcher finds your first unfinished exercise, compiles and runs it on
-every save, and shows the result. Type `h` + Enter for a progressive hint,
-`q` + Enter to quit. When an exercise passes, delete its `// I AM NOT DONE`
-line to advance.
+The watcher finds your first unfinished exercise (or the one you named),
+compiles and runs it on every save, and shows the result. When an exercise
+passes, delete its `// I AM NOT DONE` line to advance. Keys (each followed
+by Enter):
+
+- `h` — progressive hint
+- `n` / `p` — jump to the next / previous unfinished exercise
+- `l` — list all exercises and their status
+- any exercise name — jump straight to it
+- `q` — quit
 
 Other commands:
 
@@ -70,12 +80,12 @@ as short reading notes until compiler support is everywhere.
 
 ## Curriculum
 
-Six parts, 27 modules, **158 exercises** — from initialization rules to
+Seven parts, 29 modules, **172 exercises** — from initialization rules to
 move semantics, templates & concepts, value categories, UB & sanitizers,
 memory layout, atomics, and a thread of low-level Linux/embedded topics
-(device registers, `volatile`, the C ABI, POSIX fds and `errno`,
-endianness, signal safety). See [CURRICULUM.md](CURRICULUM.md) for the
-full map.
+(device registers, `volatile`, the C ABI, POSIX fds, pipes and `errno`,
+endianness, signal safety, SIMD and inline asm). See
+[CURRICULUM.md](CURRICULUM.md) for the full map.
 
 | Part | Theme |
 |---|---|
@@ -85,3 +95,4 @@ full map.
 | IV | The standard library: containers, algorithms, ranges, vocabulary types |
 | V | Correctness: exceptions, value categories, undefined behavior |
 | VI | Under the hood: memory layout, compile-time programming, concurrency |
+| VII | Systems & speed: POSIX I/O and pipes, the optimizer, SIMD, inline asm |

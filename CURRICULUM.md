@@ -1,6 +1,6 @@
 # cpplings curriculum
 
-Six parts, 27 modules, **158 exercises — all written**. Everything compiles as
+Seven parts, 29 modules, **172 exercises — all written**. Everything compiles as
 **C++20**; tags like *(C++17)* mark when a feature entered (or left) the
 language, since knowing the timeline is half of reading real-world code.
 
@@ -65,9 +65,18 @@ Status: ✅ written — the curriculum is complete.
 | `25_concurrency` (8) | ✅ | `thread`/`jthread` joinability (`terminate` demo); data race under TSan → `atomic`; vector race → `mutex`/`lock_guard`; deterministic deadlock → `scoped_lock` *(C++17)*; lost wakeup → predicate `cv.wait`; release/acquire publish pattern; `async`/`future` parallel sum; async-signal safety (`volatile sig_atomic_t` shutdown flag, handler restrictions) |
 | `26_modern_extras` (6) | ✅ | `chrono` typed durations & `duration_cast`; `filesystem::path` decomposition quiz; `std::format` *(C++20; `std::print` C++23 note)*; a real coroutine generator (`co_yield` Collatz; `std::generator` C++23 note); `<bit>` *(C++20)*: `popcount`/`has_single_bit`/`countr_zero` IRQ-dispatch idiom; graduation quiz + modules *(C++20)* reading note |
 
+## Part VII — Systems & speed
+
+| Module | Status | Covers |
+|---|---|---|
+| `27_posix_io` (6) | ✅ | POSIX, not ISO C++ (Linux + macOS; skipped elsewhere): the five syscalls (`open`/`read`/`write`/`lseek`/`close`) and the short-count loop contract; the fd table and `dup`/`dup2` redirection (+ the stdio-buffer/`fflush` boundary); `pipe()` and the EOF contract (reader unblocks only when *every* write end closes), `SIGPIPE`/`EPIPE`; `fork` + `waitpid` (fd table copied — close the ends you don't use; 8-bit exit status, `_exit` in children); `fcntl` + `O_NONBLOCK`, `EAGAIN` as the errno that isn't an error; capstone: a two-pipe parent↔child `tr a-z A-Z` pipeline |
+| `28_performance` (8) | ✅ | Built with `-O2`; verified by asserts, never stopwatches. `-O` levels and the sharp extras (`-march=native` SIGILL trap, `-flto`, `-ffast-math` vs IEEE — NaN probe); `[[likely]]`/`[[unlikely]]` *(C++20)* + `__builtin_expect` (hints never change semantics) and `__builtin_unreachable` as a UB-grade promise (UBSan-caught; `std::unreachable` C++23 note); `inline` = ODR permission, not speed (live duplicate-symbol fix), `[[gnu::always_inline]]`/`[[gnu::noinline]]`; aliasing & `__restrict__` (vectorization blocker; memcpy-param-overlap under ASan → memmove); SIMD three ways: portable vector extensions (lane algebra, `__builtin_shufflevector`, log2(n) reductions) and real NEON/SSE intrinsics with the tail-loop bug; extended inline asm constraints (`"=r"`, early-clobber `"=&r"`, `"memory"`) + the empty-asm `DoNotOptimize`/`ClobberMemory` idiom |
+
 ---
 
-Each part closes with a **quiz** exercise combining its modules.
+Parts I–VI each close with a **quiz** exercise combining their modules
+(Part VI's `extras5` is the graduation quiz). Part VII is post-graduation
+material and closes with the `posix6` pipeline capstone.
 
 ## Design rules for exercises (for contributors / future sessions)
 
