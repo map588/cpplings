@@ -85,7 +85,7 @@ as short reading notes until compiler support is everywhere.
 
 ## Curriculum
 
-Seven parts, 29 modules, **172 exercises** — from initialization rules to
+Seven parts, 29 modules, **183 exercises** — from initialization rules to
 move semantics, templates & concepts, value categories, UB & sanitizers,
 memory layout, atomics, and a thread of low-level Linux/embedded topics
 (device registers, `volatile`, the C ABI, POSIX fds, pipes and `errno`,
