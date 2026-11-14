@@ -23,6 +23,12 @@ cases you'd have flubbed.
   `upper_bound` *require* sorted input — they don't check (that would
   defeat the O(log n) point), they just answer wrong. Precondition
   discipline is on you.
+- **Writing an iterator.** The algorithms ask for a small interface:
+  `*it`, `++it`, `it++`, `==`, two member type names, and
+  `begin()`/`end()` on the container. Give your own type that interface
+  and every algorithm — and range-`for` — accepts it.
+  `std::forward_iterator` *(C++20)* in a `static_assert` checks the
+  interface and names what is missing (`iter1`).
 
 ## Version notes
 
@@ -32,4 +38,5 @@ cases you'd have flubbed.
 | Lambdas make algorithms ergonomic | C++11 |
 | `std::reduce`, parallel execution policies | C++17 |
 | `std::erase` / `std::erase_if` free functions | C++20 |
+| Iterator concepts (`std::forward_iterator`, ...) | C++20 |
 | `std::ranges::` algorithm overloads + projections | C++20 (module 18) |

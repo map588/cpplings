@@ -38,6 +38,11 @@ branching at compile time.
 - **`if constexpr`** *(C++17)* — a compile-time branch whose untaken arm
   is *not instantiated* for the current `T`. One function body, multiple
   type-specific behaviors, no specialization ladder.
+- **CRTP** — the *curiously recurring template pattern*:
+  `struct Widget : Counted<Widget>`. The base is a template over its own
+  derived class, so each derived type gets a base class of its own —
+  its own static members — with no vptr and no bytes per object
+  (`crtp1`). C++23's *deducing `this`* covers many of its uses.
 
 The module ends with the **Part III quiz** (`part3_quiz`): predictions
 across modules 12–14.
@@ -50,3 +55,5 @@ across modules 12–14.
 | Fold expressions, CTAD, `if constexpr` | C++17 |
 | Concepts, `requires`, abbreviated templates (`auto` params) | C++20 |
 | Deduction guides for aggregates (no guide needed) | C++20 |
+| CRTP (a pattern, not a language feature) | C++98 |
+| Deducing `this` (explicit object parameters) | C++23 |

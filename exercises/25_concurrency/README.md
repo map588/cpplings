@@ -16,6 +16,13 @@ happen with both stack traces.
 - **Data races & `std::atomic`** — `++counter` is a read-modify-write;
   two threads interleave it and updates vanish. `std::atomic<int>` makes
   the RMW indivisible. Atomics fix *single-variable* races only.
+- **Compare-and-swap.** *Check-then-act* on an atomic
+  (`if (n.load() > 0) n.fetch_sub(1);`) is two atomic steps with a gap
+  between them: no data race, TSan stays silent, and the logic is still
+  wrong. `n.compare_exchange_weak(expected, desired)` writes only if
+  `n` still holds `expected`, and loads the current value into
+  `expected` when it does not — the retry loop under every lock-free
+  structure (`conc8`).
 - **`std::mutex` + RAII locks** — for multi-step invariants and
   containers. `lock_guard` (C++11), `scoped_lock` (C++17 — takes
   *several* mutexes, deadlock-free), `unique_lock` (movable, for cv).

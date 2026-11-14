@@ -25,12 +25,21 @@ and what the compiler enforces about lifetime.
 - **Choosing a parameter type.** Value for cheap things, `const T&` for
   read-only access to expensive things, `T&` for in/out parameters,
   pointer when "absent" is a legal argument.
+- **Named casts.** The C-style cast `(T)x` takes the first of
+  `const_cast`, `static_cast`, `reinterpret_cast` (or a pair of them)
+  that compiles — the call site does not show which one you got. Each
+  named cast does one job and refuses the others: `static_cast` (a value
+  conversion), `const_cast` (add or remove `const` — never write through
+  it to an object that was born const), `reinterpret_cast` (the same
+  bits as another type). `casts1` is built with
+  `-Werror=old-style-cast`. `dynamic_cast` waits in module 11.
 
 ## Version notes
 
 | Feature | Standard |
 |---|---|
 | `nullptr`, `std::nullptr_t` | C++11 |
+| Named casts (`static_cast`, `const_cast`, `reinterpret_cast`, `dynamic_cast`) | C++98 |
 | Rvalue references `T&&` (next module!) | C++11 |
 | `std::reference_wrapper` (reseatable, container-storable "reference") | C++11 |
 | Lifetime extension via `const T&` / `T&&` binding | C++98 / C++11 |

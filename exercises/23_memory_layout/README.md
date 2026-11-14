@@ -27,6 +27,12 @@ reason about, measure, and exploit. This module makes layout visible.
 - **Counting allocations.** Replacing global `operator new` reveals what
   the library really does: vector growth chains, SSO, and
   `make_shared`'s fused single allocation.
+- **`std::pmr`** *(C++17)* — the allocator chosen at runtime. A
+  `std::pmr::vector` asks a `memory_resource` for its memory. A
+  `monotonic_buffer_resource` over a stack array is a bump allocator, so
+  the vector makes no heap allocation at all. Give it
+  `null_memory_resource()` as upstream: without it a full buffer falls
+  back to the heap silently (`pmr1`).
 - **Register-map overlays (MMIO).** Firmware matches a struct to a
   datasheet's byte-offset table and audits it with `offsetof` +
   `static_assert` — which only works for standard-layout types. The
@@ -45,6 +51,7 @@ reason about, measure, and exploit. This module makes layout visible.
 |---|---|
 | `alignas` / `alignof` | C++11 |
 | `std::byte` | C++17 |
+| `<memory_resource>`: `std::pmr` containers and resources | C++17 |
 | `[[no_unique_address]]` | C++20 |
 | `std::construct_at` / `destroy_at` (constexpr-friendly placement) | C++20 |
 | `std::launder` (the dark corners we skip) | C++17 |

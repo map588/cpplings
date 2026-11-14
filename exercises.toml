@@ -219,6 +219,17 @@ hints = [
   "Move the delete[] after the loop. Then reflect: a std::vector<int> local, or std::unique_ptr<int[]>, would make this mistake impossible to write.",
 ]
 
+[[exercises]]
+name = "casts1"
+path = "exercises/03_references_pointers/casts1.cpp"
+mode = "run"
+fails = "compile"
+extra_flags = ["-Werror=old-style-cast"]
+hints = [
+  "(1) is a value conversion: static_cast<double>(hits). (2) only removes const: const_cast<char*>(label) — legitimate, because legacy_length never writes. (3) turns a pointer into a number: reinterpret_cast<std::uintptr_t>(p). Try the wrong name on any of them and read the error.",
+  "(4): the C-style cast was a const_cast in disguise, and `*p += 1` then writes to kLimit — an object born const. That is undefined behavior, and no cast repairs it. The function only needs the VALUE: return limit + 1;",
+]
+
 # ----------------------------------------------------------- 04_functions
 
 [[exercises]]
@@ -944,6 +955,15 @@ hints = [
 ]
 
 [[exercises]]
+name = "crtp1"
+path = "exercises/14_templates2/crtp1.cpp"
+mode = "run"
+hints = [
+  "A static member belongs to the CLASS that declares it. Widget and Gadget inherit the same class Counted, so there is exactly one Counted::alive and it counts everything. You need a separate base CLASS per derived type — and a template is a machine that stamps out classes.",
+  "template <typename Derived> struct Counted { ...same body... }; then struct Widget : Counted<Widget> and struct Gadget : Counted<Gadget>. Counted<Widget>::alive and Counted<Gadget>::alive are different variables. Derived is never used in the body — being a different argument is its whole job.",
+]
+
+[[exercises]]
 name = "part3_quiz"
 path = "exercises/14_templates2/part3_quiz.cpp"
 mode = "run"
@@ -1093,6 +1113,16 @@ mode = "run"
 hints = [
   "transform writes through its destination iterator — out.begin() on an empty vector is writing into nothing. Use std::back_inserter(out) (and reserve first).",
   "hottest: std::accumulate(temps.begin(), temps.end(), floor, [](double a, double b) { return std::max(a, b); });",
+]
+
+[[exercises]]
+name = "iter1"
+path = "exercises/17_algorithms/iter1.cpp"
+mode = "run"
+fails = "compile"
+hints = [
+  "The static_assert is the to-do list: std::forward_iterator needs operator*, ++it (returns iterator&), it++ (returns the OLD iterator), and ==. The element for an offset is window->buf_[(window->head_ + offset) % N] — a nested class may read the private members of its enclosing class.",
+  "const T& operator*() const { return window->buf_[(window->head_ + offset) % N]; }  iterator& operator++() { ++offset; return *this; }  iterator operator++(int) { iterator old = *this; ++offset; return old; }  bool operator==(const iterator&) const = default; — C++20 derives != from ==.",
 ]
 
 # ---------------------------------------------------------------- 18_ranges
@@ -1418,6 +1448,15 @@ hints = [
 ]
 
 [[exercises]]
+name = "pmr1"
+path = "exercises/23_memory_layout/pmr1.cpp"
+mode = "run"
+hints = [
+  "Three objects, in this order: a std::array<std::byte, 1024> on the stack; a std::pmr::monotonic_buffer_resource built over it (data, size, upstream); a std::pmr::vector<int> that is given the resource's address. The push_back loop does not change.",
+  "std::pmr::monotonic_buffer_resource pool(arena.data(), arena.size(), std::pmr::null_memory_resource()); std::pmr::vector<int> scratch(&pool); — leave out the third argument and a full arena falls back to the heap without a word.",
+]
+
+[[exercises]]
 name = "mmio1"
 path = "exercises/23_memory_layout/mmio1.cpp"
 mode = "run"
@@ -1555,6 +1594,16 @@ mode = "run"
 hints = [
   "auto front = std::async(std::launch::async, range_sum, std::cref(v), std::size_t{0}, mid); then return front.get() + back; — explicit policy, or it may run lazily on get().",
   "After get(), the future is spent: valid() == false. (One result, moved out, one time.)",
+]
+
+[[exercises]]
+name = "conc8"
+path = "exercises/25_concurrency/conc8.cpp"
+mode = "run"
+sanitizers = "thread"
+hints = [
+  "Both threads read tickets == 1, both sleep, both subtract: sold == 2 and tickets == -1. There is no data race — every access is atomic — so TSan stays silent. The decision (\"> 0\") and the write must become ONE atomic step: compare-and-swap.",
+  "int seen = tickets.load(); while (seen > 0) { /* the sleep */ if (tickets.compare_exchange_weak(seen, seen - 1)) return true; } return false; — a failed CAS writes the current count into `seen`, so the loop decides again with fresh data and stops when the count reaches 0.",
 ]
 
 [[exercises]]
