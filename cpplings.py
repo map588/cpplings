@@ -8,7 +8,9 @@ Usage:
   python3 cpplings.py hint NAME    # show hints for one exercise
   python3 cpplings.py list         # show all exercises and their status
   python3 cpplings.py verify       # check all exercises in order, stop at first failure
-  python3 cpplings.py check-solutions  # CI: solutions must pass, shipped exercises must fail
+  python3 cpplings.py check-solutions [NAME ...]
+                                   # CI: solutions must pass warning-free, shipped
+                                   # exercises must fail at the stage their entry names
 
 Environment:
   CPPLINGS_CXX            override compiler (default: clang++, then g++)
@@ -76,6 +78,15 @@ class Exercise:
         # extra compiler flags for this exercise (e.g. ["-O2"] for the
         # performance module)
         self.extra_flags: list[str] = entry.get("extra_flags", [])
+        # the stage at which the SHIPPED exercise must fail: "compile"
+        # (it does not build) or "run" (it builds, then an assert, a
+        # sanitizer, or the timeout stops it). check-solutions enforces
+        # this, so an exercise that breaks for the wrong reason (a
+        # missing #include on another compiler, say) cannot hide.
+        self.fails: str = entry.get("fails", "run")
+        if self.fails not in ("compile", "run"):
+            sys.exit(f"error: exercise '{self.name}': fails must be "
+                     f"\"compile\" or \"run\", not \"{self.fails}\"")
 
     def supported_here(self) -> bool:
         os_ok = (not self.platforms
@@ -139,8 +150,11 @@ def find_compiler() -> str:
 
 
 def compile_flags(mode: str, sanitizers: str = "address",
-                  extra_flags: list[str] | None = None) -> list[str]:
+                  extra_flags: list[str] | None = None,
+                  werror: bool = False) -> list[str]:
     flags = list(BASE_FLAGS)
+    if werror:
+        flags.append("-Werror")  # check-solutions: a warning is a failure
     if extra_flags:
         flags += extra_flags
     if mode != "run" or os.environ.get("CPPLINGS_NO_SANITIZERS"):
@@ -153,24 +167,27 @@ def compile_flags(mode: str, sanitizers: str = "address",
 
 
 def build_and_run(cxx: str, sources: list[Path], ex: "Exercise",
-                  name: str | None = None) -> tuple[bool, str]:
-    """Returns (passed, output)."""
+                  name: str | None = None,
+                  werror: bool = False) -> tuple[bool, str, str]:
+    """Returns (passed, output, stage). stage is "compile" when the build
+    itself failed, and "run" otherwise."""
     BUILD_DIR.mkdir(exist_ok=True)
     binary = BUILD_DIR / (name or ex.name)
-    cmd = [cxx, *compile_flags(ex.mode, ex.sanitizers, ex.extra_flags),
+    cmd = [cxx,
+           *compile_flags(ex.mode, ex.sanitizers, ex.extra_flags, werror),
            *map(str, sources), "-o", str(binary)]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
-        return False, proc.stderr
+        return False, proc.stderr, "compile"
     if ex.mode == "compile":
-        return True, proc.stderr  # warnings, if any
+        return True, proc.stderr, "run"  # warnings, if any
     try:
         run = subprocess.run([str(binary)], capture_output=True, text=True,
                              timeout=30)
     except subprocess.TimeoutExpired:
-        return False, "(timed out after 30s — infinite loop?)"
+        return False, "(timed out after 30s — infinite loop?)", "run"
     output = run.stdout + run.stderr
-    return run.returncode == 0, output
+    return run.returncode == 0, output, "run"
 
 
 def progress_bar(done: int, total: int) -> str:
@@ -200,10 +217,13 @@ def cmd_watch(exercises: list[Exercise], cxx: str,
 
     def show(ex: Exercise) -> bool:
         nonlocal hint_level
-        passed, output = build_and_run(cxx, ex.sources(), ex)
+        passed, output, _ = build_and_run(cxx, ex.sources(), ex)
         os.system("clear" if os.name == "posix" else "cls")
-        done = sum(1 for e in exercises if not e.has_marker())
-        print(progress_bar(done, len(exercises)))
+        # count like cmd_list: exercises this machine cannot run are
+        # not part of the total
+        here = [e for e in exercises if e.supported_here()]
+        done = sum(1 for e in here if not e.has_marker())
+        print(progress_bar(done, len(here)))
         print(f"\n{bold('Current exercise:')} {ex.rel_path}\n")
         if passed:
             print(green("✓ Exercise compiles and passes!"))
@@ -258,7 +278,10 @@ def cmd_watch(exercises: list[Exercise], cxx: str,
         # poll: keyboard or file change
         ready, _, _ = select.select([sys.stdin], [], [], 0.5)
         if ready:
-            line = sys.stdin.readline().strip().lower()
+            raw = sys.stdin.readline()
+            if raw == "":
+                return  # stdin is at EOF: stay ready forever → quit
+            line = raw.strip().lower()
             if line == "q":
                 return
             elif line == "h":
@@ -307,7 +330,7 @@ def cmd_run(exercises: list[Exercise], cxx: str, name: str) -> None:
         print(yellow(f"~ {ex.name} needs {ex.skip_reason()} "
                      f"(you're on {sys.platform}/{platform.machine()}) — skipped"))
         return
-    passed, output = build_and_run(cxx, ex.sources(), ex)
+    passed, output, _ = build_and_run(cxx, ex.sources(), ex)
     if output.strip():
         print(output.strip())
     if passed:
@@ -353,7 +376,7 @@ def cmd_verify(exercises: list[Exercise], cxx: str) -> None:
         if ex.has_marker():
             print(f"{yellow('PENDING')} {ex.name} — still has the marker")
             sys.exit(1)
-        passed, output = build_and_run(cxx, ex.sources(), ex)
+        passed, output, _ = build_and_run(cxx, ex.sources(), ex)
         if not passed:
             print(f"{red('FAIL')} {ex.name}")
             print(output.strip()[:4000])
@@ -362,8 +385,18 @@ def cmd_verify(exercises: list[Exercise], cxx: str) -> None:
     print(green(bold("\nAll exercises verified. 🎉")))
 
 
-def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
-    """CI check: every solution passes; every shipped exercise fails."""
+def cmd_check_solutions(exercises: list[Exercise], cxx: str,
+                        names: list[str] | None = None) -> None:
+    """CI check: every solution passes with no compiler warning; every
+    shipped exercise fails, at the stage its entry names (`fails`).
+    With names, checks only those exercises."""
+    if names:
+        known = {e.name for e in exercises}
+        unknown = [n for n in names if n not in known]
+        if unknown:
+            sys.exit(f"error: no exercise named {', '.join(unknown)} "
+                     f"(see: cpplings.py list)")
+        exercises = [e for e in exercises if e.name in names]
     problems = 0
     checked = 0
     for ex in exercises:
@@ -377,9 +410,12 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
                   f"{', '.join(str(m) for m in missing)}")
             problems += 1
             continue
-        sol_ok, sol_out = build_and_run(cxx, ex.solution_sources(), ex,
-                                        name=f"sol_{ex.name}")
-        ex_ok, _ = build_and_run(cxx, ex.sources(), ex, name=f"ex_{ex.name}")
+        # -Werror for the solution only: a learner's build never fails on
+        # a warning, but a shipped solution must be warning-free.
+        sol_ok, sol_out, _ = build_and_run(cxx, ex.solution_sources(), ex,
+                                           name=f"sol_{ex.name}", werror=True)
+        ex_ok, _, ex_stage = build_and_run(cxx, ex.sources(), ex,
+                                           name=f"ex_{ex.name}")
         if not sol_ok:
             print(f"{red('SOLUTION FAILS')} {ex.name}")
             print(sol_out.strip()[:2000])
@@ -387,6 +423,10 @@ def cmd_check_solutions(exercises: list[Exercise], cxx: str) -> None:
         elif ex_ok:
             print(f"{red('EXERCISE ALREADY PASSES')} {ex.name} "
                   f"(shipped exercises must fail)")
+            problems += 1
+        elif ex_stage != ex.fails:
+            print(f"{red('EXERCISE FAILS IN WRONG PHASE')} {ex.name} "
+                  f"(must fail at {ex.fails}, failed at {ex_stage})")
             problems += 1
         else:
             print(f"{green('OK')} {ex.name}")
@@ -409,7 +449,8 @@ def main() -> None:
     p_hint.add_argument("name")
     sub.add_parser("list")
     sub.add_parser("verify")
-    sub.add_parser("check-solutions")
+    p_check = sub.add_parser("check-solutions")
+    p_check.add_argument("names", nargs="*")
     args = parser.parse_args()
 
     exercises = load_exercises()
@@ -430,7 +471,7 @@ def main() -> None:
     elif command == "verify":
         cmd_verify(exercises, cxx)
     elif command == "check-solutions":
-        cmd_check_solutions(exercises, cxx)
+        cmd_check_solutions(exercises, cxx, args.names)
 
 
 if __name__ == "__main__":

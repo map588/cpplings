@@ -1,7 +1,8 @@
 // fd1.cpp
 //
-// (POSIX exercise: open/read/close come from <fcntl.h> and <unistd.h>,
-// and /proc is Linux. Not portable C++ — very portable career knowledge.)
+// (POSIX exercise: open/read/close/fcntl come from <fcntl.h> and
+// <unistd.h>. Not ISO C++ — very portable career knowledge. Runs on
+// Linux and macOS.)
 //
 // The kernel hands you resources as file descriptors: plain ints.
 // Every process has a hard cap on open fds (`ulimit -n` — often 1024).
@@ -19,9 +20,9 @@
 // close() calls, make it move-only, module 08/09 style: copying
 // deleted, moving steals the fd and leaves -1 behind.
 //
-// The leak below is MEASURABLE: main counts this process's open fds by
-// listing /proc/self/fd (std::filesystem, C++17) before and after the
-// reload loop.
+// The leak below is MEASURABLE: main counts this process's open fds
+// before and after the reload loop, by asking fcntl about every
+// plausible slot. (On Linux you could also list /proc/self/fd.)
 //
 // Task: finish FdGuard, convert reload_config to use it, and make every
 // assert pass.
@@ -35,22 +36,21 @@
 //     FdGuard (patching each exit path by hand is what raii1 buried)
 
 #include <cassert>
-#include <fcntl.h>      // POSIX: open, O_RDONLY
-#include <filesystem>
+#include <fcntl.h>      // POSIX: open, O_RDONLY, fcntl, F_GETFD
 #include <unistd.h>     // POSIX: read, close
 #include <utility>
 
-constexpr const char* kConfigPath = "/proc/self/status";  // always exists
+constexpr const char* kConfigPath = "/etc/passwd";  // on Linux and macOS
 
-// How many fds does this process have open right now? (The directory
-// iterator itself holds one while we count — same offset both times,
-// so comparisons stay honest.)
+// How many fds does this process have open right now? F_GETFD fails
+// (-1) on a slot that is not open — a census that works on Linux and
+// macOS alike (posix2 uses it too).
 int count_open_fds() {
     int n = 0;
-    for (const auto& entry :
-         std::filesystem::directory_iterator("/proc/self/fd")) {
-        (void)entry;    // only the count matters
-        ++n;
+    for (int fd = 0; fd < 256; ++fd) {
+        if (::fcntl(fd, F_GETFD) != -1) {
+            ++n;
+        }
     }
     return n;
 }

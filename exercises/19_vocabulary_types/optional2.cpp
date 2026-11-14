@@ -57,7 +57,7 @@ int main() {
     // ...and prove you know what value() does on empty — predict:
     bool threw = false;
     try {
-        lookup("retries").value();
+        (void)lookup("retries").value();   // result unused on purpose
     } catch (const std::bad_optional_access&) {
         threw = true;
     }

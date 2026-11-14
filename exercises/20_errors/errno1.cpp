@@ -76,11 +76,11 @@ int main() {
     assert(!ec.message().empty());                        // human-readable, free
 
     // A different failure must map to a different code:
-    std::error_code ec2 = read_config("/proc/self/status/nope");
+    std::error_code ec2 = read_config("/dev/null/nope");
     assert(ec2 == std::errc::not_a_directory);            // ENOTDIR
 
     // And success is simply "false":
-    assert(!read_config("/proc/self/status"));
+    assert(!read_config("/dev/null"));
     return 0;
 }
 

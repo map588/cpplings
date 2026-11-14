@@ -24,7 +24,7 @@ int main() {
 
     bool threw = false;
     try {
-        lookup("retries").value();
+        (void)lookup("retries").value();   // result unused on purpose
     } catch (const std::bad_optional_access&) {
         threw = true;
     }

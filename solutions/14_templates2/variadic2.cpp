@@ -12,7 +12,7 @@ std::string piece(T value) { return std::to_string(value); }
 template <typename... Ts>
 std::string join(const std::string& sep, Ts... args) {
     std::string out;
-    bool first = true;
+    [[maybe_unused]] bool first = true;   // unused when the pack is empty
     // For each element: separator (unless first), then the piece.
     ((out += (first ? "" : sep), out += piece(args), first = false), ...);
     return out;

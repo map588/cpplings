@@ -23,13 +23,16 @@ You need:
 - A C++20 compiler — recent `clang++` (incl. Apple clang) or `g++`
 - Python **3.11+** (the runner is one stdlib-only script)
 
-Linux is the reference platform. Everything works on macOS too, except a
-couple of exercises that need Linux's `/proc` — those are tagged
-`platforms = ["linux"]` in `exercises.toml` and the runner skips them
-automatically elsewhere (they show as `SKIP` in `list`). The POSIX module
-is tagged `["linux", "darwin"]`, and two SIMD/asm exercises are tagged
-with the CPUs they support (`arch = ["arm64", ..., "x86_64", ...]`) the
-same way.
+Linux is the reference platform, and everything works on macOS too. The
+POSIX exercises (`fd1`, `errno1`, and module 27) are tagged
+`platforms = ["linux", "darwin"]` in `exercises.toml`: the runner skips
+them automatically on other systems (they show as `SKIP` in `list`). Two
+SIMD/asm exercises are tagged with the CPUs they support
+(`arch = ["arm64", ..., "x86_64", ...]`) the same way.
+
+Checked with Apple clang 21 (full run, macOS arm64) and GCC 16 (compile
+check). `std::format` (`extras3`) needs libstdc++ 13 or libc++ 17, so
+older toolchains stop there.
 
 ```sh
 python3 cpplings.py               # start the watcher and begin
@@ -54,7 +57,9 @@ python3 cpplings.py list             # progress overview
 python3 cpplings.py run types3       # build & run one exercise
 python3 cpplings.py hint types3      # all hints for one exercise
 python3 cpplings.py verify           # re-check everything in order
-python3 cpplings.py check-solutions  # maintainers/CI: solutions pass, exercises fail
+python3 cpplings.py check-solutions  # maintainers/CI: solutions pass warning-free,
+                                     # exercises fail at the stage their entry names
+python3 cpplings.py check-solutions types3 ub6   # ...or only the named ones
 ```
 
 Environment knobs: `CPPLINGS_CXX=g++-14` to pick a compiler,

@@ -1,0 +1,4 @@
+# The exercises are formatted by hand: comment tables and aligned
+# trailing comments are part of the lesson. Do not reformat them.
+DisableFormat: true
+SortIncludes: Never

@@ -7,7 +7,8 @@
 
 struct Account {
     int balance = 0;
-    std::mutex m;
+    std::mutex m{};   // {}: every member names its initializer, so
+                      // Account{.balance = 100} is warning-free
 };
 
 void transfer(Account& from, Account& to, int amount) {

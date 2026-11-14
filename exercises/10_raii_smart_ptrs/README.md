@@ -36,8 +36,9 @@ heap objects, with the ownership *policy* encoded in the type.
   (the empty state is `-1`, `0` is a valid fd, and there's nothing to
   `delete`) — so you hand-write a small move-only guard: destructor
   closes, moves steal-and-mark, copies deleted. Fds are a finite
-  per-process resource (`ulimit -n`); the leak is *countable* in
-  `/proc/self/fd`, and this module counts it.
+  per-process resource (`ulimit -n`); the leak is *countable* (an
+  `fcntl` census of the fd table — on Linux, also `/proc/self/fd`), and
+  this module counts it.
 
 ## Version notes
 

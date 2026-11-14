@@ -32,9 +32,9 @@ int main() {
     assert(ec == std::errc::no_such_file_or_directory);
     assert(!ec.message().empty());
 
-    std::error_code ec2 = read_config("/proc/self/status/nope");
+    std::error_code ec2 = read_config("/dev/null/nope");
     assert(ec2 == std::errc::not_a_directory);
 
-    assert(!read_config("/proc/self/status"));
+    assert(!read_config("/dev/null"));
     return 0;
 }

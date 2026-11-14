@@ -1,19 +1,18 @@
 // fd1.cpp — solution
 
 #include <cassert>
-#include <fcntl.h>      // POSIX: open, O_RDONLY
-#include <filesystem>
+#include <fcntl.h>      // POSIX: open, O_RDONLY, fcntl, F_GETFD
 #include <unistd.h>     // POSIX: read, close
 #include <utility>
 
-constexpr const char* kConfigPath = "/proc/self/status";  // always exists
+constexpr const char* kConfigPath = "/etc/passwd";  // on Linux and macOS
 
 int count_open_fds() {
     int n = 0;
-    for (const auto& entry :
-         std::filesystem::directory_iterator("/proc/self/fd")) {
-        (void)entry;    // only the count matters
-        ++n;
+    for (int fd = 0; fd < 256; ++fd) {
+        if (::fcntl(fd, F_GETFD) != -1) {
+            ++n;
+        }
     }
     return n;
 }

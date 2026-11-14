@@ -27,7 +27,7 @@ Status: ✅ written — the curriculum is complete.
 | `07_classes1` (6) | ✅ | Member-init lists (const/ref members, declaration-order rule); NSDMI & delegating ctors *(C++11)*; `explicit` & implicit-conversion bugs; destruction order; `=default`/`=delete` *(C++11)*; aggregates & designated initializers *(C++20)* |
 | `08_classes2` (7) | ✅ | Rule of 3 (deep copy by hand, once) and rule of zero; the six special members & suppression rules (a user dtor silently kills moves — measured); operator overloading & free-function symmetry; `operator<=>` *(C++20)*; hidden-friend idiom; `inline static` members *(C++17)* |
 | `09_move_semantics` (7) | ✅ | `std::move` is a cast (buffer-identity proof); rule of 5 (steal + null + `noexcept`); `move_if_noexcept` & vector growth; guaranteed elision *(C++17)* and the `return std::move` pessimization; sink parameters; forwarding refs & `std::forward`; the const-blocks-move trap |
-| `10_raii_smart_ptrs` (7) | ✅ | RAII guards (early-return leak made measurable); `unique_ptr` + `make_unique` *(C++14)* zero-overhead proof; move-only ownership transfer vs borrowing (`T&`); `shared_ptr` control-block costs & `use_count`; `weak_ptr` breaking cycles (`lock()`); custom deleters for C APIs (functor vs function-pointer size); move-only guard for POSIX fds (int handles, leak counted via `/proc/self/fd`) |
+| `10_raii_smart_ptrs` (7) | ✅ | RAII guards (early-return leak made measurable); `unique_ptr` + `make_unique` *(C++14)* zero-overhead proof; move-only ownership transfer vs borrowing (`T&`); `shared_ptr` control-block costs & `use_count`; `weak_ptr` breaking cycles (`lock()`); custom deleters for C APIs (functor vs function-pointer size); move-only guard for POSIX fds (int handles, leak counted with an `fcntl` census of the fd table) |
 | `11_polymorphism` (6) | ✅ | `virtual` dispatch through refs only; `override` *(C++11)* catching hide-not-override; virtual destructors (skipped-dtor proof via counter); pure virtuals turning missing impls into compile errors; object slicing (by-value params & `vector<Base>` → `vector<unique_ptr<Base>>`); vptr size cost + `final` devirtualization quiz |
 
 ## Part III — Generic programming
@@ -84,6 +84,10 @@ material and closes with the `posix6` pipeline capstone.
    `assert`/`static_assert` or a sanitizer report.
 2. Shipped exercises must FAIL (compile error or non-zero exit) and
    solutions must PASS — `python3 cpplings.py check-solutions` enforces both.
+   It also builds each solution with `-Werror` (a solution must not warn)
+   and checks that the shipped exercise fails at the stage its entry
+   names: `fails = "compile"` for a build or link error, a failed run
+   otherwise.
 3. Every feature mentioned gets a standard tag the first time it appears in
    a file: `string_view (C++17)`.
 4. The comment block should teach the WHY (what the compiler does
