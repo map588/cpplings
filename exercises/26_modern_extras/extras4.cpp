@@ -32,6 +32,7 @@
 
 #include <cassert>
 #include <coroutine>
+#include <exception>
 #include <utility>
 #include <vector>
 

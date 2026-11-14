@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <string>
+#include <utility>
 
 bool chars_inside_object(const std::string& s) {
     const char* lo = reinterpret_cast<const char*>(&s);

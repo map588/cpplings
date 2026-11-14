@@ -19,9 +19,11 @@
 //   the next vintage. You now know how to read its release notes.)
 
 #include <cassert>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 constexpr int TODO = -1;
@@ -61,7 +63,14 @@ int main() {
     // Module 10 — ownership at zero cost:
     static_assert((sizeof(std::unique_ptr<int>) == sizeof(int*)) == TODO_BOOL);
 
-    // Module 15 — SSO: does this allocate?
+    // Module 15 — SSO: do a short string's characters live INSIDE the
+    // std::string object itself (no heap allocation)?
+    std::string tiny = "cat";
+    auto object = reinterpret_cast<std::uintptr_t>(&tiny);
+    auto chars = reinterpret_cast<std::uintptr_t>(tiny.data());
+    bool inside_object = (chars >= object && chars < object + sizeof(tiny));
+    assert(inside_object == TODO_BOOL);
+
     // Module 16 — does the loop's push_back invalidate `first`?
     std::vector<int> v;
     v.reserve(3);

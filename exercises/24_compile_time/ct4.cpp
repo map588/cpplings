@@ -23,7 +23,7 @@
 // inside the template, and DIFFERENT CONFIGS ARE DIFFERENT TYPES — you
 // cannot hand a Pool<tiny> to code expecting Pool<huge>. The config is
 // part of the type's identity. (Requirement: the NTTP type must be a
-// structural type — public members, no custom ==, roughly.)
+// structural type — all members public and non-mutable, roughly.)
 //
 // RingBuffer below takes its config the runtime way and lost all of
 // those properties — note data_'s wishful 64.

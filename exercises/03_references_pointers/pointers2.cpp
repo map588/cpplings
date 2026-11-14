@@ -14,7 +14,7 @@
 // learning to read ASan output is a skill worth real money.
 //
 // The real lesson: this whole bug class disappears when ownership is
-// explicit (module 09) or when you don't heap-allocate at all. Here,
+// explicit (module 10) or when you don't heap-allocate at all. Here,
 // though, you get to feel the raw version first.
 //
 // Task: fix average() so every sample is read while the data is still

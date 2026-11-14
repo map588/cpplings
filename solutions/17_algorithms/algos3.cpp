@@ -11,7 +11,7 @@ std::size_t rank_position(const std::vector<int>& sorted_scores, int score) {
 }
 
 int main() {
-    std::vector<int> scores = {880, 120, 450, 990, 300};
+    std::vector<int> scores = {880, 450, 120, 990, 300};
 
     std::sort(scores.begin(), scores.end());    // THE missing line
 

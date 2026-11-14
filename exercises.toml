@@ -1239,7 +1239,7 @@ name = "ub6"
 path = "exercises/22_ub_sanitizers/ub6.cpp"
 mode = "run"
 hints = [
-  "Two UBSan reports to earn: 1<<31 can't be represented in int (the literal 1 is an int!), and a shift by 32+ exceeds int's width entirely.",
+  "Two failures, one cause: the literal 1 is an int. 1<<31 is defined since C++20 but NEGATIVE (INT_MIN), so widening it to uint64_t smears the sign bit across the top half — the assert catches that, UBSan stays silent. A shift by 32+ exceeds int's width entirely: still UB, and that one UBSan reports.",
   "Build the mask in the right type from the start: return std::uint64_t{1} << bit; — unsigned and 64 bits wide makes every bit in [0,64) legal.",
 ]
 
@@ -1487,7 +1487,7 @@ path = "exercises/26_modern_extras/extras5.cpp"
 mode = "run"
 hints = [
   "silent == 3 (truncation, module 01). promotion: true. elision: 0 copies (module 09). const move: 1 copy (module 09's trap).",
-  "unique_ptr pointer-sized: true (module 10). reserved-capacity pushes don't reallocate: true (module 16). Congratulations — go build something.",
+  "unique_ptr pointer-sized: true (module 10). short string stored inside the object: true (SSO, module 15). reserved-capacity pushes don't reallocate: true (module 16). Congratulations — go build something.",
 ]
 
 # ----------------------------------------------------------- 27_posix_io
@@ -1561,7 +1561,7 @@ mode = "run"
 sanitizers = "none"
 extra_flags = ["-O2"]
 hints = [
-  "This file IS built with -O2, so __OPTIMIZE__ is defined: true. But -O2 never defines NDEBUG (that's -DNDEBUG, a separate decision): false. And -ffast-math is not part of any -O level: false.",
+  "This file IS built with -O2, so __OPTIMIZE__ is defined: true. But -O2 never defines NDEBUG (that's -DNDEBUG, a separate decision): false. And -ffast-math is not part of -O2 (only -Ofast pulls it in): false.",
   "The NaN probe: IEEE 754 says NaN != NaN is TRUE — the one value unequal to itself. (That's exactly the comparison -ffast-math breaks.)",
 ]
 

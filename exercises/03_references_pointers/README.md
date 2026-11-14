@@ -19,8 +19,9 @@ and what the compiler enforces about lifetime.
   local, or keeping one past the owner's death, compiles fine and is
   undefined behavior. Sanitizers (ASan/UBSan) make these visible at runtime.
 - **`nullptr` (C++11).** A dedicated null of type `std::nullptr_t`. `NULL`
-  is just the integer 0 in disguise, which breaks overload resolution
-  (`f(int)` vs `f(int*)` — `f(NULL)` picks the int!). Always `nullptr`.
+  is just an integer zero in disguise, which breaks overload resolution
+  (`f(int)` vs `f(int*)` — `f(0)` picks the int, and `f(NULL)` picks the
+  int or is ambiguous, depending on the compiler). Always `nullptr`.
 - **Choosing a parameter type.** Value for cheap things, `const T&` for
   read-only access to expensive things, `T&` for in/out parameters,
   pointer when "absent" is a legal argument.

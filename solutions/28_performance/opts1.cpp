@@ -33,8 +33,9 @@ int main() {
     // Did -O2 turn our asserts off?
     static_assert(ndebug_defined == false);
 
-    // Is -ffast-math part of -O2? (It never is — it changes RESULTS,
-    // and -O levels promise not to.)
+    // Is -ffast-math part of -O2? (No — it changes RESULTS, and
+    // -O0 through -O3 promise not to. The one exception is -Ofast,
+    // which is -O3 plus -ffast-math.)
     static_assert(fast_math_on == false);
 
     // The NaN probe -ffast-math would break: IEEE says NaN compares

@@ -43,6 +43,8 @@
 //
 // Note: C++20 deprecated compound assignment on volatile lvalues
 // (`*REG |= x` now warns) — write the load and the store separately.
+// (C++23 took the deprecation back for the bitwise forms |=, &=, ^= —
+// every device header uses them. += and friends stay deprecated.)
 
 
 #include <cassert>

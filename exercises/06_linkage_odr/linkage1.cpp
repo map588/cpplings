@@ -8,10 +8,12 @@
 //
 // This file wants to use both. For the function it's easy: a function
 // declaration (a prototype) is obviously not a definition. But for the
-// VARIABLE, C++ has a trap C doesn't:
+// VARIABLE, C++ has a trap that old C code never met:
 //
-//     int hit_count;     // in C: a "tentative definition", merged by the
-//                        //       linker with the other one. Fine.
+//     int hit_count;     // in C: a "tentative definition". Old C
+//                        //       toolchains merged it with the other
+//                        //       one (-fcommon); gcc 10+ and clang 11+
+//                        //       refuse by default, like C++ does.
 //                        // in C++: A FULL DEFINITION (zero-initialized).
 //                        //       Two TUs defining it = duplicate symbol.
 //

@@ -12,8 +12,8 @@ reason about, measure, and exploit. This module makes layout visible.
   member's alignment. **Member order changes object size** — sort
   members large-to-small to pack tight. Arrays multiply the waste.
 - **`alignas`** *(C++11)* — demanding more alignment than a type needs:
-  SIMD loads, cache-line isolation (`alignas(64)` — see module 25's
-  false-sharing note), page boundaries.
+  SIMD loads, cache-line isolation (`alignas(64)` against false sharing —
+  `layout2`), page boundaries.
 - **Placement new** — constructing an object *into memory you already
   have*: `new (ptr) T(args)`. The other half of the contract: you must
   call `t->~T()` yourself. This is the machinery beneath `vector`

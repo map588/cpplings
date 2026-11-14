@@ -11,8 +11,9 @@ mental model that survives contact with the standard:
 
 - **`std::move` is `static_cast<T&&>`.** It changes which overload wins
   (module 04's `&`/`const&`/`&&` ranking) — nothing else. Moving a
-  `std::string` steals its heap buffer; the *source keeps its allocation
-  identity* (provable by watching `.data()` pointers).
+  `std::string` steals its heap buffer; the *buffer keeps its identity* —
+  the destination's `.data()` is the very pointer the source used to hold
+  (provable by watching `.data()` pointers).
 - **Moved-from state**: *valid but unspecified*. You may destroy it,
   assign to it, call anything with no preconditions. You may not assume
   contents.
@@ -20,8 +21,8 @@ mental model that survives contact with the standard:
   source, and mark them **`noexcept`** —
 - **The `noexcept` payoff**: `std::vector` reallocation uses
   `move_if_noexcept`. A throwing-move type gets *copied* on every growth
-  (the strong exception guarantee demands it). One missing keyword,
-  quadratic regret.
+  (the strong exception guarantee demands it). One missing keyword, and
+  every growth deep-copies every element.
 - **Copy elision.** Since C++17, returning a prvalue (`return T{...};`)
   is **guaranteed** to construct directly in the caller — zero copies,
   zero moves, by language rule. Named locals (NRVO) are elided in
@@ -31,6 +32,9 @@ mental model that survives contact with the standard:
 - **Sink parameters.** `void set(T value)` + `member_ = std::move(value)`
   handles lvalues (one copy + one move) and rvalues (zero copies) with
   one overload — usually beating `const T&` for "store this" APIs.
+  (Best in constructors. In a setter that *assigns* to a string/vector
+  member, `const T&` can win for lvalues: copy assignment may reuse the
+  member's existing buffer.)
 - **Perfect forwarding.** In `template <class T> void f(T&& x)`, `T&&` is
   a *forwarding reference* (deduced!): lvalues come in as `T&`, rvalues
   as `T&&` (reference collapsing). Pass it on with `std::forward<T>(x)` —

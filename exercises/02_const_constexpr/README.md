@@ -40,4 +40,4 @@ compile time instead of runtime.
 | `constexpr` lambdas, `if constexpr` | C++17 |
 | `consteval`, `constinit`, `constexpr` virtual / try / `std::vector` in constexpr | C++20 |
 | `mutable` members (escape hatch from const) | C++98 |
-| Compound assignment on `volatile` lvalues deprecated | C++20 |
+| Compound assignment on `volatile` lvalues deprecated | C++20 (bitwise forms un-deprecated in C++23) |

@@ -24,7 +24,9 @@ Type `h` + Enter for a hint, `q` + Enter to quit. Solutions live in
   often cascade noise.
 - **The feedback loop.** Exercises verify themselves with `assert` (runtime,
   from `<cassert>`) and `static_assert` (compile time — C++11, message
-  optional since C++17).
+  optional since C++17). `assert` vanishes when `NDEBUG` is defined, so
+  production code never puts side effects inside one. This course does —
+  on purpose: its asserts are the grader and `NDEBUG` is never defined.
 
 ## Version notes
 

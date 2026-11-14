@@ -11,6 +11,11 @@
 // NDEBUG is defined — which is what `-DNDEBUG`, and most "Release" build
 // configurations, do. Never put side effects inside an assert.)
 //
+// (This course breaks that rule on purpose: its asserts are the grader,
+// NDEBUG is never defined here, and you will meet calls with side
+// effects inside them. In production code, do the work first and
+// assert on the result.)
+//
 // Task: make the program exit cleanly, then delete the "I AM NOT DONE"
 // line at the bottom to move on to the next exercise.
 //   - the assert passes and the program exits 0

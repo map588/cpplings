@@ -1,9 +1,11 @@
 // extras5.cpp — solution
 
 #include <cassert>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 struct Tracker {
@@ -39,6 +41,13 @@ int main() {
 
     // unique_ptr with default deleter is pointer-sized: true.
     static_assert((sizeof(std::unique_ptr<int>) == sizeof(int*)) == true);
+
+    // SSO: a short string's characters live inside the object: true.
+    std::string tiny = "cat";
+    auto object = reinterpret_cast<std::uintptr_t>(&tiny);
+    auto chars = reinterpret_cast<std::uintptr_t>(tiny.data());
+    bool inside_object = (chars >= object && chars < object + sizeof(tiny));
+    assert(inside_object == true);
 
     // reserve(3) means no reallocation across three pushes: true.
     std::vector<int> v;

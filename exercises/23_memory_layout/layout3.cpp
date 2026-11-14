@@ -37,6 +37,7 @@
 #include <cstddef>
 #include <new>
 #include <string>
+#include <utility>
 
 struct Session {
     inline static int alive = 0;

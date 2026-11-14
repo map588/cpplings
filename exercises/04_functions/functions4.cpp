@@ -23,7 +23,8 @@
 //   - leave TODO_C itself defined as '?'
 //
 // Then a thought experiment (answer is in the solution's comments): if
-// the int&& overload were deleted, what would pick(5) return?
+// the int&& overload were removed from the file (not `= delete`d —
+// that is a different story), what would pick(5) return?
 
 #include <cassert>
 #include <utility>

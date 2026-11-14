@@ -15,9 +15,16 @@
 //                  parameter (move4!), then 1 move into place
 //
 // The by-value "sink" parameter is one overload that's optimal-ish for
-// both cases. Option A is never better and is strictly worse for
-// rvalues. (The third option — overloading on const&/&& — wins a move
-// but doubles your API; perfect forwarding (move6) generalizes it.)
+// both cases, and Option A is strictly worse for rvalues. (The third
+// option — overloading on const&/&& — wins a move but doubles your
+// API; perfect forwarding (move6) generalizes it.)
+//
+// One honest caveat: the sink is at its best in CONSTRUCTORS, where
+// the member is brand new. In a setter that ASSIGNS to a std::string
+// or std::vector member, Option A can win for lvalues — copy
+// assignment may reuse the member's existing buffer, while the sink
+// always allocates a fresh one for the parameter. Tag owns no buffer,
+// so here the counters tell the whole story.
 //
 // Task: convert Profile::set_tag into a sink.
 //   - every assert passes — a temporary costs {0 copies, 1 move}, a

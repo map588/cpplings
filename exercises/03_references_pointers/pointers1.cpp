@@ -5,9 +5,11 @@
 // parameter over a reference: when absence is part of the contract.
 //
 // Spell null as `nullptr` (C++11). The old spellings are integers in
-// costume: NULL is a macro for 0, and 0 itself converts to any pointer
-// type. That breaks overload resolution — given f(int) and f(int*),
-// f(NULL) calls f(int)! nullptr has its own type, std::nullptr_t, and
+// costume: NULL is a macro for an integer zero, and 0 itself converts
+// to any pointer type. That breaks overload resolution — given f(int)
+// and f(int*), f(0) calls f(int)! f(NULL) does the same or fails as
+// ambiguous, depending on how your compiler spells NULL (clang and
+// gcc: ambiguous). nullptr has its own type, std::nullptr_t, and
 // always picks the pointer overload.
 //
 // The flip side of nullable: every dereference of a maybe-null pointer

@@ -9,7 +9,7 @@
 //
 //   opt.value()           CHECKED. Empty optional → throws
 //                         std::bad_optional_access. An uncaught throw
-//                         terminates — loudly, with a stack trace. When
+//                         terminates — loudly, naming the exception. When
 //                         in doubt, this is the honest accessor.
 //
 // (And value_or(x) never fails at all. C++23 adds monadic chains:

@@ -45,7 +45,9 @@ int main() {
     assert(*baseline == 36.6);
 
     assert(samples.size() == 1001);
-    // With the storage plan right, the day causes ZERO reallocations:
+    // With the storage plan right, the day causes ZERO reallocations.
+    // (The standard only promises capacity() >= what you ask for;
+    // libc++ and libstdc++ both give exactly what you ask.)
     assert(samples.capacity() == 1001);
     return 0;
 }

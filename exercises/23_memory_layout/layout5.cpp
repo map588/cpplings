@@ -1,4 +1,4 @@
-// layout5.cpp  — module capstone: COUNT THE ALLOCATIONS
+// layout5.cpp  — COUNT THE ALLOCATIONS
 //
 // You can replace global operator new — and counting calls to it is
 // the cheapest profiler you'll ever own. The override below forwards

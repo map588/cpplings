@@ -31,7 +31,7 @@ using temperature_t = std::int64_t;
 // Holds one 8-bit pixel channel: 0 to 255.
 using pixel_t = std::int64_t;
 
-// Holds a count of microseconds up to ~584,000 years (needs 64 bits, signed).
+// Holds a count of microseconds up to ~292,000 years (needs 64 bits, signed).
 using usec_t = std::int8_t;
 
 static_assert(sizeof(temperature_t) == 2 && std::is_signed_v<temperature_t>,

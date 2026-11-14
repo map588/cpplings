@@ -8,7 +8,7 @@ anything the optimizer derived from that assumption is now fiction.
 That's why UB bugs appear only at `-O2`, only on Tuesdays: the behavior
 was never defined to begin with.
 
-This module makes seven major UB classes *visible* using the sanitizers
+This module makes six major UB classes *visible* using the sanitizers
 this repo always compiles with:
 
 - **UBSan** (`-fsanitize=undefined`) — instruments arithmetic, shifts,
@@ -28,7 +28,7 @@ this repo always compiles with:
 | ub3 | use-after-scope | objects die at `}`, even though the stack bytes linger |
 | ub4 | misaligned / type-punned access | a `T*` points at a real, aligned `T` (strict aliasing) — `memcpy`/`bit_cast` *(C++20)* are the legal transmuters |
 | ub5 | integer division by zero | divisors are nonzero (float division gives ±inf instead — different rules!) |
-| ub6 | invalid shifts | shift amounts are in `[0, width)` (and watch promotion: `1 << 31` is already trouble) |
+| ub6 | invalid shifts | shift amounts are in `[0, width)` (and watch the operand's type: `1 << 31` is a *negative* `int` — defined since C++20, still not the mask you wanted) |
 
 ## Version notes
 
@@ -37,4 +37,5 @@ this repo always compiles with:
 | Sanitizers | compiler tech (clang/gcc), not the standard |
 | `std::bit_cast` — legal type punning | C++20 |
 | Signed overflow still UB (two's complement guaranteed since C++20 — representation, not arithmetic!) | C++20 |
+| Signed left shift defined (wraps; `1 << 31` is `INT_MIN`, no longer UB) — shift *counts* outside `[0, width)` stay UB | C++20 |
 | `std::ssize`, checked `.at()` | C++20 / C++98 |

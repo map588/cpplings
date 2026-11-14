@@ -4,7 +4,7 @@
 // because two unique_ptrs owning one object would double-delete (module
 // 03). Ownership can therefore never change hands silently — giving an
 // object away must be written out loud, at the call site, with the tool
-// module 08 gave you for turning a copy into a transfer.
+// module 09 gave you for turning a copy into a transfer.
 //
 // After the transfer, the source unique_ptr is GUARANTEED null (one of the
 // few moved-from states the standard fully specifies). Use-after-give-away

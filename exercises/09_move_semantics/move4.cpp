@@ -22,7 +22,7 @@
 // very move you tried to save. Compilers even ship a warning for this
 // pessimization (clang's is in -Wall) — helping the compiler here only
 // gets in its way. (Exception that proves the rule: returning a MEMBER,
-// like `return std::move(pair.first);` — that one's real, module 15.)
+// like `return std::move(pair.first);` — that one's real, module 21.)
 //
 // Task: fix both factory functions so each construction is the ONLY
 // event.

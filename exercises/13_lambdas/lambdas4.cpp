@@ -2,7 +2,7 @@
 //
 // A by-reference capture is a stored reference — and a stored reference
 // keeps NOTHING alive (module 03). The closure outliving what it
-// captured is THE lambda bug: callbacks capturing locals, [&this],
+// captured is THE lambda bug: callbacks capturing locals, [this],
 // handlers registered today and fired tomorrow.
 //
 // Here's a sneaky habitat. The lambda captures a reference to

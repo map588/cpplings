@@ -10,7 +10,7 @@
 //
 // And packs FORWARD (module 09's std::forward, plural form):
 //
-//     template <typename... Ts>
+//     template <typename T, typename... Ts>
 //     void emplace_all(std::vector<T>& v, Ts&&... args) {
 //         (v.push_back(std::forward<Ts>(args)), ...);
 //     }
