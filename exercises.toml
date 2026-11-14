@@ -396,6 +396,16 @@ hints = [
   "Wrap the three declarations in extern \"C\" { ... } (or prefix each with extern \"C\"). That's precisely what the #ifdef __cplusplus dance in the vendor's real header would have done for you.",
 ]
 
+[[exercises]]
+name = "part1_quiz"
+path = "exercises/06_linkage_odr/part1_quiz.cpp"
+mode = "run"
+fails = "compile"
+hints = [
+  "Each probe repeats a lesson you already passed: narrowing, promotion, unsigned wrap and auto (module 01), const pointers (02), reference assignment (03), overload ranking, reference overloads and static locals (04), inline namespaces (05). Unsure of one? Re-read that module's README before you compile.",
+  "The three most-missed: rank(2.5f) is 'd' and rank(true) is 'i' — float → double and bool → int are PROMOTIONS, which outrank conversions. `rx = y` assigns THROUGH the alias (x becomes 2, rx never re-aims, y = 50 touches nothing else). tally's static total survives between calls: 5, 6, 11.",
+]
+
 # ----------------------------------------------------------- 07_classes1
 
 [[exercises]]
@@ -581,6 +591,15 @@ hints = [
 ]
 
 [[exercises]]
+name = "swap1"
+path = "exercises/09_move_semantics/swap1.cpp"
+mode = "run"
+hints = [
+  "The first failed assert is the self-assignment: copy-assign releases data_ FIRST and then copies from other.data_ — but in `b = alias` other IS b, so it copies the fresh, zeroed block onto itself. The data is gone, and no sanitizer objects. Move-assign overwrites data_ without releasing the old block, so `live` never returns to 0. Don't patch them one by one: the task asks for ONE operator that cannot have either bug.",
+  "IntBuffer& operator=(IntBuffer other) noexcept { swap(*this, other); return *this; } — the by-value parameter is built by the copy OR the move constructor; the swap takes its contents; its destructor frees our old block. The swap: friend void swap(IntBuffer& a, IntBuffer& b) noexcept { using std::swap; swap(a.n_, b.n_); swap(a.data_, b.data_); }",
+]
+
+[[exercises]]
 name = "move7"
 path = "exercises/09_move_semantics/move7.cpp"
 mode = "run"
@@ -702,6 +721,25 @@ fails = "compile"
 hints = [
   "describe(Shape s) copies just the Shape part of any argument — take const Shape& instead.",
   "std::vector<Shape> slices on push_back. Use std::vector<std::unique_ptr<Shape>> with std::make_unique<Circle>() / <Square>() — the asserts' -> syntax already expects pointers.",
+]
+
+[[exercises]]
+name = "inherit1"
+path = "exercises/11_polymorphism/inherit1.cpp"
+mode = "run"
+fails = "compile"
+hints = [
+  "Two separate facts. Constructors are NOT inherited by default — GaugeLog has none that takes a name. And a function declared in a derived class HIDES every base function with the same name: lookup stops at the first scope that has `record`, so record(42) and record('x') both quietly convert to double.",
+  "Inside GaugeLog: `using EventLog::EventLog;` inherits the constructors, and `using EventLog::record;` brings the base overloads into this scope, where all three compete in one overload set.",
+]
+
+[[exercises]]
+name = "rtti1"
+path = "exercises/11_polymorphism/rtti1.cpp"
+mode = "run"
+hints = [
+  "static_cast trusts you: on a Square it returns a Circle& to memory that holds no Circle, and reading .r through it is undefined behavior (here it happens to read `side`). dynamic_cast CHECKS the object's real type at runtime, through the vtable.",
+  "if (const Circle* c = dynamic_cast<const Circle*>(&s)) { return c->r; } return 0.0; — the pointer form yields nullptr on a miss; the reference form throws std::bad_cast. Quiz: typeid on a reference to a polymorphic type reports the DYNAMIC type — true, then false.",
 ]
 
 [[exercises]]
@@ -903,6 +941,16 @@ fails = "compile"
 hints = [
   "A regular if compiles BOTH branches for every T — `*value` with T=int is an error even though that branch never runs. The branch must be DISCARDED at compile time.",
   "Change both branch points to `if constexpr (...)` / `else if constexpr (...)`. The nullptr check inside the pointer branch stays a plain runtime if.",
+]
+
+[[exercises]]
+name = "part3_quiz"
+path = "exercises/14_templates2/part3_quiz.cpp"
+mode = "run"
+fails = "compile"
+hints = [
+  "Modules 12–14, one probe each. For the sizes: a closure is a struct that holds exactly its captures — and an empty struct still has size 1. For the folds: an empty pack yields the fold's identity — the init value for (0 + ... + xs), true for &&.",
+  "Most-missed: a copied mutable closure carries the counter's current state — twin() and next() both return 3. std::same_as<int, const int> is false (same_as is exact). describe(\"hi\") is 'x': const char* is neither integral nor floating-point. indirections(\"text\") is 1: a by-value T deduced from a string literal is const char*.",
 ]
 
 # --------------------------------------------------------- 15_strings_views
@@ -1307,6 +1355,16 @@ mode = "run"
 hints = [
   "Two failures, one cause: the literal 1 is an int. 1<<31 is defined since C++20 but NEGATIVE (INT_MIN), so widening it to uint64_t smears the sign bit across the top half — the assert catches that, UBSan stays silent. A shift by 32+ exceeds int's width entirely: still UB, and that one UBSan reports.",
   "Build the mask in the right type from the start: return std::uint64_t{1} << bit; — unsigned and 64 bits wide makes every bit in [0,64) legal.",
+]
+
+[[exercises]]
+name = "part5_quiz"
+path = "exercises/22_ub_sanitizers/part5_quiz.cpp"
+mode = "run"
+fails = "compile"
+hints = [
+  "Module 20: destructors are noexcept unless you say otherwise; handlers are tried top to bottom and the first that MATCHES wins (a base-class handler matches a derived exception); locals are destroyed in reverse order of construction, BEFORE the handler body runs. Module 21: decltype((e)) is T& for an lvalue, T&& for an xvalue, plain T for a prvalue.",
+  "unwind_log() is \"ba!\". -7 / 2 is -3 and -7 % 4 is -3: division truncates toward zero, the remainder takes the sign of the dividend. 1 << 31 is INT_MIN since C++20 — negative, and defined (ub6). 1.0 / 0.0 is +infinity under IEEE 754. v.at(3) on a 3-element vector throws.",
 ]
 
 # --------------------------------------------------------- 23_memory_layout

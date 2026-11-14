@@ -23,7 +23,7 @@ unqualified name lookup has a famous extra rule (ADL) that makes
   4. *using-enum-declaration* (C++20) — `using enum Color;` brings scoped
      enumerators into scope (great inside a `switch`).
   (A fifth face, `using Base::Base;` inheriting constructors (C++11),
-  appears in the classes modules.)
+  is exercise `inherit1` in module 11.)
 - **ADL (argument-dependent lookup).** An *unqualified* call `f(x)` also
   searches the namespaces of `x`'s type. This is why `std::cout << x`
   finds `std::operator<<`, and why the customization-point idiom is

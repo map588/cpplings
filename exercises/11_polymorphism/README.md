@@ -33,6 +33,19 @@ them into compile errors.
   (by-value parameter, `vector<Base>`...) copies only the Base part —
   the derived data and behavior are sheared off. Polymorphism requires
   indirection: `Base&`, `Base*`, or `vector<unique_ptr<Base>>` (module 10).
+- **Inheriting constructors and name hiding.** A derived class does not
+  inherit constructors unless it asks: `using Base::Base;` *(C++11)*.
+  And a function declared in a derived class *hides* every base function
+  with the same name — other overloads included — until
+  `using Base::f;` brings them back into one overload set (`inherit1`).
+- **`dynamic_cast` and RTTI.** A `static_cast` downcast is unchecked: a
+  wrong guess is undefined behavior. `dynamic_cast<const Derived*>(p)`
+  checks the object's real type at runtime and yields `nullptr` on a
+  miss (the reference form throws `std::bad_cast`); `typeid` reports the
+  *dynamic* type of a polymorphic object. The check costs more than a
+  virtual call, and it works on polymorphic types only. Code that needs
+  it often wants a virtual function or a `std::variant` instead
+  (`rtti1`).
 - **When *not* to inherit.** Inheritance is for *interface substitution*.
   For code reuse, prefer composition; for "one of N shapes", consider
   `std::variant` (module 19) — no heap, no vptr.
@@ -43,5 +56,6 @@ them into compile errors.
 |---|---|
 | `virtual`, pure virtuals, abstract classes | C++98 |
 | `override`, `final` | C++11 |
-| `dynamic_cast` & RTTI | C++98 (costs covered later) |
+| Inheriting constructors (`using Base::Base;`) | C++11 |
+| `dynamic_cast`, `typeid` (RTTI) | C++98 |
 | `std::variant` as a closed-set alternative | C++17 |

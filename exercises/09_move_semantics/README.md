@@ -39,6 +39,13 @@ mental model that survives contact with the standard:
   a *forwarding reference* (deduced!): lvalues come in as `T&`, rvalues
   as `T&&` (reference collapsing). Pass it on with `std::forward<T>(x)` —
   `std::move` there would plunder your caller's lvalues.
+- **Copy-and-swap.** One `operator=(T other)` that takes its argument
+  *by value* and swaps with it replaces both hand-written assignments.
+  The copy or move constructor builds `other`; a `noexcept`
+  hidden-friend `swap` trades the guts; `other`'s destructor frees the
+  old state. Self-assignment and a failed copy are both safe by
+  construction (`swap1`). The price: copy assignment always allocates —
+  it cannot reuse the buffer the destination already has.
 - **The const trap:** `std::move(const_thing)` yields `const T&&`, which
   no move constructor takes — overload resolution falls back to the copy
   constructor. Compiles, runs, silently copies.

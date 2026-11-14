@@ -39,6 +39,9 @@ like a compiler error. Learn to recognize both.
   Mismatch it and both TUs compile, but the linker reports
   `undefined reference` to a symbol that "obviously" exists.
 
+The module ends with the **Part I quiz** (`part1_quiz`): predictions
+across modules 01–05.
+
 ## Version notes
 
 | Feature | Standard |

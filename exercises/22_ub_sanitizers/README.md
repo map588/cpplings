@@ -30,6 +30,9 @@ this repo always compiles with:
 | ub5 | integer division by zero | divisors are nonzero (float division gives ±inf instead — different rules!) |
 | ub6 | invalid shifts | shift amounts are in `[0, width)` (and watch the operand's type: `1 << 31` is a *negative* `int` — defined since C++20, still not the mask you wanted) |
 
+The module ends with the **Part V quiz** (`part5_quiz`): predictions
+across modules 20–22.
+
 ## Version notes
 
 | Feature | Standard / tool |

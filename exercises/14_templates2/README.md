@@ -39,6 +39,9 @@ branching at compile time.
   is *not instantiated* for the current `T`. One function body, multiple
   type-specific behaviors, no specialization ladder.
 
+The module ends with the **Part III quiz** (`part3_quiz`): predictions
+across modules 12–14.
+
 ## Version notes
 
 | Feature | Standard |
